@@ -731,13 +731,18 @@
 <body>
 
 <div class="tab-nav-wrap">
-  <nav class="tab-nav" role="tablist">
+  <nav class="tab-nav" aria-label="Documents">
+    <a class="tab-btn" href="index.html" style="text-decoration:none;">Codex</a>
+    <a class="tab-btn" href="coterie.html" style="text-decoration:none;">The Coterie</a>
+    <a class="tab-btn" href="dramatis_personae.html" style="text-decoration:none;">Dramatis Personae</a>
+    <a class="tab-btn" href="chronicle.html" style="text-decoration:none;">The Chronicle</a>
+    <a class="tab-btn active" href="tomislawa_household_dossier.html" style="text-decoration:none;">Household</a>
+  </nav>
+  <nav class="tab-nav" role="tablist" style="margin-top:2px;">
     <button class="tab-btn active" role="tab" aria-selected="true"  onclick="switchTab('tomi')">Tomisława</button>
     <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('graf')">Graf Światosław</button>
     <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('allies')">The Four Allies</button>
     <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('herd')">The Herd</button>
-    <a class="tab-btn nav-link" href="index.html" title="Codex — all documents" style="margin-left:auto;text-decoration:none;color:rgba(232,224,208,0.4);">⟵ Codex</a>
-    <a class="tab-btn nav-link" href="war_of_princes_chronicle.html" title="The Chronicle — coterie, NPCs, sessions" style="text-decoration:none;color:rgba(232,224,208,0.4);">The Chronicle ⟶</a>
   </nav>
 </div>
 
