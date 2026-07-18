@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chronicle — The London Envoy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+SC:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground:        #0e0c10;
+    --ground-mid:    #1a1520;
+    --paper:         #e8e0d0;
+    --paper-shade:   #ddd5c2;
+    --paper-deep:    #cec4ae;
+    --ink:           #18141c;
+    --ink-soft:      #3a3040;
+    --ink-faint:     #6a6070;
+    --blood:         #7a1a22;
+    --blood-deep:    #4e0f16;
+    --blood-pale:    #a03030;
+    --gold:          #9a7a3a;
+    --gold-pale:     #c4a055;
+    --rule:          #a09080;
+    --rule-soft:     #c0b49e;
+    --earth:         #5a3e28;
+    --water:         #2a4a5e;
+    --air:           #3a3a50;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "EB Garamond", Georgia, serif;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(122, 26, 34, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(14, 12, 16, 0.9) 0%, transparent 55%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 2rem 1rem 5rem;
+  }
+
+  /* ============ TAB NAV ============ */
+  .tab-nav-wrap {
+    max-width: 960px;
+    margin: 0 auto 0;
+    position: relative;
+    z-index: 10;
+  }
+  .tab-nav {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(232,224,208,0.55);
+    background: rgba(14,12,16,0.85);
+    border: 1px solid rgba(160,144,128,0.25);
+    border-bottom: none;
+    padding: 0.55rem 1.1rem 0.45rem;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+    outline: none;
+    position: relative;
+    top: 1px;
+  }
+  .tab-btn:hover { color: rgba(232,224,208,0.85); }
+  .tab-btn.active {
+    color: var(--ink);
+    background: var(--paper);
+    border-color: var(--rule);
+    font-weight: 600;
+  }
+  .tab-nav .home-link {
+    margin-left: auto;
+    text-decoration: none;
+    color: rgba(232,224,208,0.4);
+    top: 1px;
+  }
+  .tab-nav .home-link:hover { color: var(--gold-pale); }
+
+  /* ============ DOCUMENT ============ */
+  .document {
+    max-width: 960px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, var(--paper) 0%, var(--paper-shade) 100%);
+    position: relative;
+    border: 1px solid var(--rule);
+    box-shadow:
+      0 2px 4px rgba(14,12,16,0.5),
+      0 16px 64px rgba(14,12,16,0.7);
+  }
+  .document::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg,
+      var(--blood-deep) 0%,
+      var(--blood) 25%,
+      var(--gold-pale) 50%,
+      var(--blood) 75%,
+      var(--blood-deep) 100%);
+    z-index: 2;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .doc-inner { padding: 3rem 3.75rem 4rem; }
+
+  /* ============ PAGE HEAD ============ */
+  .page-eyebrow {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.38em;
+    color: var(--blood);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  h1.page-title {
+    font-family: "Cinzel", serif;
+    font-weight: 600;
+    font-size: 2.1rem;
+    line-height: 1.1;
+    margin: 0 0 0.35rem;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .page-subtitle {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    margin: 0 0 0.5rem;
+  }
+  .page-lede {
+    font-family: "EB Garamond", serif;
+    font-size: 1.04rem;
+    color: var(--ink-soft);
+    line-height: 1.68;
+    margin: 1.1rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  /* ============ SECTIONS ============ */
+  .section { margin-top: 2.25rem; }
+  .section-rule {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .section-rule-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rule), transparent);
+  }
+  .section-ornament {
+    color: var(--blood);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  h2.section-title {
+    font-family: "Cinzel", serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ============ PORTRAIT FRAME ============ */
+  .portrait-frame {
+    border: 1px solid var(--blood-deep);
+    padding: 5px;
+    background: var(--paper-deep);
+    box-shadow:
+      inset 0 0 0 1px var(--gold),
+      0 2px 8px rgba(14,12,16,0.3);
+    position: relative;
+  }
+  .portrait-frame::before,
+  .portrait-frame::after {
+    content: "";
+    position: absolute;
+    width: 12px; height: 12px;
+    border: 1px solid var(--blood);
+  }
+  .portrait-frame::before { top: -4px; left: -4px; border-right: none; border-bottom: none; }
+  .portrait-frame::after  { bottom: -4px; right: -4px; border-left: none; border-top: none; }
+  .portrait-frame img {
+    display: block; width: 100%; height: auto;
+    aspect-ratio: 3/4; object-fit: cover;
+    filter: sepia(0.12) saturate(0.9) brightness(0.97);
+  }
+  .portrait-frame.landscape img { aspect-ratio: 4/3; }
+  .portrait-caption {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    margin-top: 0.6rem;
+  }
+
+  /* ============ CHARACTER CARD ============ */
+  .char-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.75rem;
+    margin-bottom: 2.75rem;
+    padding-bottom: 2.75rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .char-card:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .char-card.npc { grid-template-columns: 160px 1fr; gap: 1.5rem; }
+  .char-portrait { position: relative; }
+  .char-name-block { padding-top: 0; }
+  h3.pc-name {
+    font-family: "Cinzel", serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    margin: 0 0 0.12rem;
+    color: var(--ink);
+    letter-spacing: 0.03em;
+  }
+  .char-card.npc h3.pc-name { font-size: 1.2rem; }
+  h3.pc-name .handle {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 1.02rem;
+    color: var(--blood);
+    font-weight: 400;
+    display: block;
+    letter-spacing: 0.01em;
+  }
+  .pc-subtitle {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 0.98rem;
+    color: var(--ink-faint);
+    margin: 0.15rem 0 0.75rem;
+  }
+  .stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.85rem;
+  }
+  .stat-chip {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--rule-soft);
+    background: var(--paper-shade);
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .stat-chip strong { color: var(--blood-deep); font-weight: 600; }
+  .stat-chip.road { border-color: var(--gold); }
+  .stat-chip.road strong { color: var(--gold); }
+  .char-bio {
+    font-family: "EB Garamond", serif;
+    font-size: 0.99rem;
+    color: var(--ink-soft);
+    line-height: 1.62;
+    margin: 0 0 0.75rem;
+  }
+  .char-bio:last-child { margin-bottom: 0; }
+  .char-bio strong { color: var(--ink); font-weight: 600; }
+  .field-label {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--blood);
+    margin: 1rem 0 0.35rem;
+  }
+
+  /* Companion (sub-card, e.g. familiar) */
+  .companion {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.75rem 0.9rem;
+    background: rgba(122,26,34,0.045);
+    border-left: 2px solid var(--gold);
+  }
+  .companion .portrait-frame img { aspect-ratio: 1/1; }
+  .companion-name {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin: 0 0 0.15rem;
+  }
+  .companion-body {
+    font-family: "EB Garamond", serif;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Cluster label */
+  .cluster-label {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--blood);
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--rule-soft);
+    margin: 2.25rem 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .cluster-label:first-of-type { margin-top: 0; }
+  .cluster-label .cluster-gloss {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--ink-faint);
+    text-align: right;
+  }
+
+  /* Narrative callout */
+  .callout {
+    margin: 0.9rem 0 0;
+    padding: 0.85rem 1rem 0.85rem 1.1rem;
+    border-left: 3px solid var(--gold);
+    background: var(--paper-shade);
+  }
+  .callout-label {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.64rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.35rem;
+  }
+  .callout-body {
+    font-family: "EB Garamond", serif;
+    font-style: italic;
+    font-size: 1.0rem;
+    color: var(--ink-soft);
+    line-height: 1.58;
+    margin: 0;
+  }
+  .callout.blood { border-left-color: var(--blood); }
+  .callout.blood .callout-label { color: var(--blood); }
+
+  /* Institution card */
+  .inst-card {
+    padding: 1.1rem 1.25rem;
+    background: var(--paper-shade);
+    border: 1px solid var(--rule-soft);
+    border-top: 2px solid var(--blood-deep);
+    margin-bottom: 1.25rem;
+  }
+  .inst-name {
+    font-family: "Cinzel", serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 0.15rem;
+    letter-spacing: 0.03em;
+  }
+  .inst-sub {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--ink-faint);
+    margin: 0 0 0.6rem;
+  }
+  .inst-body {
+    font-family: "EB Garamond", serif;
+    font-size: 0.97rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ============ SESSION LOG ============ */
+  .session-block { margin-bottom: 3rem; }
+  .session-masthead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.9rem 1.1rem;
+    background: linear-gradient(90deg, var(--blood-deep), var(--blood) 55%, rgba(78,15,22,0.85));
+    color: var(--paper);
+    position: relative;
+  }
+  .session-masthead .sm-left { display: flex; flex-direction: column; gap: 0.1rem; }
+  .session-num {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold-pale);
+  }
+  .session-name {
+    font-family: "Cinzel", serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+    line-height: 1.15;
+  }
+  .session-date {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: rgba(232,224,208,0.8);
+    white-space: nowrap;
+  }
+  .session-standfirst {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 1.02rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 1rem 0 0;
+    padding: 0 0.25rem;
+  }
+
+  .scene {
+    margin-top: 1.5rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--paper-shade);
+    border-left: 3px solid var(--blood);
+  }
+  .scene-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 0.55rem;
+  }
+  .scene-idx {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--blood);
+    flex-shrink: 0;
+  }
+  .scene-title {
+    font-family: "Cinzel", serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0;
+  }
+  .scene-body {
+    font-family: "EB Garamond", serif;
+    font-size: 0.98rem;
+    color: var(--ink-soft);
+    line-height: 1.62;
+    margin: 0 0 0.75rem;
+  }
+  .scene-body:last-child { margin-bottom: 0; }
+  .scene-body strong { color: var(--ink); font-weight: 600; }
+  .scene-body em.beat {
+    display: block;
+    font-style: italic;
+    color: var(--blood-deep);
+    margin-top: 0.4rem;
+  }
+
+  /* character tags in scenes */
+  .scene-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    align-items: center;
+    margin-top: 0.65rem;
+    padding-top: 0.6rem;
+    border-top: 1px dotted var(--rule-soft);
+  }
+  .scene-tags .tags-label {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.56rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-right: 0.15rem;
+  }
+  .char-tag {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .char-tag.coterie {
+    background: rgba(78,15,22,0.1);
+    border-color: var(--blood);
+    color: var(--blood-deep);
+    font-weight: 600;
+  }
+  .char-tag.npc {
+    background: rgba(154,122,58,0.12);
+    border-color: var(--gold);
+    color: var(--earth);
+  }
+  .char-tag.extra {
+    background: transparent;
+    border-color: var(--rule-soft);
+    color: var(--ink-faint);
+  }
+
+  .tag-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.7rem 1rem;
+    border: 1px dashed var(--rule-soft);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  /* Threads list */
+  .thread-list { margin: 0; padding: 0; list-style: none; }
+  .thread-list li {
+    font-family: "EB Garamond", serif;
+    font-size: 0.97rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    padding: 0.4rem 0 0.4rem 1.2rem;
+    border-bottom: 1px dotted var(--rule-soft);
+    position: relative;
+  }
+  .thread-list li::before {
+    content: "❧";
+    position: absolute;
+    left: 0;
+    color: var(--blood);
+    font-size: 0.85rem;
+  }
+  .thread-list li:last-child { border-bottom: none; }
+  .thread-list strong { color: var(--ink); font-weight: 600; }
+
+  /* Footer */
+  .doc-foot {
+    margin-top: 3rem;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .foot-text {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    flex: 1;
+  }
+  .foot-ornament { color: var(--blood); font-size: 1rem; opacity: 0.6; }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    .doc-inner { padding: 2rem 1.5rem 2.5rem; }
+    h1.page-title { font-size: 1.6rem; }
+    .char-card, .char-card.npc { grid-template-columns: 1fr; }
+    .char-portrait { max-width: 220px; }
+    .companion { grid-template-columns: 70px 1fr; }
+    .tab-btn { font-size: 0.6rem; padding: 0.45rem 0.65rem; }
+    .session-name { font-size: 1.15rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="tab-nav-wrap">
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true"  onclick="switchTab('coterie')">The Coterie</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('npcs')">Dramatis Personae</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('sessions')">The Chronicle</button>
+    <a class="tab-btn home-link" href="tomislawa_household_dossier.html" title="Tomisława's household dossier">Household ⟶</a>
+  </nav>
+</div>
+
+<div class="document">
+
+  <!-- ════════════════════════════════════════════════
+       TAB 1 — THE COTERIE
+  ════════════════════════════════════════════════ -->
+  <div id="tab-coterie" class="tab-panel active">
+  <div class="doc-inner">
+
+    <div class="page-eyebrow">The London Envoy · In the service of Mithras</div>
+    <h1 class="page-title">The Coterie</h1>
+    <p class="page-subtitle">Four young Cainites, homeward from Norway · 1242</p>
+    <p class="page-lede">The errand-runners Mithras trusts to fetch what no hired mortal can be trusted with — dangerous, low-status work that most Kindred do not survive long enough to profit from, and precisely for that reason one of the few ladders a hungry neonate can climb. They have been a coterie perhaps two years, a handful of jobs deep: long enough to know the basics of one another, not long enough to be friends by default. Session One was the first night it cost any of them anything.</p>
+
+    <section class="section">
+      <div class="section-rule">
+        <span class="section-rule-line"></span>
+        <span class="section-ornament">✦</span>
+        <h2 class="section-title">The Four</h2>
+        <span class="section-ornament">✦</span>
+        <span class="section-rule-line"></span>
+      </div>
+
+      <!-- TOMISŁAWA -->
+      <div class="char-card">
+        <div class="char-portrait">
+          <div class="portrait-frame">
+            <img src="tomi-full.png" alt="Tomisława z Białowieży">
+          </div>
+          <div class="portrait-caption">Tomisława z Białowieży</div>
+        </div>
+        <div class="char-name-block">
+          <h3 class="pc-name">Tomisława <span class="handle">z Białowieży · "Queen of the Swamp"</span></h3>
+          <p class="pc-subtitle">The occult and infrastructural core</p>
+          <div class="stat-row">
+            <span class="stat-chip">Clan <strong>Tzimisce</strong></span>
+            <span class="stat-chip">Koldun</span>
+            <span class="stat-chip road">Road <strong>of Kings</strong></span>
+            <span class="stat-chip">10th Gen · BP 2</span>
+            <span class="stat-chip">Earth · Water · Air</span>
+          </div>
+          <p class="char-bio">A brilliant, fragile political glass cannon walking the rigid Road of Kings with an aura of supreme, chilling self-mastery. She is the coterie's engine: she opened her wrist into a barrel of drinking water, put her senses five hundred metres out through the sea, found the raider hull grinding against her own, and pulled it off on a swell — the single decisive act of the fight, performed while everyone else was stabbing people. She is also the most fragile body at the table, and Session One demonstrated that at greater length than she would like.</p>
+          <p class="char-bio">She did not choose these three. She chose Mithras, and they came attached. Her element is water; her appetite is fire — and she now knows her out-of-category peer cannot help her reach it.</p>
+          <div class="callout">
+            <div class="callout-label">Full Sheet</div>
+            <p class="callout-body">Her complete dossier — attributes, disciplines, rituals, household and herd — lives in the <a href="tomislawa_household_dossier.html" style="color:var(--blood-deep);">Household of Białowieży</a> document.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EUSTACE -->
+      <div class="char-card">
+        <div class="char-portrait">
+          <div class="portrait-frame">
+            <img src="eustace-full.png" alt="Eustace the Kiasyd">
+          </div>
+          <div class="portrait-caption">Eustace · the Kiasyd</div>
+        </div>
+        <div class="char-name-block">
+          <h3 class="pc-name">Eustace <span class="handle">the Kiasyd · "I'm not like the other children"</span></h3>
+          <p class="pc-subtitle">Her one true peer</p>
+          <div class="stat-row">
+            <span class="stat-chip">Bloodline <strong>Kiasyd</strong></span>
+            <span class="stat-chip">Line of Marconius</span>
+            <span class="stat-chip road">Road <strong>of Kings</strong></span>
+            <span class="stat-chip">Dominate · Oblivion</span>
+          </div>
+          <p class="char-bio">A fae-touched Lasombra embraced into a twelve-year-old's body more than four decades ago — a creature past fifty wearing a child's frozen shape. Proud of the clan, unbothered by the faith (<em>it's all real, and none of it's real is how I view it</em>), and by turns petulant and coldly calculated: a sadist whose cruelty points toward mastery rather than appetite. He spent one fight patiently sawing into a man's skull with a knife and Strength 1 to get at the brain, and fabricated an entire noble childhood on the spot. London's Lasombra keep him at arm's length and post him as a local watcher; he is content with the leash, because distance is room to manoeuvre.</p>
+          <p class="char-bio"><strong>To Tomisława:</strong> her equal by armistice — two absolute convictions of superiority that have agreed not to fight. He has conceded she is genuinely, if provincially, noble; he has also, now, <em>watched her lose</em> — wept and thrashing in Oscar's arms — and said nothing about it. The next time he asks her for Vicissitude, he will be asking from a position he did not hold before.</p>
+        </div>
+      </div>
+
+      <!-- MÉABH -->
+      <div class="char-card">
+        <div class="char-portrait">
+          <div class="portrait-frame">
+            <img src="meabh-full.png" alt="Méabh">
+          </div>
+          <div class="portrait-caption">Méabh · of the Irish groves</div>
+        </div>
+        <div class="char-name-block">
+          <h3 class="pc-name">Méabh <span class="handle">"Tomisława's Irish cousin"</span></h3>
+          <p class="pc-subtitle">Guide, liar, and the coterie's hinge</p>
+          <div class="stat-row">
+            <span class="stat-chip">Bloodline <strong>Lhiannan</strong></span>
+            <span class="stat-chip road">Road <strong>of the Beast</strong></span>
+            <span class="stat-chip">Rune-magic</span>
+            <span class="stat-chip">Animal pack</span>
+          </div>
+          <p class="char-bio">One of the last of a doomed bloodline — carrying a fragment of her sire's soul and a literal piece of her forest, hunted by the Gangrel who would end her line, split from her sire in a raid and hoping to find him again. She walks the Road of the Beast, hunts with a pack, and works her magic as runes cut into her own skin, matriarchal rites she traces to the Crone. On the surface she is sweet, innocent, mild-mannered; underneath she is five steps ahead and wants to be the predator in every room. A spider playing at being a lamb.</p>
+          <p class="char-bio"><strong>To Tomisława:</strong> the kinswoman she invented. By the plain rules Méabh should rank low; instead Tomisława lifts her clean off the ladder and holds her <em>out-of-category</em> — a peer on the old powers of the earth, unmeasured on all else. Their cover is welded together: Méabh's claim to kinship survives on Tomisława's credit, which makes each a hostage of the other. Her heart, though, belongs to Oscar, not her patron.</p>
+          <div class="companion">
+            <div class="portrait-frame">
+              <img src="scealan-full.png" alt="Scéalán the red wolf">
+            </div>
+            <div>
+              <p class="companion-name">Scéalán — the red wolf</p>
+              <p class="companion-body">Her familiar: a red wolf grown large on her blood, named for one of the hounds of the Fianna cycle. Blood-fed and battle-scarred; he intercepted two raiders in the hold and dragged one down by the calf so Oscar could finish it. Where Méabh goes, he is put between her and the room.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OSCAR -->
+      <div class="char-card">
+        <div class="char-portrait">
+          <div class="portrait-frame">
+            <img src="oscar-full.png" alt="Oscar Castro Avis">
+          </div>
+          <div class="portrait-caption">Oscar "Disgraced" Castro Avis</div>
+        </div>
+        <div class="char-name-block">
+          <h3 class="pc-name">Oscar Castro Avis <span class="handle">"Disgraced" · the fallen knight of Lisbon</span></h3>
+          <p class="pc-subtitle">The muscle, and the group's reluctant conscience</p>
+          <div class="stat-row">
+            <span class="stat-chip">Clan <strong>Brujah</strong></span>
+            <span class="stat-chip">High Clan</span>
+            <span class="stat-chip road">Road <strong>of Humanity 6</strong></span>
+            <span class="stat-chip">Potence · Blood Surge</span>
+            <span class="stat-chip">Claymore</span>
+          </div>
+          <p class="char-bio">A Brujah of Lisbon — philosopher-kings, not rebels, in these nights. A fourth or fifth son raised to the sword and to real purpose, a knight who believed in it, undone by scandal and a lord's betrayal and dragged out of that ruin by a sire who eventually tired of his self-pity and sent him to the Isles with a hard instruction: <em>go find yourself.</em> His nature is honourable; his demeanour is nihilistic. He reads people well, and is a violent man trying to stop reaching for violence as the easy answer. His surcoat is a black Templar standard — black paint laid over what, up close, you can tell used to be a cross.</p>
+          <p class="char-bio">Session One was largely his fight: Blood Surge, Potence and Claymore through a hold full of raiders, ending fed to zero on drugged blood and cheerful. Then he broke Tomisława's jaw open to pry her off Bronisława and held her through the frenzy — competent, unsentimental, unpaid.</p>
+          <p class="char-bio"><strong>To Tomisława:</strong> the one she files as her <em>inferior</em> — not for clan (he shares her rank exactly) but for <em>abdication</em>, a nobleman playing hired sword. She refuses to see that they are mirror childer, both cast out by hard sires to remake themselves at a distance: she is what that process looks like when it succeeds, he is what it looks like mid-collapse. He is quietly becoming the group's exasperated uncle — and something with no drawer in her filing system.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SHAPE OF THE GROUP -->
+    <section class="section">
+      <div class="section-rule">
+        <span class="section-rule-line"></span>
+        <span class="section-ornament">✦</span>
+        <h2 class="section-title">The Shape of the Group</h2>
+        <span class="section-ornament">✦</span>
+        <span class="section-rule-line"></span>
+      </div>
+      <p class="char-bio">The coterie's own reckoning: two high-clan aristocrats at the top, two displaced exiles beneath them, and Méabh moving across the seam. What Session One demonstrated is that the reckoning and the actual load-bearing structure are not the same object. Under pressure the traffic did not run along the status lines — it ran <strong>Eustace and Oscar</strong> in the water, hauling and mocking each other; <strong>Oscar and Tomisława</strong> on the barn floor; <strong>Méabh and a nun</strong>.</p>
+      <div class="callout blood">
+        <div class="callout-label">A Seam Between the Peers</div>
+        <p class="callout-body">Tomisława and Eustace agree they are the top pair — and disagree on how to rank the bottom one. Eustace lumps Méabh and Oscar together as beneath them both; Tomisława files Oscar low but holds Méabh out-of-category. Méabh's cover now rests entirely on Tomisława's credibility, which gives Tomisława a hostage and Méabh a bomb. And Oscar — the one they agree to file as "help" — spent the session being the most consequential body in the group, and is not staying filed.</p>
+      </div>
+    </section>
+
+    <footer class="doc-foot">
+      <span class="foot-ornament">✦</span>
+      <div class="foot-text">War of Princes · 1242 · The London Envoy</div>
+      <span class="foot-ornament">✦</span>
+    </footer>
+  </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       TAB 2 — DRAMATIS PERSONAE (NPCs)
+  ════════════════════════════════════════════════ -->
+  <div id="tab-npcs" class="tab-panel">
+  <div class="doc-inner">
+
+    <div class="page-eyebrow">Those met upon the road, the beach, and the court</div>
+    <h1 class="page-title">Dramatis Personae</h1>
+    <p class="page-subtitle">The people the envoy has met — and one it lied about</p>
+    <p class="page-lede">Compiled from Session One. Attributions marked <em>presumed</em> are the coterie's best reading, not established fact.</p>
+
+    <!-- THE STOWAWAY -->
+    <section class="section">
+      <div class="cluster-label"><span>The Stowaway</span><span class="cluster-gloss">aboard the whole voyage, unseen</span></div>
+
+      <div class="char-card npc">
+        <div class="char-portrait">
+          <div class="portrait-frame">
+            <img src="ludan-full.png" alt="Ludan">
+          </div>
+          <div class="portrait-caption">Ludan · "the Red"</div>
+        </div>
+        <div class="char-name-block">
+          <h3 class="pc-name">Ludan <span class="handle">"a bolt of red" · presumed Nosferatu</span></h3>
+          <p class="pc-subtitle">Stowaway · wanted by the Order of Absolution</p>
+          <div class="stat-row">
+            <span class="stat-chip">Clan <strong>Nosferatu?</strong></span>
+            <span class="stat-chip">From "all over"</span>
+            <span class="stat-chip">Masked</span>
+          </div>
+          <p class="char-bio">A lid came off a box nobody had accounted for and a man sat up in it: patchwork leathers, a wooden mask with slits for the eyes and mouth and a mustache carved into it, a shock of red hair, and a box full of dead rodents. He had ridden the whole voyage unseen. Eustace couldn't get eye contact through the mask — which ruled out Dominate and annoyed him considerably — and later worked it out on politics: masks are courtesy in courts that contain Toreador, worn by the disfigured, and an unseen passenger points one way. <strong>Nosferatu, probably. Possibly several other things.</strong> The clan is a guess, not a fact.</p>
+          <p class="char-bio">Going overboard from the burning ship, he yelled <em>fucking Catholics</em> at the approaching riders and followed the frenzied pair into the surf. On the beach he gave <strong>Oscar</strong> a small wooden coin, well carved with a dancing fox — <em>if you find yourself around Cambridge, ask for a bolt of red</em> — and gave <strong>Eustace</strong> a knife: <em>okay, you're forgiven.</em> Then: <em>if anyone asks, you didn't see me.</em> And he was into the woods. Oscar read him as lying through his teeth about something, and let him go anyway.</p>
+          <div class="callout">
+            <div class="callout-label">What the Order believes</div>
+            <p class="callout-body">He carries something very important. Sister Mary hears the intention more clearly than the details. The coterie has his trail — Cambridge, a bolt of red — and lied to a knightly order about knowing it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE ORDER OF ABSOLUTION -->
+    <section class="section">
+      <div class="cluster-label"><span>The Order of Absolution</span><span class="cluster-gloss">a red Maltese cross on black · seated at Norwich</span></div>
+
+      <div class="char-card npc">
+        <div class="char-portrait">
+          <div class="portrait-frame">
+            <img src="guarin-full.png" alt="Guarin of Jersey">
+          </div>
+          <div class="portrait-caption">Guarin of Jersey</div>
+        </div>
+        <div class="char-name-block">
+          <h3 class="pc-name">Guarin of Jersey <span class="handle">Commander of the Order · Kindred</span></h3>
+          <p class="pc-subtitle">The one she did not choose</p>
+          <div class="stat-row">
+            <span class="stat-chip">Kindred</span>
+            <span class="stat-chip">Lower generation</span>
+            <span class="stat-chip">French heraldry · Jersey</span>
+          </div>
+          <p class="char-bio">He rode up, lifted his visor, apologised for the butchery, and produced a boarding ramp his men had been carrying for exactly this — then offered hospitality to "her cousin and herself," pets and servants included, looking at the wolf's bloody muzzle and saying yes anyway. Oscar read him as an entirely sincere man, properly carried, none of Oscar's own jadedness in him — and wearing ornate ceremonial armour that has seen far more pageantry than battle. Worked into it: <strong>sigils</strong>, not runic, of no school Méabh recognises. Someone with real power made it, or gave it to him.</p>
+          <p class="char-bio">Starving on the barn floor, Tomisława took his freely-offered wrist and drank. His blood is noticeably thicker than her own.</p>
+          <div class="callout blood">
+            <div class="callout-label">The Blood Bond</div>
+            <p class="callout-body">By her <em>Bond Slave</em> flaw, one drink is the whole bond. She did not run a risk; she acquired a regnant — roughly an hour after meeting him. He is a knight of an order that hunts her kind, he does not know what she is, and he does not know he holds her. She survived the barn only because he handed the one dangerous question to the nun, to whom she is <em>not</em> bound. <em>(Pending the GM's confirmation; the transcript reads as deferral rather than a ruling.)</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="char-card npc">
+        <div class="char-portrait">
+          <div class="portrait-frame">
+            <img src="mary-full.png" alt="Mary, Sister of Sorrow">
+          </div>
+          <div class="portrait-caption">Mary · Sister of Sorrow</div>
+        </div>
+        <div class="char-name-block">
+          <h3 class="pc-name">Mary, Sister of Sorrow <span class="handle">Nun of the Order · Salubri</span></h3>
+          <p class="pc-subtitle">The healer she must keep her eyes down around</p>
+          <div class="stat-row">
+            <span class="stat-chip">Clan <strong>Salubri</strong></span>
+            <span class="stat-chip">Healing by touch</span>
+            <span class="stat-chip">Hears intentions</span>
+          </div>
+          <p class="char-bio">A nun in full habit who knowingly walked into a vampire's frenzy to end it — pure intentions on a critical read. She stepped past the thrashing, closed her eyes, laid a hand on Tomisława's forehead, gave back three willpower and ended it. Doing it, she bled: a red stain spreading through the white at her hairline — a third eye, not a wound — which she failed to cover in time, and from which Eustace drew his conclusion. <em>The Lord speaks to me sometimes; the intention is clearer than the details.</em></p>
+          <div class="callout">
+            <div class="callout-label">The cruelty of it</div>
+            <p class="callout-body">In 1242 she is a hunted remnant of the clan the Tremere are busy exterminating and libelling as infernalists — prey to the same appetite that circles the koldun, from the other direction. She is also, mechanically, the single best ally in Christendom for a five-health glass cannon with Stake Bait. And she wears a crucifix, so Tomisława cannot look directly at her. The one person who could mend her is the one person she must keep her eyes down around.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inst-card">
+        <p class="inst-name">The Order of Absolution</p>
+        <p class="inst-sub">Knightly order &amp; Road cult — the road to Heaven</p>
+        <p class="inst-body">A red Maltese cross on black. Sworn to protect pilgrims and holy sites — not crusaders — well known in the Isles and seated at Norwich, and known to be under Kindred influence, at least in Britain. They serve <strong>Theodore of Absolution</strong>, and through him the road to Heaven. Mithras is no Christian, but he is not their open enemy either. They did not come to the wreck for bandits: they were hunting a man with red hair, and possibly a mask.</p>
+      </div>
+    </section>
+
+    <!-- THE COURT OF LONDON -->
+    <section class="section">
+      <div class="cluster-label"><span>The Court of London</span><span class="cluster-gloss">the domain of Mithras</span></div>
+
+      <div class="inst-card">
+        <p class="inst-name">Mithras</p>
+        <p class="inst-sub">Prince of London</p>
+        <p class="inst-body">The being Tomisława chose — the first time she understood beings of his stature existed. At the debrief a door opened and the room filled with light that felt like sunlight and did not burn; the Beast recoiled on instinct, then grudgingly conceded it was in no danger. Everyone knelt without being told. There was the sound of metal meeting meat, and Thomas's head arrived in their peripheral vision. <em>Rise</em>, he said — heard the report that the envoy had revealed nothing, judged that his enemies had revealed themselves, said <em>proceed</em>, and left. The errand-boy phase is over.</p>
+      </div>
+
+      <div class="inst-card">
+        <p class="inst-name">Richard de Worde</p>
+        <p class="inst-sub">Nosferatu · Mithras's spymaster</p>
+        <p class="inst-body">He refuses to hide his ruined face — melted, swollen flesh on open display above a nobleman's clothes, worn with evident pleasure, a standing insult to every Toreador in the court. His questions were gentle and were not gentle. He accepted Ludan as coincidence and bad luck, unconnected to the envoy's purpose. He has had eyes on Graf Światosław the entire time the coterie was abroad — and told Tomisława so, to her face, after she volunteered that her husband knew. He claimed the fault for the leak as his own before Mithras. <em>Now this means we can start the real work.</em></p>
+      </div>
+
+      <div class="inst-card">
+        <p class="inst-name">Thomas</p>
+        <p class="inst-sub">Mithras's man · gave them the mission</p>
+        <p class="inst-body">The one who handed the envoy its errand — and, it turned out, the leak. Beheaded in front of them by Mithras at the debrief. A small number of people had been given information about the mission; it was Thomas. But <em>certain people</em> is plural, and "the enemies revealing themselves" is doing a great deal of quiet work in that sentence.</p>
+      </div>
+    </section>
+
+    <footer class="doc-foot">
+      <span class="foot-ornament">✦</span>
+      <div class="foot-text">War of Princes · 1242 · Dramatis Personae</div>
+      <span class="foot-ornament">✦</span>
+    </footer>
+  </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       TAB 3 — THE CHRONICLE (SESSIONS)
+  ════════════════════════════════════════════════ -->
+  <div id="tab-sessions" class="tab-panel">
+  <div class="doc-inner">
+
+    <div class="page-eyebrow">Compiled from the session audio · most recent first</div>
+    <h1 class="page-title">The Chronicle</h1>
+    <p class="page-subtitle">A running record of the envoy's nights</p>
+    <div class="tag-legend">
+      <span><span class="char-tag coterie">Coterie</span> player character</span>
+      <span><span class="char-tag npc">NPC</span> non-player character</span>
+      <span><span class="char-tag extra">Others</span> retainers, familiars &amp; walk-ons</span>
+    </div>
+
+    <!-- ══════════ SESSION ONE ══════════ -->
+    <div class="session-block">
+      <div class="session-masthead">
+        <div class="sm-left">
+          <span class="session-num">Session One</span>
+          <span class="session-name">The Ship, the Order, and the Head of Thomas</span>
+        </div>
+        <span class="session-date">Homeward from Norway · 1242</span>
+      </div>
+      <p class="session-standfirst">The errand was simple and beneath them: carry a chest they knew better than to open to a band of Cainites in Norway, travel in secret, make a good impression. By every account it went well — better than well. Then, a week and a bit at sea, the ship stopped moving.</p>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">I.</span><h4 class="scene-title">The Hold</h4></div>
+        <p class="scene-body"><strong>Eustace</strong> woke first, to thunder above and screaming men, rain pooling pink through the deck seams and a hatch banging open onto lethal daylight. Bronisława already had her mistress's lid off and gave him a look of pure resignation. A raider came down the steps; Eustace caught his gaze and mesmerized him back up the stairs, rationalized so cleanly the man thought it his own idea. <strong>Méabh</strong> and <strong>Tomisława</strong> woke next — Méabh whispering Gaelic at <strong>Scéalán</strong> to defend her, Tomisława asking for a water barrel.</p>
+        <p class="scene-body">She opened her wrist, plunged her hand in, and burned three aggravated for a third of a mile of koldunic sight — saw their ship beached, a second hull alongside, their own sail burning — then critted Elemental Grasp and pulled the raider ship off her hull on a swell, stranding the rest. She stayed in the barrel for the fight, narrating. The rest was <strong>Oscar</strong>'s: woken early and hard out of torpor, Blood Surge and Claymore, he took the last raider's torch-arm off at the shoulder and drained him with Brutal Feed, ending fed to zero and cheerful. Above, the raiders scattered; armored cavalry came down the hill.</p>
+        <div class="scene-tags">
+          <span class="tags-label">In scene</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag extra">Scéalán</span>
+          <span class="char-tag extra">Bronisława</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">II.</span><h4 class="scene-title">Interlude — The Voyage Down</h4></div>
+        <p class="scene-body">A flashback to the nights before the crash: nothing to do in a box but talk, one topic each. <strong>Oscar</strong> asked about mortal family and got least of anyone — Tomisława confirmed only a nobleman husband; Méabh slid into myth; Oscar went quiet: <em>I was a knight. I took off.</em> <strong>Tomisława</strong> asked whether Méabh's tradition worked <em>fire</em> and got a blank look, and was deeply disappointed. <strong>Eustace</strong> asked about breeding and sized everyone up — filed Méabh a fraud (<em>was your wolf a noble too?</em>) and Tomisława, after both critted, as genuinely noble and permanently <em>queen of the swamp</em>. On God, Oscar warned Méabh to be careful who she tells: people must believe the narrative for it to have power.</p>
+        <em class="beat">The armistice between the peers is settled here: her rank respected, her country a bog. Méabh's kinship survives on Tomisława's credit, not her own.</em>
+        <div class="scene-tags">
+          <span class="tags-label">In scene</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Méabh</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">III.</span><h4 class="scene-title">Nightfall, and Ludan</h4></div>
+        <p class="scene-body">The sun went down; the mast kept burning. A lid came off a box nobody had accounted for and <strong>Ludan</strong> sat up in it — wooden mask, carved mustache, red hair, a box of dead rodents, aboard the whole voyage unseen. <strong>Eustace</strong> couldn't get eye contact through the mask and worked out Nosferatu on politics. Facing the fire, <strong>Eustace</strong> and <strong>Oscar</strong> both frenzied and went over the side; Ludan yelled <em>fucking Catholics</em> and followed; <strong>Méabh</strong> ran. <strong>Tomisława did not frenzy</strong> — she stood on the burning deck and studied the flames, fascinated, with Bronisława beside her. She and Méabh read the riders' heraldry: the Order of Absolution.</p>
+        <p class="scene-body">Down the coast, Oscar hauled Eustace bodily through the surf by the scruff — <em>didn't they teach you to swim in Hell, demon child</em> — the shadows thickening as Eustace seethed. On the beach Ludan gave Oscar a fox-carved coin (<em>in Cambridge, ask for a bolt of red</em>) and Eustace a knife, and vanished into the woods.</p>
+        <div class="scene-tags">
+          <span class="tags-label">In scene</span>
+          <span class="char-tag npc">Ludan</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag extra">Bronisława</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">IV.</span><h4 class="scene-title">The Order</h4></div>
+        <p class="scene-body">Tomisława elected to present rather than hide — veiled, claiming an illness of the sight, led by the hand by Bronisława. <strong>Guarin of Jersey</strong> lifted his visor, apologised for the butchery, and produced a boarding ramp, offering to host her "cousin and herself." Up the hill rode mounted knights and one nun, <strong>Mary, Sister of Sorrow</strong>. Tomisława's attempt to conceal Ludan went to a bestial failure and her hunger rose. Oscar read Guarin as sincere and his ornate armour as under-worn; Méabh read <strong>sigils</strong> in it belonging to no school she knows. They rode to a barn in Suffolk.</p>
+        <div class="scene-tags">
+          <span class="tags-label">In scene</span>
+          <span class="char-tag npc">Guarin</span>
+          <span class="char-tag npc">Mary</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag extra">Bronisława</span>
+          <span class="char-tag extra">Scéalán</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">V.</span><h4 class="scene-title">The Barn</h4></div>
+        <p class="scene-body">Hungry, holding a lie together, <strong>Tomisława</strong> took Bronisława by the wrist and asked <strong>Méabh</strong> to stop her once she'd had a sip. She could not stop; Méabh was not strong enough. <strong>Oscar</strong> broke the latch of her jaw the way you would with a dog, pried her off, and held her through a full hunger frenzy while she thrashed and wept and begged — in front of <strong>Eustace</strong>. She named the shame herself. Méabh fetched <strong>Mary</strong>, who walked in knowing exactly what she faced, laid a hand on Tomisława's forehead, gave three willpower and an end to it — and bled from beneath her habit doing it. Then <strong>Guarin</strong> undid a gauntlet and offered his wrist: <em>I have blood to spare.</em> She drank, down to hunger 1.</p>
+        <em class="beat">By the Bond Slave flaw, one drink is the whole bond. She stood up in that barn blood bound to a knight of the Order of Absolution, roughly an hour after meeting him — and then compelled Bronisława to sleep so the rest could speak.</em>
+        <div class="scene-tags">
+          <span class="tags-label">In scene</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag npc">Mary</span>
+          <span class="char-tag npc">Guarin</span>
+          <span class="char-tag extra">Bronisława</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">VI.</span><h4 class="scene-title">What The Order Wanted</h4></div>
+        <p class="scene-body"><strong>Guarin</strong> asked their business; Tomisława gave him the husband in London — which cost her nothing, as she'd said it before the bond. It was <strong>Oscar</strong> who added, unprompted, that they work for Mithras. Then Guarin admitted the Order had not come for bandits: they were hunting a red-haired man, possibly masked. He handed the questioning to <strong>Mary</strong> — <em>we believe he has something very important</em> — and the coterie said nothing.</p>
+        <em class="beat">The hinge of the session, unclocked at the table: Tomisława was bound to Guarin, who could have compelled the truth — but the one dangerous question was asked by Mary, to whom she is not bound. The secret survived on which of the two happened to be talking.</em>
+        <div class="scene-tags">
+          <span class="tags-label">In scene</span>
+          <span class="char-tag npc">Guarin</span>
+          <span class="char-tag npc">Mary</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Eustace</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">VII.</span><h4 class="scene-title">The Debrief</h4></div>
+        <p class="scene-body">Called in by <strong>Thomas</strong> in London — with <strong>Richard de Worde</strong> present, which was new. The spymaster's questions were gentle and were not gentle. They gave him Ludan; he accepted it as coincidence. Tomisława said her husband knew, and had been at court the whole time; Richard said <em>we've had eyes on him.</em> Then a door opened and the room filled with light like sunlight that did not burn. Everyone knelt. Metal met meat, and the head of <strong>Thomas</strong> arrived in their peripheral vision. <em>Rise</em>, said <strong>Mithras</strong>. Richard claimed the fault — the rat was Thomas, the envoy revealed nothing. <em>Our enemies have revealed themselves. And these ones can be trusted?</em> — <em>Proceed.</em> Then, mildly: <em>Now this means we can start the real work.</em></p>
+        <div class="scene-tags">
+          <span class="tags-label">In scene</span>
+          <span class="char-tag npc">Thomas</span>
+          <span class="char-tag npc">Richard de Worde</span>
+          <span class="char-tag npc">Mithras</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Méabh</span>
+        </div>
+      </div>
+
+      <!-- THREADS -->
+      <div class="section" style="margin-top:2rem;">
+        <div class="section-rule">
+          <span class="section-rule-line"></span>
+          <span class="section-ornament">✦</span>
+          <h2 class="section-title">Threads Left Hanging</h2>
+          <span class="section-ornament">✦</span>
+          <span class="section-rule-line"></span>
+        </div>
+        <ul class="thread-list">
+          <li><strong>Ludan and the bolt of red.</strong> They know where to find him — Cambridge — and lied to a knightly order about it.</li>
+          <li><strong>What Ludan has.</strong> Mary believes it matters, and Mary is Salubri, which narrows the field. She would probably tell them if asked.</li>
+          <li><strong>The bestial failure.</strong> Tomisława's concealment of Ludan failed badly; Guarin and Mary may have registered that she answered a slightly different question.</li>
+          <li><strong>"The real work."</strong> Whatever the chest bought in Norway, Richard considers the envoy phase concluded.</li>
+          <li><strong>The leak.</strong> Thomas is dead, but <em>certain people</em> is plural.</li>
+          <li><strong>Guarin's armour.</strong> Someone with real, unfamiliar power made or gave it — sigils of no known school.</li>
+          <li><strong>The blood bond.</strong> Tomisława is bound to Guarin of Jersey. She cannot refuse him a direct question; he does not appear to know he holds the leash, nor what she is. <em>(Pending the GM's confirmation.)</em></li>
+          <li><strong>Two unresolved stains</strong> — Oscar's, for the lie to the Order; Tomisława's, for behaving shamefully before her peers.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ══════════ SESSION ZERO ══════════ -->
+    <div class="session-block">
+      <div class="session-masthead">
+        <div class="sm-left">
+          <span class="session-num">Session Zero</span>
+          <span class="session-name">The Envoy Assembled</span>
+        </div>
+        <span class="session-date">London · 1242 · under Mithras</span>
+      </div>
+      <p class="session-standfirst">Where the coterie, its premise, and its errand were established — the arrangement going in, before Session One cost any of them anything. Revised in light of what the first night revealed.</p>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">§</span><h4 class="scene-title">The Premise</h4></div>
+        <p class="scene-body">Four young Cainites bound together in the service of <strong>Mithras</strong>, Prince of London, and sent out as his envoy — the errand-runners trusted to fetch what no hired mortal can be trusted with. Dangerous, low-status work most Kindred do not survive to profit from, and for that reason one of the few ladders a hungry neonate can climb. <strong>Tomisława</strong> did not choose the other three; she chose Mithras, and was overwhelmed by him — the first time she understood beings of his stature existed. When he said <em>jump</em>, she asked <em>how high.</em></p>
+        <div class="scene-tags">
+          <span class="tags-label">Established</span>
+          <span class="char-tag npc">Mithras</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Oscar</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">§</span><h4 class="scene-title">The Coterie</h4></div>
+        <p class="scene-body">The arrangement going in: two high-clan aristocrats at the top, two displaced exiles beneath them, and Méabh moving across the seam. <strong>Tomisława z Białowieży</strong>, Tzimisce koldun of the Road of Kings — the occult and infrastructural core. <strong>Eustace the Kiasyd</strong>, fae-touched Lasombra of Marconius's line, Road of Kings — her one true peer, by armistice. <strong>Méabh</strong>, Lhiannan hiding as high-clan kin, Road of the Beast — guide, liar, and the coterie's hinge, whom Tomisława holds <em>out-of-category</em>. <strong>Oscar "Disgraced" Castro Avis</strong>, fallen Brujah knight of Lisbon, Road of Humanity — the muscle, and the group's reluctant conscience, whom Tomisława files as her inferior for having thrown his rank away.</p>
+        <em class="beat">Full portraits and profiles are on the <a href="#" onclick="switchTab('coterie');return false;" style="color:var(--blood-deep);">Coterie</a> page.</em>
+        <div class="scene-tags">
+          <span class="tags-label">Established</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag extra">Scéalán</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">§</span><h4 class="scene-title">The Errand to Norway</h4></div>
+        <p class="scene-body">The framing mission: carry a small chest — one they knew better than to open — to a band of Cainites in Norway, learn what could be learned, make a good impression, and above all travel in secret. What was there: Cainites with the trappings of Vikings, mostly <strong>Gangrel</strong>, holding hard against a Christianity that has been closing around them. They work the old ways — magic through the land, worked <em>with</em> it. Their mortals know what they are and are fed from directly, throat to mouth, often dosed with something that makes the blood strange, a shaman presiding; and women hold more power among them than in the courts of Europe.</p>
+        <p class="scene-body">For Tomisława, a place where earth-drawn blood sorcery is unremarkable and a woman with authority is no curiosity — she had a better time there than she is likely to have in London. The others fared worse on a telling gradient: Oscar found them charming and hollow, Eustace found their reverence for cleverness more interesting than expected, and Méabh — closest to them in kind — closed up completely.</p>
+        <em class="beat">The delivery went well; the impression was good. The chest is why Thomas is dead. Norway is not a punchline — it is the opening move of whatever "the real work" turns out to be.</em>
+        <div class="scene-tags">
+          <span class="tags-label">Established</span>
+          <span class="char-tag coterie">Tomisława</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag extra">The Norse (Gangrel)</span>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-head"><span class="scene-idx">§</span><h4 class="scene-title">On the Table for Session Two</h4></div>
+        <p class="scene-body">The coterie is off the rails and setting its own pace; travel is on them now, and the road — not the courtroom — is the dangerous part. Players' wishes: Oscar's wants the tragic, depressive side rather than the bastard; Eustace's wants to complicate him beyond the petulant ambassador-child and untangle something with Méabh; Méabh's is a long game, with any hint of her sire the priority; Tomisława's is fire and the Veins of the Earth. The GM is building a non-Christian throughline for every character. <strong>Two weeks. The 31st.</strong></p>
+        <div class="scene-tags">
+          <span class="tags-label">Looking ahead</span>
+          <span class="char-tag coterie">Oscar</span>
+          <span class="char-tag coterie">Eustace</span>
+          <span class="char-tag coterie">Méabh</span>
+          <span class="char-tag coterie">Tomisława</span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="doc-foot">
+      <span class="foot-ornament">✦</span>
+      <div class="foot-text">War of Princes · 1242 · The Chronicle</div>
+      <span class="foot-ornament">✦</span>
+    </footer>
+  </div>
+  </div>
+
+</div><!-- .document -->
+
+<script>
+function switchTab(id) {
+  const ids = ['coterie','npcs','sessions'];
+  document.querySelectorAll('.tab-btn').forEach((b) => {
+    const t = b.getAttribute('onclick');
+    if (!t) return;
+    const match = ids.find(x => t.indexOf("'" + x + "'") !== -1);
+    const on = match === id;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'tab-' + id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
