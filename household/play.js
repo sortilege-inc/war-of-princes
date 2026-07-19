@@ -223,6 +223,7 @@
 
   function boxTrack(c, s, key) {
     var wrap = el("div", "pl-track");
+    wrap.setAttribute("data-track", key);
     var boxes = el("div", "pl-boxes");
     var arr = s[key];
     arr.forEach(function (v, i) {
@@ -254,6 +255,15 @@
     var msg = sup + " superficial · " + agg + " aggravated · " + free + " unmarked";
     if (free === 0 && arr.length) msg += (agg === arr.length ? " — incapacitated / torpor" : " — Impaired");
     note.textContent = msg;
+  }
+  // repaint a tracker's boxes in place (used after a Willpower spend, so the
+  // dice animation isn't torn down by a full re-render)
+  function refreshTrack(key, s) {
+    var wrap = drawer.querySelector('.pl-track[data-track="' + key + '"]');
+    if (!wrap) return;
+    var boxes = wrap.querySelectorAll(".pl-box");
+    s[key].forEach(function (v, i) { if (boxes[i]) paintBox(boxes[i], v); });
+    updateTrackNote(wrap, s[key]);
   }
 
   function hungerRow(c, s) {
@@ -346,43 +356,61 @@
       var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, p) : 0;
       var dice = rollPool(p - hd, hd);
       lastRoll = { char: c.id, dice: dice, wpRerollsUsed: 0 };
-      renderRoll(out, c, s);
+      renderRoll(out, c, s);            // animate the whole pool
     });
 
-    if (lastRoll && lastRoll.char === c.id) renderRoll(out, c, s);
+    if (lastRoll && lastRoll.char === c.id) renderRoll(out, c, s, []); // settled, no animation on rebuild
     return wrap;
   }
 
-  function renderRoll(out, c, s) {
+  // per-die styling for the animated dice (success / critical / bestial)
+  function classifyDie(die) {
+    var cls = [];
+    if (die.value >= 6) cls.push("succ");
+    if (die.value === 10) cls.push("crit");
+    if (die.tag === "hunger" && die.value === 1) cls.push("bestial");
+    return cls.join(" ");
+  }
+
+  function renderRoll(out, c, s, animateOnly) {
     out.innerHTML = "";
+    var stage = el("div", "pl-stage");
+    var score = el("div", "pl-score");
+    out.appendChild(stage);
+    out.appendChild(score);
+
+    var specs = lastRoll.dice.map(function (d) {
+      return { sides: 10, value: d.v, tag: d.hunger ? "hunger" : "", rerolled: d.rerolled };
+    });
+    Dice.roll({
+      mount: stage,
+      dice: specs,
+      animateOnly: animateOnly,          // undefined = animate all, [] = none, [i…] = subset
+      duration: 600,
+      stagger: 45,
+      classify: classifyDie,
+      onSettle: function () { drawScore(score, out, c, s); }
+    });
+  }
+
+  function drawScore(score, out, c, s) {
     var dice = lastRoll.dice;
     var t = tally(dice);
-
-    var dwrap = el("div", "pl-dice");
-    dice.forEach(function (d) {
-      var cls = "pl-d " + (d.hunger ? "hunger" : "reg");
-      if (d.v >= 6) cls += " succ";
-      if (d.v === 10) cls += " crit";
-      if (d.hunger && d.v === 1) cls += " bestial";
-      if (d.rerolled) cls += " rerolled";
-      dwrap.appendChild(el("div", cls, String(d.v)));
-    });
-    out.appendChild(dwrap);
+    score.innerHTML = "";
 
     var res = el("div", "pl-result");
     res.innerHTML = '<span class="pl-succcount">' + t.successes + '</span> <span class="pl-succlabel">' + (t.successes === 1 ? "success" : "successes") + '</span>';
-    out.appendChild(res);
+    score.appendChild(res);
 
     var flags = el("div", "pl-flags");
     if (t.successes === 0) {
-      // a Bestial Failure is a failed roll that shows a 1 on a Hunger die
       flags.appendChild(el("span", "pl-flag bestial", t.bestial ? "Bestial Failure" : "Total Failure"));
     } else if (t.messy) {
       flags.appendChild(el("span", "pl-flag messy", "Messy Critical"));
     } else if (t.critPairs >= 1) {
       flags.appendChild(el("span", "pl-flag crit", "Critical"));
     }
-    out.appendChild(flags);
+    score.appendChild(flags);
 
     // Willpower re-roll: up to 3 non-Hunger dice, once per roll
     var canReroll = lastRoll.wpRerollsUsed === 0 && dice.some(function (d) { return !d.hunger; });
@@ -390,16 +418,17 @@
     rr.style.marginTop = "0.6rem";
     if (!canReroll) rr.setAttribute("disabled", "disabled");
     rr.addEventListener("click", function () {
-      // reroll up to 3 non-hunger dice, prioritising failures (<6)
       var idxs = [];
       dice.forEach(function (d, i) { if (!d.hunger && d.v < 6) idxs.push(i); });
       dice.forEach(function (d, i) { if (!d.hunger && d.v >= 6 && idxs.length < 3) idxs.push(i); });
-      idxs.slice(0, 3).forEach(function (i) { dice[i].v = d10(); dice[i].rerolled = true; });
+      idxs = idxs.slice(0, 3);
+      idxs.forEach(function (i) { dice[i].v = d10(); dice[i].rerolled = true; });
       lastRoll.wpRerollsUsed = 1;
       markWillpowerSpent(c, s);
-      renderChar(); // re-render trackers (WP spent) and the roll (rerolled dice)
+      refreshTrack("willpower", s);       // update WP boxes in place (don't tear down the roll)
+      renderRoll(out, c, s, idxs);         // re-animate only the rerolled dice
     });
-    out.appendChild(rr);
+    score.appendChild(rr);
   }
 
   function markWillpowerSpent(c, s) {
