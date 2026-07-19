@@ -1,0 +1,7344 @@
+{
+  "edition": "vtm5e",
+  "spec_version": "0.4",
+  "entity_count": 151,
+  "entities": [
+    {
+      "name": "Entity",
+      "hash": "VnK8MrPxWbGhN2fQ4sT6uW",
+      "kind": "actor",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Character",
+      "hash": "vtmCharacterBase00001",
+      "kind": "actor",
+      "extends": "Entity",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Concept",
+          "type": "STRING"
+        },
+        {
+          "name": "Player",
+          "type": "STRING"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Supporting Character",
+      "hash": "vtmSupportingChar0001",
+      "kind": "actor",
+      "extends": "Character",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Concept",
+          "type": "STRING"
+        },
+        {
+          "name": "Player",
+          "type": "STRING"
+        },
+        {
+          "name": "Role",
+          "type": "STRING"
+        },
+        {
+          "name": "Disposition",
+          "type": "STRING"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Character Relationship",
+      "hash": "vtmCharacterRel000001",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "From",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "To",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Nature",
+          "type": "STRING"
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Mortal",
+      "hash": "X7yZ9aB1cD3eF5gH7iJ9kL",
+      "kind": "actor",
+      "extends": "Entity",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Attributes",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Strength",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Dexterity",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Stamina",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Charisma",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Manipulation",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Composure",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Intelligence",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Wits",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Resolve",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M5nO7pQ9rS1tU3vW5xY7z",
+          "text": "WHEN [^\"Mortal\" TAKES DAMAGE] THEN REDUCE ^\"Health\""
+        },
+        {
+          "hash": "B9cD1eF3gH5iJ7kL9mN1o",
+          "text": "WHEN [^\"Health\" == 0] THEN ^\"Mortal\" IS incapacitated"
+        },
+        {
+          "hash": "P3qR5sT7uV9wX1yZ3aB5c",
+          "text": "WHEN [^\"Mortal\" IS feeding_victim] THEN MAY PROVIDE ^\"Resonance\""
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Ghoul",
+      "hash": "D7eF9gH1iJ3kL5mN7oP9q",
+      "kind": "actor",
+      "extends": "Mortal",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Attributes",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Strength",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Dexterity",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Stamina",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Charisma",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Manipulation",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Composure",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Intelligence",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Wits",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Resolve",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "0"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "Bond Status",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Regnant",
+              "type": "STRING"
+            },
+            {
+              "name": "Bond Level",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "3"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Vitae Dependency",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M5nO7pQ9rS1tU3vW5xY7z",
+          "text": "WHEN [^\"Mortal\" TAKES DAMAGE] THEN REDUCE ^\"Health\""
+        },
+        {
+          "hash": "B9cD1eF3gH5iJ7kL9mN1o",
+          "text": "WHEN [^\"Health\" == 0] THEN ^\"Mortal\" IS incapacitated"
+        },
+        {
+          "hash": "P3qR5sT7uV9wX1yZ3aB5c",
+          "text": "WHEN [^\"Mortal\" IS feeding_victim] THEN MAY PROVIDE ^\"Resonance\""
+        },
+        {
+          "hash": "R5sT7uV9wX1yZ3aB5cD7e",
+          "text": "WHEN [^\"Ghoul\" NOT fed vitae] THEN AGE normally"
+        },
+        {
+          "hash": "F9gH1iJ3kL5mN7oP9qR1s",
+          "text": "WHEN [^\"Ghoul\" FED vitae] THEN DOES NOT age"
+        },
+        {
+          "hash": "T3uV5wX7yZ9aB1cD3eF5g",
+          "text": "WHEN [^\"Ghoul\" USES discipline] THEN USES ^\"Blood Potency\" 0"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Hunter",
+      "hash": "H1iJ3kL5mN7oP9qR1sT3u",
+      "kind": "actor",
+      "extends": "Mortal",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Attributes",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Strength",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Dexterity",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Stamina",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Charisma",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Manipulation",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Composure",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Intelligence",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Wits",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "name": "Resolve",
+              "type": "INTEGER",
+              "modifiers": [
+                {
+                  "kind": "MIN",
+                  "value": "0"
+                },
+                {
+                  "kind": "MAX",
+                  "value": "5"
+                },
+                {
+                  "kind": "DEFAULT",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "name": "Organization",
+          "type": "STRING"
+        },
+        {
+          "name": "Hunter Type",
+          "type": "ENUM",
+          "value": "[\"Professional\", \"Devoted\", \"Opportunist\"]"
+        },
+        {
+          "name": "Edges",
+          "type": "LIST OF STRING"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M5nO7pQ9rS1tU3vW5xY7z",
+          "text": "WHEN [^\"Mortal\" TAKES DAMAGE] THEN REDUCE ^\"Health\""
+        },
+        {
+          "hash": "B9cD1eF3gH5iJ7kL9mN1o",
+          "text": "WHEN [^\"Health\" == 0] THEN ^\"Mortal\" IS incapacitated"
+        },
+        {
+          "hash": "P3qR5sT7uV9wX1yZ3aB5c",
+          "text": "WHEN [^\"Mortal\" IS feeding_victim] THEN MAY PROVIDE ^\"Resonance\""
+        },
+        {
+          "hash": "V5wX7yZ9aB1cD3eF5gH7i",
+          "text": "WHEN [^\"Hunter\" DETECTS vampire] THEN MAY use ^\"Edges\""
+        },
+        {
+          "hash": "J9kL1mN3oP5qR7sT9uV1w",
+          "text": "WHEN [^\"Hunter\" IS Professional] THEN GAINS equipment_access"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Kindred",
+      "hash": "X3yZ5aB7cD9eF1gH3iJ5kL",
+      "kind": "actor",
+      "extends": "Entity",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Thin-Blood",
+      "hash": "Q3rS5tU7vW9xY1zA3bC5d",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "0"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "14"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "Caitiff"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "Thin-Blood Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Thin-Blood Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Daywalker",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "E7fG9hI1jK3lM5nO7pQ9r",
+          "text": "WHEN [^\"Thin-Blood\" USES discipline] THEN MAY require Thin-Blood Alchemy"
+        },
+        {
+          "hash": "S1tU3vW5xY7zA9bC1dE3f",
+          "text": "WHEN [^\"Thin-Blood\" IS ^\"Daywalker\"] THEN CAN tolerate sunlight"
+        },
+        {
+          "hash": "G5hI7jK9lM1nO3pQ5rS7t",
+          "text": "WHEN [^\"Thin-Blood\" DIABLERIZES] THEN MAY increase ^\"Blood Potency\""
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Brujah",
+      "hash": "U9vW1xY3zA5bC7dE9fG1h",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "value": "Brujah",
+          "modifiers": [
+            {
+              "kind": "FIXED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "In-Clan Disciplines",
+          "type": "LIST OF STRING",
+          "value": "[\"Celerity\", \"Potence\", \"Presence\"]"
+        },
+        {
+          "name": "Clan Bane",
+          "type": "STRING",
+          "value": "Violent Temper"
+        },
+        {
+          "name": "Clan Compulsion",
+          "type": "STRING",
+          "value": "Rebellion"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "I3jK5lM7nO9pQ1rS3tU5v",
+          "text": "WHEN [^\"Brujah\" SUFFERS ^\"Clan Compulsion\"] THEN MUST rebel against authority"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Gangrel",
+      "hash": "W7xY9zA1bC3dE5fG7hI9j",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "value": "Gangrel",
+          "modifiers": [
+            {
+              "kind": "FIXED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "In-Clan Disciplines",
+          "type": "LIST OF STRING",
+          "value": "[\"Animalism\", \"Fortitude\", \"Protean\"]"
+        },
+        {
+          "name": "Clan Bane",
+          "type": "STRING",
+          "value": "Bestial Features"
+        },
+        {
+          "name": "Clan Compulsion",
+          "type": "STRING",
+          "value": "Feral Impulses"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "K1lM3nO5pQ7rS9tU1vW3x",
+          "text": "WHEN [^\"Gangrel\" SUFFERS Bestial failure] THEN GAIN animal feature"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Malkavian",
+      "hash": "Y5zA7bC9dE1fG3hI5jK7l",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "value": "Malkavian",
+          "modifiers": [
+            {
+              "kind": "FIXED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "In-Clan Disciplines",
+          "type": "LIST OF STRING",
+          "value": "[\"Auspex\", \"Dominate\", \"Obfuscate\"]"
+        },
+        {
+          "name": "Clan Bane",
+          "type": "STRING",
+          "value": "Fractured Psyche"
+        },
+        {
+          "name": "Clan Compulsion",
+          "type": "STRING",
+          "value": "Delusion"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "M9nO1pQ3rS5tU7vW9xY1z",
+          "text": "WHEN [^\"Malkavian\" EMBRACED] THEN DEVELOP mental derangement"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Nosferatu",
+      "hash": "A3bC5dE7fG9hI1jK3lM5n",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "value": "Nosferatu",
+          "modifiers": [
+            {
+              "kind": "FIXED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "In-Clan Disciplines",
+          "type": "LIST OF STRING",
+          "value": "[\"Animalism\", \"Obfuscate\", \"Potence\"]"
+        },
+        {
+          "name": "Clan Bane",
+          "type": "STRING",
+          "value": "Repulsive"
+        },
+        {
+          "name": "Clan Compulsion",
+          "type": "STRING",
+          "value": "Cryptophilia"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "O7pQ9rS1tU3vW5xY7zA9b",
+          "text": "WHEN [^\"Nosferatu\" APPEARS without Obfuscate] THEN LOSE 2 dice Social pools"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Toreador",
+      "hash": "C1dE3fG5hI7jK9lM1nO3p",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "value": "Toreador",
+          "modifiers": [
+            {
+              "kind": "FIXED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "In-Clan Disciplines",
+          "type": "LIST OF STRING",
+          "value": "[\"Auspex\", \"Celerity\", \"Presence\"]"
+        },
+        {
+          "name": "Clan Bane",
+          "type": "STRING",
+          "value": "Aesthetic Fixation"
+        },
+        {
+          "name": "Clan Compulsion",
+          "type": "STRING",
+          "value": "Obsession"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "Q5rS7tU9vW1xY3zA5bC7d",
+          "text": "WHEN [^\"Toreador\" ENCOUNTERS beauty] THEN MAY become entranced"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Tremere",
+      "hash": "E9fG1hI3jK5lM7nO9pQ1r",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "value": "Tremere",
+          "modifiers": [
+            {
+              "kind": "FIXED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "In-Clan Disciplines",
+          "type": "LIST OF STRING",
+          "value": "[\"Auspex\", \"Blood Sorcery\", \"Dominate\"]"
+        },
+        {
+          "name": "Clan Bane",
+          "type": "STRING",
+          "value": "Deficient Blood"
+        },
+        {
+          "name": "Clan Compulsion",
+          "type": "STRING",
+          "value": "Perfectionism"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "S3tU5vW7xY9zA1bC3dE5f",
+          "text": "WHEN [^\"Tremere\" BLOOD BONDS] THEN BOND is one level weaker than normal"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Ventrue",
+      "hash": "G7hI9jK1lM3nO5pQ7rS9t",
+      "kind": "actor",
+      "extends": "Kindred",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "name": "Skills",
+          "type": "LIST OF",
+          "value": "Skill"
+        },
+        {
+          "name": "Blood Potency",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hunger",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "name": "Humanity",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "0"
+            },
+            {
+              "kind": "MAX",
+              "value": "10"
+            },
+            {
+              "kind": "DEFAULT",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "name": "Generation",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "4"
+            },
+            {
+              "kind": "MAX",
+              "value": "16"
+            }
+          ]
+        },
+        {
+          "name": "Clan",
+          "type": "STRING",
+          "value": "Ventrue",
+          "modifiers": [
+            {
+              "kind": "FIXED"
+            }
+          ]
+        },
+        {
+          "name": "Disciplines",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Merits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Convictions",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Touchstones",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Ambition",
+          "type": "STRING"
+        },
+        {
+          "name": "Desire",
+          "type": "STRING"
+        },
+        {
+          "name": "Blood",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "Resonance",
+          "type": "STRING"
+        },
+        {
+          "name": "In-Clan Disciplines",
+          "type": "LIST OF STRING",
+          "value": "[\"Dominate\", \"Fortitude\", \"Presence\"]"
+        },
+        {
+          "name": "Clan Bane",
+          "type": "STRING",
+          "value": "Rarefied Tastes"
+        },
+        {
+          "name": "Clan Compulsion",
+          "type": "STRING",
+          "value": "Arrogance"
+        },
+        {
+          "name": "Feeding Restriction",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "M7nO9pQ1rS3tU5vW7xY9z",
+          "text": "WHEN [^\"Kindred\" TAKES DAMAGE] THEN MARK Superficial or Aggravated"
+        },
+        {
+          "hash": "A1bC3dE5fG7hI9jK1lM3n",
+          "text": "WHEN [^\"Hunger\" == 5] THEN CANNOT feed normally"
+        },
+        {
+          "hash": "O5pQ7rS9tU1vW3xY5zA7b",
+          "text": "WHEN [^\"Humanity\" == 0] THEN ^\"Kindred\" IS lost to Beast"
+        },
+        {
+          "hash": "C9dE1fG3hI5jK7lM9nO1p",
+          "text": "WHEN [^\"Kindred\" EXPOSED to sunlight] THEN TAKE Aggravated damage"
+        },
+        {
+          "hash": "U1vW3xY5zA7bC9dE1fG3h",
+          "text": "WHEN [^\"Ventrue\" FEEDS from non-preferred] THEN GAIN no sustenance"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "NPC",
+      "hash": "I5jK7lM9nO1pQ3rS5tU7v",
+      "kind": "actor",
+      "extends": "Entity",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Type",
+          "type": "ENUM",
+          "value": "[\"Mortal\", \"Vampire\", \"Ghoul\", \"Other\"]"
+        },
+        {
+          "name": "Threat Level",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "MIN",
+              "value": "1"
+            },
+            {
+              "kind": "MAX",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "name": "Key Traits",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Health",
+          "type": "INTEGER"
+        },
+        {
+          "name": "Willpower",
+          "type": "INTEGER"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "W9xY1zA3bC5dE7fG9hI1j",
+          "text": "WHEN [^\"NPC\" INTERACTS with players] THEN USE simplified mechanics"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Coterie",
+      "hash": "K3lM5nO7pQ9rS1tU3vW5x",
+      "kind": "actor",
+      "extends": "Entity",
+      "properties": [
+        {
+          "name": "Name",
+          "type": "STRING",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Description",
+          "type": "STRING"
+        },
+        {
+          "name": "Members",
+          "type": "LIST OF",
+          "value": "Kindred",
+          "modifiers": [
+            {
+              "kind": "REQUIRED"
+            }
+          ]
+        },
+        {
+          "name": "Type",
+          "type": "STRING"
+        },
+        {
+          "name": "Domain",
+          "type": "STRING"
+        },
+        {
+          "name": "Advantages",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Flaws",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Coterie Merits",
+          "type": "LIST OF STRING"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "A3bC5dE7fG9hI1jK3lM5n",
+          "text": "WHEN [^\"Entity\" CREATED] THEN REQUIRE ^\"Name\""
+        },
+        {
+          "hash": "Y7zA9bC1dE3fG5hI7jK9l",
+          "text": "WHEN [^\"Coterie\" ESTABLISHED] THEN REQUIRE at least 2 ^\"Members\""
+        },
+        {
+          "hash": "M1nO3pQ5rS7tU9vW1xY3z",
+          "text": "WHEN [^\"Coterie\" GAINS ^\"Domain\"] THEN ACCESS domain merits"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Turn",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "kr5hJQmCgmjq94YZ8xXksE",
+          "text": "turn_duration_variable"
+        },
+        {
+          "hash": "jSg9ochtFFDhQCHu43JU9G",
+          "text": "action_scene_pacing"
+        },
+        {
+          "hash": "bkTGFShFwhNYrhk6M46jie",
+          "text": "social_scene_pacing"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Scene",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Scene Type",
+          "type": "ENUM",
+          "value": "[\"Social\", \"Combat\", \"Challenge\", \"Transition\"]"
+        },
+        {
+          "name": "Location",
+          "type": "STRING"
+        },
+        {
+          "name": "Stakes",
+          "type": "STRING"
+        },
+        {
+          "name": "Participants",
+          "type": "LIST OF",
+          "value": "Character"
+        },
+        {
+          "name": "Spotlight Distribution",
+          "type": "BOOLEAN",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "M9zxArpRAT7JSX9Me8PHfr",
+          "text": "actionable_environment"
+        },
+        {
+          "hash": "dzroj2CaQiv7LjXyzZGo7D",
+          "text": "scene_cutting_timing"
+        },
+        {
+          "hash": "MSuvQe244iTRmgfnF2Cmqw",
+          "text": "spotlight_fairness"
+        },
+        {
+          "hash": "fvEUeBBxUUgZxpshmtwYWb",
+          "text": "scene_progression"
+        },
+        {
+          "hash": "Gydg6mCHTnggbWXXYUufkX",
+          "text": "scene_composition"
+        },
+        {
+          "hash": "au2jXEUnndi5uAd2m4Xddf",
+          "text": "dialogue_scenes"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Session",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "B74do8rdZSNTujiYFSr5LZ",
+          "text": "session_effects"
+        },
+        {
+          "hash": "RDULcCFKXPu53JrHz3gSKB",
+          "text": "healing_intervals"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Story",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "ZQeaAk9pK7GcDf589ArCMf",
+          "text": "story_completion"
+        },
+        {
+          "hash": "HKqLkmFs4ijSFVPQbqHk5m",
+          "text": "experience_awards"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Scene Type",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "8j8YVhgBeDAMnumNvw9JLs",
+          "text": "spotlight_duration"
+        },
+        {
+          "hash": "hHxpz4GDhSK2DiYKceje73",
+          "text": "abstracted_pacing"
+        },
+        {
+          "hash": "ZzD8KZApMMj73JpdBYqRMM",
+          "text": "downtime_narrative"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Play Mode",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "6GCYdBNr2QfWgyNCUG7Umy",
+          "text": "freeform_resolution"
+        },
+        {
+          "hash": "C3FVUEhmyEXjkzCHtSKrEQ",
+          "text": "directed_outcome"
+        },
+        {
+          "hash": "SCx9LkiDQw5X4b4d8YGt2V",
+          "text": "punctuated_mechanics"
+        },
+        {
+          "hash": "FQv5ZvdwiQ9VFi9UDuk7q3",
+          "text": "detailed_resolution"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Conflict Duration",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "bdicQ8e48UDLzXLiAYKbf7",
+          "text": "three_round_guideline"
+        },
+        {
+          "hash": "o78LGh3octHuL2AhbBbKF5",
+          "text": "conclusion_check"
+        },
+        {
+          "hash": "dXafoaYRzpL7ykFbqmX7sD",
+          "text": "concession_mechanics"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Simple Test",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "jt82PzpxCNucyCFmTjMrhP",
+          "text": "dice_pool_assembly"
+        },
+        {
+          "hash": "BkJ78Bp45ip4JQqupZb3Ug",
+          "text": "success_counting"
+        },
+        {
+          "hash": "J6Gw3CBQ3oWfXvx39MLcwh",
+          "text": "difficulty_comparison"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Dice Pool",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "ZNHVMHsbZnJ3AfGmzfqpi2",
+          "text": "attribute_skill_combination"
+        },
+        {
+          "hash": "UqxShBWyStbj9jvZTgv26S",
+          "text": "hunger_dice_substitution"
+        },
+        {
+          "hash": "MAwPTjdNiTquaM27rr46dZ",
+          "text": "success_threshold_six"
+        },
+        {
+          "hash": "ZwXVvTKS7nbFubBbXuw6NB",
+          "text": "critical_success_pairs_of_tens"
+        },
+        {
+          "hash": "YPZbQCcNJ2doqmrbCq3BYJ",
+          "text": "trait_combination"
+        },
+        {
+          "hash": "NF47G5z4RmuuFtGAs5VUvi",
+          "text": "hunger_dice_substitution"
+        },
+        {
+          "hash": "3RCFrn27WnFNegUfAAGTEq",
+          "text": "specialty_bonus"
+        },
+        {
+          "hash": "mfqYEi8k5B8uwsBU8ZeNpR",
+          "text": "willpower_rerolls"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Success",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "PxHSRdqBwRHyy5Znt8b8uU",
+          "text": "success_threshold"
+        },
+        {
+          "hash": "4UF5SFESvLAeoPF8mGW6Ln",
+          "text": "critical_success_pairs"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Critical Success",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "AkJsAnxmGUKv4nuYaiUmB6",
+          "text": "critical_calculation"
+        },
+        {
+          "hash": "i8oqXypZd5Mo7YaEjhmEWY",
+          "text": "multiple_criticals"
+        },
+        {
+          "hash": "frQ7tZU9drTuxuqqTFCjsv",
+          "text": "MODIFY: messy_criticals NOW DEFINED BY #Ge42RxKEejJFxJAfHqBx5n WITH compulsion triggers"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg",
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Difficulty",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "josqqsH2E7Pa7CPgbRx5gS",
+          "text": "storyteller_determination"
+        },
+        {
+          "hash": "kZ4GycNnnHhyT3ZSAh8g8x",
+          "text": "equipment_modifiers"
+        },
+        {
+          "hash": "n35WRVDbnFMgLVxGTLbxxU",
+          "text": "opposition_modeling"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Contest",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "4dJhithpdETqpyoKAP2beM",
+          "text": "opposed_rolling"
+        },
+        {
+          "hash": "2BXDmzfsQB4DJpNHgF7Cxg",
+          "text": "pool_selection"
+        },
+        {
+          "hash": "JGG83yWVjuy2VqAiraCBWc",
+          "text": "victory_condition"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Conflict",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "fEEVLcioNNQu5woyynZEEZ",
+          "text": "damage_application"
+        },
+        {
+          "hash": "HmqaJTh84famUu8x5FQGrZ",
+          "text": "turn_structure"
+        },
+        {
+          "hash": "TkEM3k9zZQJ4MAzc4mRGWq",
+          "text": "initiative_order"
+        },
+        {
+          "hash": "Zyszh3Fxf8dFyrdAEFRvw4",
+          "text": "margin_calculation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Conflict Turn",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "dxLjYJiAzxJG89TNUdcC8J",
+          "text": "participant_actions"
+        },
+        {
+          "hash": "B6xA9Kx7ycJEQSBRBqkSjN",
+          "text": "intent_declaration"
+        },
+        {
+          "hash": "HsxwBLQZ2zPsv9TASaQhnE",
+          "text": "simultaneous_resolution"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Extended Test Type",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "fWm2egSMWZLPkWGqvXsihu",
+          "text": "standard_accumulation"
+        },
+        {
+          "hash": "KrFjBpig3TLedYDQj29xbT",
+          "text": "series_components"
+        },
+        {
+          "hash": "E9ZnnVxciCAd2RCfsMRGSz",
+          "text": "hard_margin_only"
+        },
+        {
+          "hash": "AUrVbLuBtfPRHgUW5qYMUV",
+          "text": "cascading_success_builds"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Extended Contest",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "8Y4Fme6xCKmvvrfozygbdK",
+          "text": "first_to_complete"
+        },
+        {
+          "hash": "ExdGaWQbn7xzVABBehFbUd",
+          "text": "interference_mechanics"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "One-Roll Conflict",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "Q2Eg4Qxr2txnvA7WpzyUGQ",
+          "text": "difficulty_scaling"
+        },
+        {
+          "hash": "k4co4SwHyzcusxZJqhnuUt",
+          "text": "damage_calculation"
+        },
+        {
+          "hash": "jcyDx7QxRKr2gTQCXTpinv",
+          "text": "mitigation_option"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Initiative System",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "57yAt2caz5tVdge3dkE2DZ",
+          "text": "initiative_rating"
+        },
+        {
+          "hash": "5ZmhEqj4Sc5WqBDWcKm82h",
+          "text": "turn_order"
+        },
+        {
+          "hash": "Kw8fuXKHd4CBcoVcCskvov",
+          "text": "passing_mechanics"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Hunting Ground Difficulty",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "PigusyLrYHrgr6Juvf2hvb",
+          "text": "base_difficulty"
+        },
+        {
+          "hash": "G8QK2uabwYsWACVqbdSatr",
+          "text": "security_modifier"
+        },
+        {
+          "hash": "C6JTF3hsotAmMS53PfAymx",
+          "text": "event_modifier"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Bestial Temper",
+      "kind": "def",
+      "applies_to": [
+        "Thin-Blood"
+      ],
+      "rules": [
+        {
+          "hash": "TQFanXsQdUBvTtBAathGTV",
+          "text": "frenzy_susceptibility"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Social Conflict Pool",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "Ah7YMt7TbZPFSCB6THiywu",
+          "text": "pool_construction"
+        },
+        {
+          "hash": "c6fDKr83mBU4zpudE4Kv8S",
+          "text": "arena_modifiers"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Broken Social Scene",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "n8Xzd2kejpX77ehDXSeEQW",
+          "text": "event_based_opportunities"
+        },
+        {
+          "hash": "Z83BcA8B9ftjHcE3ZiZQBT",
+          "text": "intensity_resonance_bonus"
+        },
+        {
+          "hash": "R2DkDKq2chEP92pS2Xf8br",
+          "text": "crowd_concealment_advantages"
+        },
+        {
+          "hash": "RiXkVnB29sK6qSU3UkerUW",
+          "text": "temporary_nature_challenges"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Conflict Action Type",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "kfGmyhNEnLXf8XXHQhHCpg",
+          "text": "advance_toward_goal"
+        },
+        {
+          "hash": "ZZQWERMocvf4UDBTSQfU5C",
+          "text": "maneuver_advantage"
+        },
+        {
+          "hash": "ZduWBU9d232sXWcErhF3rf",
+          "text": "block_opposition"
+        },
+        {
+          "hash": "3dLjDHbYtm7BUumWtdWYUD",
+          "text": "all_out_attack_risk"
+        },
+        {
+          "hash": "Av5X78Rdsih9FvLPufZhqg",
+          "text": "all_out_defense_bonus"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Goal Roll",
+      "kind": "def",
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "History",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "ZW3zDZnr5c5v9bHdHnYzFf",
+          "text": "motivation_foundation"
+        },
+        {
+          "hash": "VzbBDDupPpxiipF4FCUjhL",
+          "text": "relationship_establishment"
+        },
+        {
+          "hash": "CPj8HrGMZe74idaJb7U6GQ",
+          "text": "story_integration"
+        },
+        {
+          "hash": "T9DPSgwrcnutxPU32gqcfP",
+          "text": "roleplaying_guidance"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "International Travel Difficulty",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "aiNdTeZXpLfXsrvcysEBMU",
+          "text": "border_crossing_detection"
+        },
+        {
+          "hash": "dfGpR22fFRvqsBomK4YkQd",
+          "text": "airport_surveillance_risk"
+        },
+        {
+          "hash": "fyuW9UQAShFhVdefyQHkzh",
+          "text": "electronic_trail_creation"
+        },
+        {
+          "hash": "iqh7iCTV88ikAEQUWrGqTb",
+          "text": "analysis_exploitation_threat"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Launch Roll",
+      "kind": "def",
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "OK Check In",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "3onbsPBAgbnEoy6M5958nL",
+          "text": "signal_system_definition"
+        },
+        {
+          "hash": "oAXGiZB8t3k3r8DM923voo",
+          "text": "response_meanings"
+        },
+        {
+          "hash": "kcpBzggcXqN9m3BHNeJ6PN",
+          "text": "play_stopping_triggers"
+        },
+        {
+          "hash": "KwzJBa78orrDMjTvAHTRTf",
+          "text": "breathing_space_provision"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Required Dice",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "SY6yZAb3HKB2N7vVYax2ik",
+          "text": "ten_sided_dice_requirement"
+        },
+        {
+          "hash": "F7rbMMQsXfp6y8KS2AeDtD",
+          "text": "two_color_system_needed"
+        },
+        {
+          "hash": "bzprDFzWbKDu77kT2dfyAy",
+          "text": "hunger_dice_visual_distinction"
+        },
+        {
+          "hash": "Sqc8SofJ9wz6RkvxsNHVXb",
+          "text": "standard_d10_compatibility"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Rouse Check",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "LfqSRv2tmb4QBJsN2W4pSg",
+          "text": "activation_triggers"
+        },
+        {
+          "hash": "4wEmLnvssyqk7dKzXMyM3t",
+          "text": "hunger_increase_failure"
+        },
+        {
+          "hash": "97FanHKX9z3MxaoTVtS5z9",
+          "text": "difficulty_scaling"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Session Management",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Session Length",
+          "type": "INTEGER",
+          "modifiers": [
+            {
+              "kind": "DEFAULT",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "raw": "HOURS"
+        },
+        {
+          "name": "Frequency",
+          "type": "ENUM",
+          "value": "[\"Weekly\", \"Bi-weekly\", \"Monthly\", \"Irregular\"]"
+        },
+        {
+          "name": "Host Responsibilities",
+          "type": "LIST OF STRING"
+        },
+        {
+          "name": "Exit Policy",
+          "type": "STRING"
+        },
+        {
+          "name": "Communication Methods",
+          "type": "LIST OF STRING"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "MaRxGUJ3ngm9dnAMmPZVSZ",
+          "text": "logistics_burden_sharing"
+        },
+        {
+          "hash": "aW324m79af2vJQi743CteT",
+          "text": "player_exit_accommodation"
+        },
+        {
+          "hash": "FSTsjdcKCo5SWbiXbiFExb",
+          "text": "conflict_resolution_protocol"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Story Scale Flexibility",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "F5NksvGN6sEGeMaJjh2SfC",
+          "text": "spy_story_foreground_option"
+        },
+        {
+          "hash": "Bh455WzVUCydAi9F92KpVz",
+          "text": "political_intrigue_focus"
+        },
+        {
+          "hash": "7SuoaWQxUEzWdXTzugHPrf",
+          "text": "human_scale_alternative"
+        },
+        {
+          "hash": "SNnuq9oRqhjpvmTxocEoGk",
+          "text": "background_context_use"
+        },
+        {
+          "hash": "TvoMAWagVAdUchjtZmgjGf",
+          "text": "storyteller_scale_choice"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Storyteller Role",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "d9PkbZB8cHo6Kfdsx79LBz",
+          "text": "setting_creation_responsibility"
+        },
+        {
+          "hash": "DJHieoVpwvzok74KLP7iwf",
+          "text": "supporting_character_control"
+        },
+        {
+          "hash": "UVy3bPJvMT9jBUZkiGkQYq",
+          "text": "rule_arbitration_authority"
+        },
+        {
+          "hash": "oHaDg7hVF9FJMaFGCAimxw",
+          "text": "story_guidance_balance"
+        },
+        {
+          "hash": "4Rg2L8AzikN5pP9FXnQsSj",
+          "text": "player_entertainment_priority"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-core.ttrpg"
+      ]
+    },
+    {
+      "name": "Strength",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "m893ovLs5AZLhRAapdYdqP",
+          "text": "melee_damage_bonus"
+        },
+        {
+          "hash": "eTB5P7U4wwbuc8kMLXeBkZ",
+          "text": "lifting_capacity"
+        },
+        {
+          "hash": "AwVaQt7piwdggTgjNjXtSN",
+          "text": "athletics_combinations"
+        },
+        {
+          "hash": "83QsELQwfm4EDbBf4fV7Jt",
+          "text": "intimidation_displays"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Dexterity",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "dqvrbNBe4qPhqPkJ2SJweL",
+          "text": "ranged_attack_accuracy"
+        },
+        {
+          "hash": "mzvr2EFoBH9oGJyobNCkr5",
+          "text": "stealth_movement"
+        },
+        {
+          "hash": "4TX77nXnMULNhVgcJEaW7u",
+          "text": "fine_manipulation"
+        },
+        {
+          "hash": "RZq5DyxRWnoS29tdkhRqY8",
+          "text": "reaction_speed"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Stamina",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "fKhHeXXaBAfC9ANH4birhY",
+          "text": "health_calculation"
+        },
+        {
+          "hash": "BmZDCTpV9LTHASzXXvmHka",
+          "text": "endurance_activities"
+        },
+        {
+          "hash": "2aqhG7qQLmConqcPkrpizN",
+          "text": "toxin_resistance"
+        },
+        {
+          "hash": "jG4NHVXMZUf8mAtamJx2Ce",
+          "text": "environmental_tolerance"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Attribute",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "N2gLkZvgFRsJKr2U2wFNCJ",
+          "text": "innate_potential"
+        },
+        {
+          "hash": "KwF3MtT2sppPDYQqF9GHcp",
+          "text": "attribute_pools"
+        },
+        {
+          "hash": "aCtkNrzedjbUUA3YNZgbAw",
+          "text": "category_division"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Charisma",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "XKwhewotUfk9TLWAr4MYQx",
+          "text": "leadership_inspiration"
+        },
+        {
+          "hash": "kybtgGvMXm7LUhHDt46mRo",
+          "text": "first_impressions"
+        },
+        {
+          "hash": "Zs9RLToV9skoqLo2SeKnQq",
+          "text": "performance_appeal"
+        },
+        {
+          "hash": "M5JhtNGW9GeLVjQTdnASDg",
+          "text": "social_magnetism"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Manipulation",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "m5G2fz3DMGmE5y5uzLqjS6",
+          "text": "deception_effectiveness"
+        },
+        {
+          "hash": "HjYfNPe2ZVPMovMfS2Pmfx",
+          "text": "persuasion_attempts"
+        },
+        {
+          "hash": "M43AUAn6R5MPVeUCxYLpEg",
+          "text": "social_manipulation"
+        },
+        {
+          "hash": "UvZPqXLFvNu8392uVdpFYg",
+          "text": "subterfuge_planning"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Composure",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "ZXd3Zk3E36TPj3u5KiVMjs",
+          "text": "willpower_calculation"
+        },
+        {
+          "hash": "gtuZu3A57eS5RxX7hmnsGV",
+          "text": "stress_resistance"
+        },
+        {
+          "hash": "R8niYqvZ2zhFcSGTUHeHaW",
+          "text": "social_defense"
+        },
+        {
+          "hash": "UttSWj7f2YBvpZKLKeVBAs",
+          "text": "emotional_control"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Intelligence",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "PZvtXwmJrxHFmCK4fBqzKf",
+          "text": "academic_knowledge"
+        },
+        {
+          "hash": "CxmFJ4kXg8pi2ZnBn6Jp3h",
+          "text": "logical_reasoning"
+        },
+        {
+          "hash": "i7hDL2Pc2HPPs3wmnefGhg",
+          "text": "research_efficiency"
+        },
+        {
+          "hash": "FGyjwASMyp9fHjLSs6iVBx",
+          "text": "craft_complexity"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Wits",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "LJnjpXGvTXaCREThF3VV3h",
+          "text": "situational_awareness"
+        },
+        {
+          "hash": "KEEmiAQke82mjmMFQ6Bo82",
+          "text": "quick_reactions"
+        },
+        {
+          "hash": "aStMaj4AeP6MXBqkBni7wD",
+          "text": "streetwise_combinations"
+        },
+        {
+          "hash": "b6homvKFuPEZdnegsfJSJw",
+          "text": "initiative_bonuses"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Resolve",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "eqywxctsKARSYUHiK3ofHc",
+          "text": "willpower_calculation"
+        },
+        {
+          "hash": "ZEHgDZCjvZti7MsDVXumJb",
+          "text": "mental_resistance"
+        },
+        {
+          "hash": "mjrBxYjxphvUahNhnwwhTy",
+          "text": "concentration_maintenance"
+        },
+        {
+          "hash": "GCN5M23gA2dtjcHcMqsQG5",
+          "text": "discipline_resistance"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Athletics",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "JSCdVNxJCSVgYAsn45K6qf",
+          "text": "combat_substitute_no_damage"
+        },
+        {
+          "hash": "DyjFKvhzAx9ZtnGNyMFJsV",
+          "text": "pursuit_advantage"
+        },
+        {
+          "hash": "KuWsFgg3JJDFMEfuenUmeP",
+          "text": "environmental_traversal"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Brawl",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "gZhQ8Q4uYVmobEB4wHi4TK",
+          "text": "unarmed_attack_rolls"
+        },
+        {
+          "hash": "ccthgjBaru9ybXtckc3gtt",
+          "text": "grappling_maneuvers"
+        },
+        {
+          "hash": "hqnNCUukLh7TxSJTirTvtB",
+          "text": "improvised_weapons"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Craft",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "nyza6zQpcrddxYeVS9QZBj",
+          "text": "creation_quality"
+        },
+        {
+          "hash": "6cMw6MNp4inuNNGgzaQ2zY",
+          "text": "haven_improvement"
+        },
+        {
+          "hash": "5u8KFt4F7RjHTdPhQwyMst",
+          "text": "artistic_expression"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Drive",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Z6AkWM5CAbhWNRwZjxy37q",
+          "text": "high_speed_maneuvering"
+        },
+        {
+          "hash": "CKBahJ5GbM2csMxdU3nziJ",
+          "text": "chase_sequences"
+        },
+        {
+          "hash": "mY5NHoxrKcyhCQCWHDiLbh",
+          "text": "vehicle_stunts"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Firearms",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "GaJQBttbAnDQqS6FLDPPWf",
+          "text": "ranged_attack_rolls"
+        },
+        {
+          "hash": "VR8KVqSVucb5xEm3xYsSPz",
+          "text": "weapon_maintenance"
+        },
+        {
+          "hash": "4jopXkzC9jkzV6MbkM6zgX",
+          "text": "called_shots"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Larceny",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "6XETzwL7JJoyUcbymueoFb",
+          "text": "lock_picking"
+        },
+        {
+          "hash": "bJRbaBABc3wMhXTYFSR52t",
+          "text": "security_bypass"
+        },
+        {
+          "hash": "Q9zHUUaFWM3n7vPETtLPCC",
+          "text": "theft_techniques"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Melee",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Vr7HAk9ri5B9zm6rNs2Chs",
+          "text": "armed_combat_rolls"
+        },
+        {
+          "hash": "d4uC9eQdkKbeYvERsZQTX4",
+          "text": "weapon_specialization"
+        },
+        {
+          "hash": "MYjU2JjYDKg6crFd9KvEGa",
+          "text": "disarming_techniques"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Stealth",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "DpDTDQMwCKAca8gdUpE6YC",
+          "text": "concealment_bonus"
+        },
+        {
+          "hash": "fJmZY88cLTNoXzM7vzzRrF",
+          "text": "shadowing_targets"
+        },
+        {
+          "hash": "6F3VhCHonHkj3saw8ZHSok",
+          "text": "crowd_blending"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Survival",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "7GzCmMsabByr6fyxRNfCAF",
+          "text": "wilderness_navigation"
+        },
+        {
+          "hash": "cvvotsoNKoTPiXPgtVLgpN",
+          "text": "tracking_ability"
+        },
+        {
+          "hash": "n5pdcGTSvcBzpKYQ7hzJE3",
+          "text": "shelter_creation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Skill",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "X7BFL63B3nQyRUnUX3bevw",
+          "text": "learned_application"
+        },
+        {
+          "hash": "ntD9ML3yx5n54rZD2ckisC",
+          "text": "skill_pools"
+        },
+        {
+          "hash": "aYsjDtHrctpv89LKFxtK9Y",
+          "text": "specialization_bonus"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Animal Ken",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "FpkMC3MGdT9bBDWKnNWFGZ",
+          "text": "animal_pacification"
+        },
+        {
+          "hash": "6BK5G77W5eHZDcZfziPaZR",
+          "text": "training_commands"
+        },
+        {
+          "hash": "eHnJTSKtJpSkVsxi3vULDv",
+          "text": "vampire_animal_reaction"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Etiquette",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "d56mZXauLJbwCHuYPWpLoE",
+          "text": "social_protocol_knowledge"
+        },
+        {
+          "hash": "eafYvdQiY3jiFa6nuZUnGb",
+          "text": "faux_pas_avoidance"
+        },
+        {
+          "hash": "J7a5EEkm5pULoMxWDYEPJk",
+          "text": "trend_setting"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Insight",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Q2jNDrp5C98xWhYHof38Fm",
+          "text": "lie_detection"
+        },
+        {
+          "hash": "3vmZa8PuwXHMgwV4AQp3mP",
+          "text": "emotional_reading"
+        },
+        {
+          "hash": "R3CTmeHrx3EbnKBqALz38o",
+          "text": "motive_analysis"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Intimidation",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "5XNdyKai6Z7NmnAZmYyGYN",
+          "text": "fear_generation"
+        },
+        {
+          "hash": "Sq2RTf3K6FtZTUMCMSWUvq",
+          "text": "coercion_techniques"
+        },
+        {
+          "hash": "QC2A8fcTYgsVHDEemzbVzu",
+          "text": "will_breaking"
+        },
+        {
+          "hash": "a4kVaybjN5ZrVuWgrpWEKa",
+          "text": "passive_social_spacing"
+        },
+        {
+          "hash": "BfMeNBua7MQ6A9XGMvfHLX",
+          "text": "active_intimidation_rating"
+        },
+        {
+          "hash": "SEcvLAgVtshKTXd7GWqPj3",
+          "text": "subtle_coercion"
+        },
+        {
+          "hash": "SNktnKoEHEGSqUk8NkKDwa",
+          "text": "blatant_threats"
+        },
+        {
+          "hash": "VDyCb9S9Deuv4RFo2jr7DA",
+          "text": "physical_escalation"
+        },
+        {
+          "hash": "dHQGm2U5tBaBDojeLg9Geu",
+          "text": "backing_down_contest"
+        },
+        {
+          "hash": "HfG3fsrQBDAv8kL6vbwV3g",
+          "text": "superficial_damage"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Leadership",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "FS8tD4JMJwCngHnezh6WVi",
+          "text": "group_coordination"
+        },
+        {
+          "hash": "J3XAEsYEhsgTMJ2mVnQx5U",
+          "text": "morale_boosting"
+        },
+        {
+          "hash": "kfNi8gvU7GhYvZCJjdRgs2",
+          "text": "authority_projection"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Performance",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "efag4QavNNn7VtZA3T9T5b",
+          "text": "artistic_expression"
+        },
+        {
+          "hash": "XW5LKwBwwpGT29XchTZnSU",
+          "text": "audience_engagement"
+        },
+        {
+          "hash": "bBsNuSxApdRQiQaWjjCzge",
+          "text": "improvisation_ability"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Persuasion",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "BNfdyAwoNsdkMhJt5SYmmR",
+          "text": "conviction_techniques"
+        },
+        {
+          "hash": "GuspK7HGCX2axA7LDJdhoF",
+          "text": "emotional_manipulation"
+        },
+        {
+          "hash": "eMszWYFuB7JXTnYU96uj2b",
+          "text": "logical_argumentation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Streetwise",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "jiTCoALyqCGp5qL28eYFHk",
+          "text": "criminal_network_access"
+        },
+        {
+          "hash": "jfsgLoPJg6RKJaMvYjbmda",
+          "text": "street_information"
+        },
+        {
+          "hash": "ftm9Jjhrn6RH64cGTLExNB",
+          "text": "underworld_navigation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Subterfuge",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "meMck3XzEZyY95PALbR7eE",
+          "text": "deception_mastery"
+        },
+        {
+          "hash": "7uBMSkeYRmBCk2rnCzT5Bb",
+          "text": "identity_concealment"
+        },
+        {
+          "hash": "Pgy9bKCWHu9SiBioyTJVFA",
+          "text": "intrigue_navigation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Academics",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "LL4YtFBBHZPQnm3ULAWHUC",
+          "text": "research_ability"
+        },
+        {
+          "hash": "Wra9sU82WiNgRgqukSM8FQ",
+          "text": "historical_knowledge"
+        },
+        {
+          "hash": "MpT5C4qTj7LLRy8nEtUKTv",
+          "text": "cultural_understanding"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Awareness",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "C653PDEyjZcanoZdypuYtz",
+          "text": "perception_enhancement"
+        },
+        {
+          "hash": "QoFhQVAjePnYe3fjskBCub",
+          "text": "danger_detection"
+        },
+        {
+          "hash": "WKPoqGsH9z6ZFLqYiPnZQo",
+          "text": "environmental_awareness"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Finance",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "A7N5HtPA4EwwNKGwieNiS8",
+          "text": "market_analysis"
+        },
+        {
+          "hash": "QTeXnqxXnLGCMnfgrhCPbv",
+          "text": "wealth_assessment"
+        },
+        {
+          "hash": "VWH9FezrVSfHLEEv5w9Anb",
+          "text": "financial_manipulation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Investigation",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "V6qhKwF8QFj9wpGZ8JojCJ",
+          "text": "clue_analysis"
+        },
+        {
+          "hash": "gMAhjonmMJMJwEW8LHuw5J",
+          "text": "case_reconstruction"
+        },
+        {
+          "hash": "dVus52Kk2nS6ExcXgtNdyN",
+          "text": "evidence_interpretation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Medicine",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Wk24F3Lnhh3jNv8XEuBJ8u",
+          "text": "healing_techniques"
+        },
+        {
+          "hash": "UHDt7wkBkRhmfb3BDo4Nex",
+          "text": "diagnosis_ability"
+        },
+        {
+          "hash": "CfhUHpyxdLmRkKNWo5tmqN",
+          "text": "medical_equipment_use"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Occult",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "PAZhygdKQ5ZAGbr5tfs7vq",
+          "text": "supernatural_lore"
+        },
+        {
+          "hash": "APdh8XumA3uNPMVXaHAWam",
+          "text": "ritual_knowledge"
+        },
+        {
+          "hash": "X4KS6T6EusvcEYhApVUoXX",
+          "text": "mystical_identification"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Politics",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "AnkdSqKEYPZZoNjjrJVBa7",
+          "text": "political_maneuvering"
+        },
+        {
+          "hash": "VzrwiA2HP2HSwKRV83ZFWZ",
+          "text": "bureaucracy_navigation"
+        },
+        {
+          "hash": "NHWwXrE7dq3zRHTJVh8Wrt",
+          "text": "faction_knowledge"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Science",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "9rrmy6fjkvQdqKHDHXLkKi",
+          "text": "scientific_analysis"
+        },
+        {
+          "hash": "JZiAVFGvKToZjrVJcPLy2w",
+          "text": "research_methodology"
+        },
+        {
+          "hash": "L5zFYki7AHLkvmFUswT9A5",
+          "text": "technological_understanding"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Technology",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Gm4fEnJr8XR3kKTorF2upD",
+          "text": "computer_operation"
+        },
+        {
+          "hash": "7yKQQJsVzvHdFQFetSbfZY",
+          "text": "digital_security"
+        },
+        {
+          "hash": "BqhnkDuY2zRB3tWzF9BEVP",
+          "text": "system_manipulation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Bond Strength",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "H5EjwSyUZagxNiM2eEMSft",
+          "text": "defiance_resistance"
+        },
+        {
+          "hash": "3hgCF44EqPHbPffddXkvP5",
+          "text": "monthly_degradation"
+        },
+        {
+          "hash": "nNd82hLCbLDCBcKLsJNvXM",
+          "text": "potency_limits"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Attribute Priority",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "FxmdmpqERJVcdbx2qawJfB",
+          "text": "priority_distribution_system"
+        },
+        {
+          "hash": "ERu7p8Vt6Vt3VsBD4fiFR8",
+          "text": "category_assignment_limits"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Skill Assignment Method",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Hese6VKqUEWNzicuhTR7jd",
+          "text": "distribution_method_selection"
+        },
+        {
+          "hash": "EMV9poVyphndMZLYUuEDep",
+          "text": "free_specialty_grants"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Artistic Performance",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "3sGPg9uYDuxgz4R7A7THfK",
+          "text": "live_audience_requirement"
+        },
+        {
+          "hash": "kdcJL5SMhFtsHukjjGoZPF",
+          "text": "quality_by_successes"
+        },
+        {
+          "hash": "Q5TE2RoQFAJkTABD6wJPsx",
+          "text": "purpose_indication"
+        },
+        {
+          "hash": "iiajPqFmYsTxT2YrKhKuZE",
+          "text": "critical_failure_consequences"
+        },
+        {
+          "hash": "mS3kg8rdEKy8PX7FsyB4gQ",
+          "text": "toreador_criticism"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Feats of Strength",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "bGFk249jEjnuMLEXFrHnwM",
+          "text": "lifting_capacity_chart"
+        },
+        {
+          "hash": "nocDtBiwzv7ssSz8JWAt3Y",
+          "text": "breaking_thresholds"
+        },
+        {
+          "hash": "FXnUxHgArnoz2zSELHtYkB",
+          "text": "throwing_calculations"
+        },
+        {
+          "hash": "fsjQP2EBrGHEykCUTbA6dk",
+          "text": "potence_enhancement"
+        },
+        {
+          "hash": "6Yz3ymtPF4aUF32FCdTFUf",
+          "text": "all_or_nothing_results"
+        },
+        {
+          "hash": "mEQk5jVVCUa6HMz8aJkSDV",
+          "text": "dragging_modifiers"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Predatory Metaphor Awareness",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "TS8axPHAn4hPvDNmgFYfAb",
+          "text": "metaphor_recognition"
+        },
+        {
+          "hash": "atFyXu35dhfnHi2tsUvNUJ",
+          "text": "feeding_scene_awareness"
+        },
+        {
+          "hash": "Q4AatYhnKswem9tBew8uuy",
+          "text": "consent_violation_recognition"
+        },
+        {
+          "hash": "JTmbEvaJURH4FyKuSiFLmt",
+          "text": "ethical_predator_options"
+        },
+        {
+          "hash": "Ejysri95dwQYoTR7rbAvbD",
+          "text": "chronicle_tenet_alignment"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Sabbat Occultation",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "kGvoc2pmC8cMx9nXYqQtN5",
+          "text": "territorial_withdrawal"
+        },
+        {
+          "hash": "RXGixMcWwSD3SsLVWyxmTW",
+          "text": "guerrilla_operations"
+        },
+        {
+          "hash": "PCYetpcRCQxTVPZiBip47B",
+          "text": "masquerade_as_anarchs"
+        },
+        {
+          "hash": "8J9VsXaiUzChxvH2HYT5Va",
+          "text": "experienced_agent_freedom"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Skill Specialty",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "4o4GXajNwsketGuriJAx6C",
+          "text": "bonus_die_when_applicable"
+        },
+        {
+          "hash": "Qg5JeyUg2AJ3uHTKxaS7UT",
+          "text": "one_per_roll_limit"
+        },
+        {
+          "hash": "bWsuRmoR43H2a7cyX5wVTN",
+          "text": "skill_dot_limitation"
+        },
+        {
+          "hash": "TcVLStYVVSkAr3uSAPciyt",
+          "text": "three_experience_point_cost"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Specialty",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "cthXEqHZSHQQ6MC8uhmECS",
+          "text": "focused_expertise"
+        },
+        {
+          "hash": "UnHZLmuzhwwnNoqPgEPhL3",
+          "text": "bonus_die_award"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-traits.ttrpg"
+      ]
+    },
+    {
+      "name": "Combat Type",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "SBhRqZ9PZ79zuYP4QRZt38",
+          "text": "close_combat_pools"
+        },
+        {
+          "hash": "8aKioErCN8SMt9XNhhgKp4",
+          "text": "ranged_combat_pools"
+        },
+        {
+          "hash": "nTC4bqxyy9jiQ8W79bRSc4",
+          "text": "grappling_mechanics"
+        },
+        {
+          "hash": "VYAp5vpfrVnkFUgFezT6QM",
+          "text": "ranged_defense_modifiers"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Hunger",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "QmzvG98QGi3pR53W4vMJ7s",
+          "text": "hunger_dice_substitution"
+        },
+        {
+          "hash": "kNzwXQ6BAwtFzXZgn6taRg",
+          "text": "social_interaction_penalties"
+        },
+        {
+          "hash": "XZjHXHHiWSitS2ca3j5pP6",
+          "text": "frenzy_threshold_modification"
+        },
+        {
+          "hash": "CWiHiR8qnhpGN9rpheZeXb",
+          "text": "rouse_check_consequences"
+        },
+        {
+          "hash": "hmjtqkjkWfJPJYRZ3VU6Rd",
+          "text": "MODIFY: WHEN ^\"Hunger Dice\" SHOWS 10 IN ^\"Critical Pair\" THEN #Ge42RxKEejJFxJAfHqBx5n ^\"Messy Critical\" TRIGGERED"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg",
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Potency",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "97wLu3YrUVEXhMa52WRSvy",
+          "text": "power_level_scaling"
+        },
+        {
+          "hash": "Hz7BJCrrjBstw59nMcHG2s",
+          "text": "feeding_restrictions"
+        },
+        {
+          "hash": "FfBomAhJSexiZVZPtSikPk",
+          "text": "discipline_limitations"
+        },
+        {
+          "hash": "5Gpn6DrSZpCSsXysL5hJrm",
+          "text": "MODIFY: blood_surge_mechanics NOW REFERENCES #YD4PosFYGnnbWia88WUziU ^\"Blood Surge Table\""
+        },
+        {
+          "hash": "2sft6ZqxgoBCXu9AQcZEFA",
+          "text": "WHEN [REFERENCING ^\"Blood Potency\" EFFECTS] THEN USE #YD4PosFYGnnbWia88WUziU AND #j3R4UBSHhb2PCJRiA2QrBQ tables"
+        },
+        {
+          "hash": "KRfYvH9PXruj6cQ4ukcB7u",
+          "text": "WHEN [^\"Blood Potency\" INCREASES] THEN ^\"Blood Surge\" AND ^\"Bane Severity\" BOTH increase per tables"
+        },
+        {
+          "hash": "fb7x38YYSvfkYXhoQwxtpz",
+          "text": "WHEN [^\"Character Creation\"] THEN START with updated values from beginning"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg",
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Humanity",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "eECQedjov4XKgmNpBP7zfN",
+          "text": "frenzy_resistance_bonus"
+        },
+        {
+          "hash": "n8zPGW9QLckFLTpwYwrPmP",
+          "text": "social_interaction_penalties"
+        },
+        {
+          "hash": "MQrXthvHXG2GAvhdtvtXtS",
+          "text": "physical_appearance_changes"
+        },
+        {
+          "hash": "XCLyzaXfjnuGaLCwgnuAHE",
+          "text": "torpor_duration_effects"
+        },
+        {
+          "hash": "4LBPBCoyN7KgEtZUjY2WPP",
+          "text": "blush_of_life_requirements"
+        },
+        {
+          "hash": "JNbhSxmaZc44BrARP8Xriy",
+          "text": "stain_accumulation"
+        },
+        {
+          "hash": "MT9b89PyefjLNPDwyCJhQw",
+          "text": "remorse_test_mechanics"
+        },
+        {
+          "hash": "MULKDxZHx9SwwWNNKfhX56",
+          "text": "degeneration_consequences"
+        },
+        {
+          "hash": "R6Uxif7eEgJfmRCPz3gMfW",
+          "text": "beast_resistance_bonuses"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Resonance",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "j8cjPd6xpUZnYt3LH5fAZk",
+          "text": "discipline_bonuses"
+        },
+        {
+          "hash": "PUWxsWMgmBCeRW6KuscfHx",
+          "text": "temperament_effects"
+        },
+        {
+          "hash": "KJTtKNWw3YnDCpfuh6C3TS",
+          "text": "dyscrasia_benefits"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Resonance Temperament",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "aofjoBFTj6dQQkNtpu8W72",
+          "text": "intensity_bonuses"
+        },
+        {
+          "hash": "Hi32xQpLgdikinUygZe6VN",
+          "text": "dyscrasia_requirements"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Dyscrasia",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "Tq9Y2YoZS8GyE9tWZ2448a",
+          "text": "special_effects"
+        },
+        {
+          "hash": "QsztkNVpJsCB7tAXXMendu",
+          "text": "consumption_requirements"
+        },
+        {
+          "hash": "mhpanK7XbWqPwheEy7os44",
+          "text": "duration_limits"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Health",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "fYHjLfFdPUpGSuZomGegXj",
+          "text": "damage_calculation"
+        },
+        {
+          "hash": "aycqGuy9rc28ss6UBvKbyf",
+          "text": "impairment_threshold"
+        },
+        {
+          "hash": "PeEanGB8qnkaJLJWgnqwfy",
+          "text": "healing_mechanics"
+        },
+        {
+          "hash": "K4xadBSGRJ55HScK8Kao2h",
+          "text": "damage_type_interactions"
+        },
+        {
+          "hash": "mb57sFAKFwGWHATkTZyE6m",
+          "text": "damage_application_order"
+        },
+        {
+          "hash": "FFcCtaUBKEyRgqdyuzTUBA",
+          "text": "incapacitation_condition"
+        },
+        {
+          "hash": "44FucUqJNTJ7MrjR35j4Lc",
+          "text": "healing_mechanics"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Willpower",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "abds5f94xkjmhuKkCvaqr2",
+          "text": "dice_pool_bonuses"
+        },
+        {
+          "hash": "Mn9eT95H86hgWZhkkLMc7t",
+          "text": "power_resistance"
+        },
+        {
+          "hash": "ZxptNYTW2ZJNYdMDqoDLj8",
+          "text": "compulsion_resistance"
+        },
+        {
+          "hash": "ffStQ2cweHvk2hD7ikJuPY",
+          "text": "recovery_methods"
+        },
+        {
+          "hash": "D8TDWLMVVXRnagpARqY9od",
+          "text": "reroll_mechanics"
+        },
+        {
+          "hash": "dcaYMH78SWwEyYqpiCainC",
+          "text": "resistance_bonus"
+        },
+        {
+          "hash": "behTszZiCSm8bZDQtvhTuM",
+          "text": "recovery_conditions"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Superficial Damage",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "gTyYWXNBGzuVTARopFTiVD",
+          "text": "superficial_sources"
+        },
+        {
+          "hash": "FQs692pgULqup6MLp37bDN",
+          "text": "halving_rule"
+        },
+        {
+          "hash": "MP7uNbYRsnDwUfunCdBzt4",
+          "text": "healing_rate"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Aggravated Damage",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "DvZoWhJPUaGgxvKxGy8CpL",
+          "text": "aggravated_sources"
+        },
+        {
+          "hash": "ePzQuevD5gFuMvbhTrsdQm",
+          "text": "full_damage_application"
+        },
+        {
+          "hash": "87z7HytCSydvvdMVMUYFdX",
+          "text": "slow_healing"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Weapon Damage Rating",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "9yC6J8JFi4HsgcPMWYS95w",
+          "text": "damage_bonus"
+        },
+        {
+          "hash": "bMdsxR3CGoJj38hzUTzV9K",
+          "text": "stake_special_rule"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Armor Value",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "PLRX9zZef89JADj4vEe82U",
+          "text": "damage_conversion"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Crippling Injury",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Ta5LCtpt7QRWtv7q3gM8QA",
+          "text": "injury_trigger"
+        },
+        {
+          "hash": "FGoFhVXbRD96Gf8rpkpSBY",
+          "text": "injury_effects"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Called Shot",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "SAvXNNiXWWrqbtpUQSodLd",
+          "text": "success_penalty"
+        },
+        {
+          "hash": "3Ro8TgtZFb7bZRnpVaJpjh",
+          "text": "specific_effects"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Regnant",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "4DH8W2kDWV3LQjnfsjGLdY",
+          "text": "thrall_limits"
+        },
+        {
+          "hash": "MzbXYDS2CC7trTN72V8BLm",
+          "text": "exclusive_bonding"
+        },
+        {
+          "hash": "mzKy2cQBLaVpPfVbeQuLy2",
+          "text": "regnant_bond_master"
+        },
+        {
+          "hash": "a8Yo5ydqHT3U6uKUrLfWLZ",
+          "text": "regnant_mystical_dominance"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Thrall",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "aEkzKxkreptB8WREBb3Hs9",
+          "text": "loyalty_compulsion"
+        },
+        {
+          "hash": "7QiKzoxaVVBYGkTjRcfmtY",
+          "text": "defiance_tests"
+        },
+        {
+          "hash": "Cu7vsbewT7wguofU7gD3EE",
+          "text": "thrall_blood_bond_victim"
+        },
+        {
+          "hash": "jFhXuF4UWj2WC8YBFAbfQJ",
+          "text": "thrall_supernatural_loyalty"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Ghoul Bond Level",
+      "kind": "def",
+      "applies_to": [
+        "Mortal"
+      ],
+      "rules": [
+        {
+          "hash": "S5rVrUicnMg9sU3JDfcFsP",
+          "text": "unlimited_bonds"
+        },
+        {
+          "hash": "5HB4aP5FZn5j9fFVLXwVzD",
+          "text": "withdrawal_effects"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Diablerie Attempts",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "AyauhiooZXDcEaGvSL3e8X",
+          "text": "aura_staining"
+        },
+        {
+          "hash": "jUHuK8rwSN2A8tEzMFyYwS",
+          "text": "social_consequences"
+        },
+        {
+          "hash": "3FDbAUPyKWJqSM6oZmsxAb",
+          "text": "generation_reduction"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Diablerie Success",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "bHkrA8mXZFseJLHFnD95MP",
+          "text": "power_absorption"
+        },
+        {
+          "hash": "BTyEJBVGcwtAWEK6grnamD",
+          "text": "humanity_loss"
+        },
+        {
+          "hash": "RazNxovwaaVPqHbrgVTx8p",
+          "text": "spiritual_contest"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Bond Risk",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "cQ72z9wa9MThJqumC6D9fU",
+          "text": "safety_test"
+        },
+        {
+          "hash": "NbwTmbUJDnAFkkcmfmPLHV",
+          "text": "manipulation_attempt"
+        },
+        {
+          "hash": "7AbtJLFe2x9kSPHWXU5GGD",
+          "text": "fake_feeding"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Tainted Blood",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "FUrHSPQHH6AskTLN4tKecp",
+          "text": "substance_effects"
+        },
+        {
+          "hash": "dqzP3D3zK3XnP9jWtXobvL",
+          "text": "duration_guidelines"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Bond Resistance",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "LXd9wZBmw3jBnHbFr5mUbk",
+          "text": "resistance_bonus"
+        },
+        {
+          "hash": "8RjDkfvi3CkTcBnbYk3MvG",
+          "text": "willpower_enhancement"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Hunger Management System",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "4WqKvtrdL929AqMQBGfcyx",
+          "text": "starting_hunger_random"
+        },
+        {
+          "hash": "3BC5KAwmpm2vSNUFqerxFq",
+          "text": "hunger_increment_time"
+        },
+        {
+          "hash": "VHNCxyAyKCSDnpvTsv4dPS",
+          "text": "hunger_increment_frequency"
+        },
+        {
+          "hash": "Md5ji3FcrzqKJGeEvGnQsb",
+          "text": "tick_word_system"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Social Damage",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "LKgqaMqNTFc4n2qDQeJ79d",
+          "text": "willpower_damage"
+        },
+        {
+          "hash": "3T3iXesZNfCxbVFFN5SbEt",
+          "text": "audience_modifier"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Surprise Attack",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "2baavYZzkGTphhQ2rgDvGF",
+          "text": "surprise_test"
+        },
+        {
+          "hash": "WuHEftDowXyBDBEpGTbfiw",
+          "text": "first_attack_bonus"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Beast",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "EpXSQCceQFqnBixQWvhcLz",
+          "text": "beast_frenzy_trigger"
+        },
+        {
+          "hash": "RXrE2r5LTLdPQaHPY2QxhW",
+          "text": "beast_humanity_opposition"
+        },
+        {
+          "hash": "foMh3BQsqedeN3dgWFE7AS",
+          "text": "beast_compulsion_source"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Bond",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "o5NNamMx95M59w7YJSDwuf",
+          "text": "blood_bond_three_drinks"
+        },
+        {
+          "hash": "QA5Eq8ScCteFhnRTsTkpmR",
+          "text": "blood_bond_domination"
+        },
+        {
+          "hash": "QaPFaHgnqc5srLBxEPutgJ",
+          "text": "blood_bond_supernatural_loyalty"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Disguised Weapons",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Experience Points",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "3RaQRmZsDZ8b36bBFxpwnC",
+          "text": "session_awards"
+        },
+        {
+          "hash": "SptrkuLHNLfgbR2NdTNppB",
+          "text": "story_completion_bonus"
+        },
+        {
+          "hash": "iKsWzJ9fvjgKDKS74d7eJi",
+          "text": "advancement_requirements"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Explosives",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "NUC83d8BhrQKNYbHrY22pL",
+          "text": "explosive_creation"
+        },
+        {
+          "hash": "ZewitQ9skzfstbHomznhja",
+          "text": "bomb_construction"
+        },
+        {
+          "hash": "Jri8TbvRcpvV8sbj8LMKz8",
+          "text": "targeted_demolition"
+        },
+        {
+          "hash": "PApJeZwAQMwvxc6r7MXreX",
+          "text": "controlled_detonation"
+        },
+        {
+          "hash": "BaNVjzrAo4eRq5u2UqhqXf",
+          "text": "catastrophic_failure_risks"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Hunger Dice",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "JMTn4bW4pfrv9cedr7pP3R",
+          "text": "normal_dice_replacement"
+        },
+        {
+          "hash": "YKxd3jAF7eWjWDoT5wR5Lj",
+          "text": "messy_critical_risk"
+        },
+        {
+          "hash": "MHLYtTGd5cjXrJF3HooPnM",
+          "text": "bestial_failure_possibility"
+        },
+        {
+          "hash": "2UzQJ4CorbCG4jCPs44Cno",
+          "text": "beast_influence_representation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Remorse Test",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "cvWCKYnQ63m9cqqYLSehBh",
+          "text": "stain_removal_success"
+        },
+        {
+          "hash": "ZgaTyEUaRufmU6XX4LC3T5",
+          "text": "humanity_loss_failure"
+        },
+        {
+          "hash": "Hj5FPFWKbTCDnKt69JbUcp",
+          "text": "minimum_one_die"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Resonance",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "T2WMc6K9AvEFB5Py74zUFR",
+          "text": "discipline_power_enhancement"
+        },
+        {
+          "hash": "YLAHSdfiE36LNAJATkPgFj",
+          "text": "emotional_influence"
+        },
+        {
+          "hash": "Z7YG7rsB5tGqMNmKppmKMq",
+          "text": "feeding_preference_development"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Spent Experience",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "ZDjxoCxbg25eaCjzKdhfj4",
+          "text": "advancement_tracking"
+        },
+        {
+          "hash": "5DsfEAnUnXjVPocwcEovJ6",
+          "text": "development_history"
+        },
+        {
+          "hash": "jhG4d3gRvfdggQbhweBnBL",
+          "text": "power_growth_record"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Stains",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal"
+      ],
+      "rules": [
+        {
+          "hash": "LNE4QzNrDqzpLx7M8gDb9b",
+          "text": "tenet_violations"
+        },
+        {
+          "hash": "Rvre7biT2UYwoWqstWNvvr",
+          "text": "touchstone_damage"
+        },
+        {
+          "hash": "Su5xXdLAewBZ6hfGdaenSb",
+          "text": "degeneration_threshold"
+        },
+        {
+          "hash": "bmBPyK3tNGoUzUa8XsjX9J",
+          "text": "conviction_mitigation"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Starting Experience",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "Ci84B4ExCboRH5EJoSi3Po",
+          "text": "age_based_experience_grants"
+        },
+        {
+          "hash": "2GvwpLryDQb5h3RjfpCt3m",
+          "text": "trait_advancement_spending"
+        },
+        {
+          "hash": "dTGYMsX8jEJ37nD3gnJbgU",
+          "text": "discipline_learning_costs"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Total Experience",
+      "kind": "def",
+      "applies_to": [
+        "Kindred",
+        "Mortal",
+        "Ghoul"
+      ],
+      "rules": [
+        {
+          "hash": "YqokdHj7VfMk9DpUcEzraZ",
+          "text": "session_awards"
+        },
+        {
+          "hash": "LJdApiBRUqVrY7zT8KJiok",
+          "text": "story_completion_bonuses"
+        },
+        {
+          "hash": "9U3zBrzu6ZBsKN2hxoYPDk",
+          "text": "achievement_recognition"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-systems.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Surge Table",
+      "hash": "YD4PosFYGnnbWia88WUziU",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Blood Potency 0",
+          "type": "INTEGER",
+          "value": "1"
+        },
+        {
+          "name": "Blood Potency 1",
+          "type": "INTEGER",
+          "value": "2"
+        },
+        {
+          "name": "Blood Potency 2",
+          "type": "INTEGER",
+          "value": "2"
+        },
+        {
+          "name": "Blood Potency 3",
+          "type": "INTEGER",
+          "value": "3"
+        },
+        {
+          "name": "Blood Potency 4",
+          "type": "INTEGER",
+          "value": "3"
+        },
+        {
+          "name": "Blood Potency 5",
+          "type": "INTEGER",
+          "value": "4"
+        },
+        {
+          "name": "Blood Potency 6",
+          "type": "INTEGER",
+          "value": "4"
+        },
+        {
+          "name": "Blood Potency 7",
+          "type": "INTEGER",
+          "value": "5"
+        },
+        {
+          "name": "Blood Potency 8",
+          "type": "INTEGER",
+          "value": "5"
+        },
+        {
+          "name": "Blood Potency 9",
+          "type": "INTEGER",
+          "value": "6"
+        },
+        {
+          "name": "Blood Potency 10",
+          "type": "INTEGER",
+          "value": "6"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "iP6C6hYBkxMFk9Cdz8TstM",
+          "text": "WHEN [^\"Blood Potency\" == 0] THEN ^\"Blood Surge\" GRANTS 1 die instead of 0"
+        },
+        {
+          "hash": "nBxFeUHZQMg9LjHe9DTcwU",
+          "text": "WHEN [^\"Thin-blood Character\"] THEN GAINS ^\"Blood Surge\" ability with 1 die"
+        },
+        {
+          "hash": "gchPXU4nYZsKw6gP6WeBym",
+          "text": "WHEN [^\"Blood Surge\" USED] THEN REQUIRES ^\"Rouse Check\" as normal"
+        },
+        {
+          "hash": "9SWbpbHZ6HzeqN734Cq4YS",
+          "text": "WHEN [^\"Blood Potency\" 1-2] THEN ^\"Blood Surge\" MORE VIABLE for regular use"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Bane Severity Table",
+      "hash": "j3R4UBSHhb2PCJRiA2QrBQ",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Blood Potency 0",
+          "type": "INTEGER",
+          "value": "1"
+        },
+        {
+          "name": "Blood Potency 1",
+          "type": "INTEGER",
+          "value": "2"
+        },
+        {
+          "name": "Blood Potency 2",
+          "type": "INTEGER",
+          "value": "2"
+        },
+        {
+          "name": "Blood Potency 3",
+          "type": "INTEGER",
+          "value": "3"
+        },
+        {
+          "name": "Blood Potency 4",
+          "type": "INTEGER",
+          "value": "3"
+        },
+        {
+          "name": "Blood Potency 5",
+          "type": "INTEGER",
+          "value": "4"
+        },
+        {
+          "name": "Blood Potency 6",
+          "type": "INTEGER",
+          "value": "4"
+        },
+        {
+          "name": "Blood Potency 7",
+          "type": "INTEGER",
+          "value": "5"
+        },
+        {
+          "name": "Blood Potency 8",
+          "type": "INTEGER",
+          "value": "5"
+        },
+        {
+          "name": "Blood Potency 9",
+          "type": "INTEGER",
+          "value": "6"
+        },
+        {
+          "name": "Blood Potency 10",
+          "type": "INTEGER",
+          "value": "6"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "AxxoYPPtNVYBZC4TCcXnHe",
+          "text": "WHEN [^\"Blood Potency\" == 0] THEN ^\"Bane Severity\" EQUALS 1 instead of 0"
+        },
+        {
+          "hash": "he8Sj5DYDo94NsrTYoNLyq",
+          "text": "WHEN [^\"Thin-blood Character\"] THEN GAINS ^\"Bane Severity\" BUT usually ignores unless ^\"Clan Curse Flaw\""
+        },
+        {
+          "hash": "Qf7tJLjqGb2MowpwGExAzA",
+          "text": "WHEN [^\"Bane Severity\" INCREASED] THEN ^\"Clan Banes\" BECOME more keenly felt curses"
+        },
+        {
+          "hash": "f5knf6j3wWa7U9azg7xEgN",
+          "text": "WHEN [^\"Low Blood Potency\"] THEN ^\"Banes\" NO LONGER mere nuisances"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Blood Potency Table",
+      "hash": "GAPChu85x3G4pQ8synLh2J",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Blood Potency 0",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "1"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "1 point Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "None"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "None"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "1"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "No effect"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 1",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "2"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "1 point Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "None"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 1"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "2"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "No effect"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 2",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "2"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "2 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 1 die"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 1"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "2"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Animal and bagged blood slakes half Hunger"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 3",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "3"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "2 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 1 die"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 2 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "3"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Animal and bagged blood slakes no Hunger"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 4",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "3"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "3 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 2 dice"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 2 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "3"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Animal and bagged blood slakes no Hunger; Slake 1 less Hunger per human"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 5",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "4"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "3 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 2 dice"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 3 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "4"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Animal and bagged blood slakes no Hunger; Slake 1 less Hunger per human; Must drain and kill a human to reduce Hunger below 2"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 6",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "4"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "3 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 3 dice"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 3 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "4"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Animal and bagged blood slakes no Hunger; Slake 2 less Hunger per human; Must drain and kill a human to reduce Hunger below 2"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 7",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "5"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "3 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 3 dice"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 4 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "5"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Slake 2 less Hunger per human; Must drain and kill a human to reduce Hunger below 2"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 8",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "5"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "4 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 4 dice"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 4 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "5"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Animal and bagged blood slakes no Hunger; Slake 2 less Hunger per human; Must drain and kill a human to reduce Hunger below 3"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 9",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "6"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "4 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 4 dice"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 5 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "6"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Slake 2 less Hunger per human; Must drain and kill a human to reduce Hunger below 3"
+            }
+          ]
+        },
+        {
+          "name": "Blood Potency 10",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Blood Surge",
+              "type": "INTEGER",
+              "value": "6"
+            },
+            {
+              "name": "Damage Mended Per Rouse Check",
+              "type": "STRING",
+              "value": "5 points Superficial"
+            },
+            {
+              "name": "Discipline Power Bonus",
+              "type": "STRING",
+              "value": "Add 5 dice"
+            },
+            {
+              "name": "Discipline Rouse Check Re-roll",
+              "type": "STRING",
+              "value": "Level 5 and below"
+            },
+            {
+              "name": "Bane Severity",
+              "type": "INTEGER",
+              "value": "6"
+            },
+            {
+              "name": "Feeding Penalty",
+              "type": "STRING",
+              "value": "Animal and bagged blood slakes no Hunger; Slake 3 less Hunger per human; Must drain and kill a human to reduce Hunger below 3"
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "NM4cHSkzFK74uKfJs2gyfx",
+          "text": "WHEN [REFERENCING ^\"Blood Potency\" VALUES] THEN USE this consolidated table"
+        },
+        {
+          "hash": "LbcvrFUiTtZhDEvUk9Srv5",
+          "text": "WHEN [^\"Blood Potency\" INCREASES] THEN ALL associated values UPDATE per table"
+        },
+        {
+          "hash": "VYL4BDdTnkzbteetSiYrj2",
+          "text": "WHEN [^\"Character Creation\"] THEN START with updated values from beginning"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Messy Critical",
+      "hash": "Ge42RxKEejJFxJAfHqBx5n",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Compulsion Trigger",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true  # Can trigger Compulsions"
+        },
+        {
+          "name": "Success Type",
+          "type": "STRING",
+          "value": "Critical"
+        },
+        {
+          "name": "Complication",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "hhrsS5v7fs3QH5yTNLimma",
+          "text": "WHEN [^\"Messy Critical\" OCCURS] THEN MAY trigger ^\"Compulsion\" like ^\"Bestial Failure\""
+        },
+        {
+          "hash": "A8HT8vgqAeQMZYAEozYSjn",
+          "text": "WHEN [^\"Messy Critical\" ON ^\"Awareness Test\"] THEN ^\"Compulsion\" HELPS explain tricky messes"
+        },
+        {
+          "hash": "4W9hbKzyF7G37X53Ev6gcs",
+          "text": "WHEN [^\"Messy Critical\" ON ^\"Passive Action\"] THEN ^\"Compulsion\" PROVIDES narrative explanation"
+        },
+        {
+          "hash": "YwemU73mCKLU7MNkoJXxdM",
+          "text": "WHEN [CHOOSING ^\"Complication\"] THEN COMBINE options from ^\"Messy Critical\" AND ^\"Bestial Failure\" lists"
+        },
+        {
+          "hash": "gkbDtfQ7TiN4HnGtzPAvvF",
+          "text": "WHEN [^\"Compulsions\" FROM ^\"Messy Criticals\"] THEN MAKES them more frequent in play"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Compulsion Triggers",
+      "hash": "ie7UarTNrzbEnJA8WpTozn",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Bestial Failure Trigger",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true"
+        },
+        {
+          "name": "Messy Critical Trigger",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true  # NEW"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "RMUHt8mRSphHqbzcUhHmti",
+          "text": "WHEN [#Ge42RxKEejJFxJAfHqBx5n ^\"Messy Critical\" OR ^\"Bestial Failure\"] THEN MAY trigger ^\"Compulsion\""
+        },
+        {
+          "hash": "DvSDerLphzKKnDUF82d8Ns",
+          "text": "WHEN [^\"Storyteller\" CHOOSES compulsion] THEN USE combined smörgåsbord of complications"
+        },
+        {
+          "hash": "FsnSzXiW8MiQTt9iAQ6SsR",
+          "text": "WHEN [^\"Compulsion\" TRIGGERED] THEN CONSIDER both mechanical AND narrative context"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Taking Half",
+      "hash": "TuWhXEfaJMCjJrhzvVF8iA",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Available To",
+          "type": "STRING",
+          "value": "Players"
+        },
+        {
+          "name": "Calculation",
+          "type": "STRING",
+          "value": "Half dice pool rounded down as successes"
+        },
+        {
+          "name": "Prevents",
+          "type": "LIST OF STRING",
+          "value": "[\"Hunger complications\", \"Bestial Failures\", \"Messy Criticals\"]"
+        },
+        {
+          "name": "Storyteller Knowledge",
+          "type": "STRING",
+          "value": "Keep exact difficulties secret"
+        },
+        {
+          "name": "Storyteller Hints",
+          "type": "LIST OF STRING",
+          "value": "[\"This seems really beneath you\", \"You're not sure you can crack this without serious effort\"]"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "KXEG3YSG7WDyd22k5jZP6X",
+          "text": "WHEN [^\"Player\" WANTS to ensure win on easy test] THEN MAY choose ^\"Taking Half\""
+        },
+        {
+          "hash": "mmkwpST75jZBCNMrqYPqWH",
+          "text": "WHEN [^\"Player\" WANTS to avoid ^\"Hunger\" complications] THEN MAY choose ^\"Taking Half\""
+        },
+        {
+          "hash": "cZqq89ah4MUc4uupzgaVFS",
+          "text": "WHEN [USING ^\"Taking Half\"] THEN COUNT half dice pool AS regular successes"
+        },
+        {
+          "hash": "jeG7cH8pfMq6NTfGFc5Rqu",
+          "text": "WHEN [^\"Storyteller\" SETS difficulty] THEN KEEP exact number secret"
+        },
+        {
+          "hash": "EyF5mSz9CjiYZ2zS5Qn44D",
+          "text": "WHEN [^\"Test Difficulty\" OBVIOUS] THEN ^\"Storyteller\" MAY provide descriptive hints"
+        },
+        {
+          "hash": "48EjCDi2G79DLFne2AMd4A",
+          "text": "WHEN [^\"Taking Half\" CHOSEN] THEN NO ^\"Hunger Dice\", NO ^\"Bestial Failures\", NO #Ge42RxKEejJFxJAfHqBx5n ^\"Messy Criticals\""
+        },
+        {
+          "hash": "R847n3Fd9iYwAvLCvhiRJ4",
+          "text": "WHEN [^\"Taking Half\" SPEEDS up gameplay] THEN GIVES more player control over ^\"Hunger\" effects"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Automatic Wins",
+      "hash": "einxE7pWFMBooF4L5Q4Rmf",
+      "kind": "def",
+      "rules": [
+        {
+          "hash": "kNrargDM6JyssX4PtABTua",
+          "text": "WHEN [^\"Test\" CLEARLY beneath character capability] THEN ^\"Storyteller\" SHOULD grant ^\"Automatic Win\""
+        },
+        {
+          "hash": "2KwgLu3RiqGsueBUCtJWYW",
+          "text": "WHEN [^\"Automatic Win\" GRANTED] THEN NO dice rolling required"
+        },
+        {
+          "hash": "bgFbsFfwJzgYz7RTW7iwom",
+          "text": "WHEN [#TuWhXEfaJMCjJrhzvVF8iA ^\"Taking Half\" AVAILABLE] THEN PROVIDES alternative to ^\"Automatic Win\""
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Secret Difficulties",
+      "hash": "6RpRGmJ7zR7zBvPdtZLcs9",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Exact Numbers",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "false  # Keep secret"
+        },
+        {
+          "name": "Descriptive Hints",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true  # Provide these"
+        },
+        {
+          "name": "Player Choice",
+          "type": "STRING",
+          "value": "When to roll vs Take Half"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "JVTF7E32vVACnPDJa2MUQi",
+          "text": "WHEN [SETTING ^\"Test Difficulty\"] THEN KEEP exact number secret from players"
+        },
+        {
+          "hash": "haafwyQmuveYA77WiTaxFm",
+          "text": "WHEN [^\"Players\" NEED guidance] THEN PROVIDE descriptive hints about difficulty"
+        },
+        {
+          "hash": "gJWt9QnKAHew22FfeaxBS4",
+          "text": "WHEN [^\"Difficulty\" VERY low] THEN MAY hint \"this seems really beneath you\""
+        },
+        {
+          "hash": "WDYRnyqA8pFMo4XBaTzPyP",
+          "text": "WHEN [^\"Difficulty\" VERY high] THEN MAY hint \"you're not sure you can crack this without serious effort\""
+        },
+        {
+          "hash": "7Ei5kazvbvyDTaTXeQnVhe",
+          "text": "WHEN [^\"Players\" CHOOSE roll vs #TuWhXEfaJMCjJrhzvVF8iA ^\"Taking Half\"] THEN GIVES more control over ^\"Hunger\" risk"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Errata Philosophy",
+      "hash": "Zx7aVSJuUoXc48pChazqBP",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Optional Implementation",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true"
+        },
+        {
+          "name": "Table Authority",
+          "type": "STRING",
+          "value": "Storytellers and players know their table best"
+        },
+        {
+          "name": "Change Reason",
+          "type": "STRING",
+          "value": "Extended play feedback and clarification needs"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "4rMfUVxCYv8vyr9fUAMSUj",
+          "text": "WHEN [USING ^\"Errata\"] THEN IMPLEMENTATION is optional for each table"
+        },
+        {
+          "hash": "VefXBvT4eRBMzXwRTar9Sr",
+          "text": "WHEN [^\"Old Ways\" WORKED for troupe] THEN ^\"Storytellers\" NOT required to adopt changes"
+        },
+        {
+          "hash": "Kk6suFaVdSsQRoU22z9du9",
+          "text": "WHEN [^\"Extended Play\" REVEALS issues] THEN ^\"Updates\" ADDRESS over- and under-performance"
+        },
+        {
+          "hash": "L7FmW4E3K7SiKCSkiUEeGY",
+          "text": "WHEN [^\"Rules Clarity\" NEEDED] THEN ^\"Errata\" PROVIDES better definitions"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Errata Version Control",
+      "hash": "3CeSuGrx7aa6reDfKhA5cW",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Core Book Compatibility",
+          "type": "STRING",
+          "value": "All versions"
+        },
+        {
+          "name": "Future Printings",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true"
+        },
+        {
+          "name": "Official Errata Document",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "true"
+        },
+        {
+          "name": "Implementation Date",
+          "type": "STRING",
+          "value": "Optional by table"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "hPYQbmzU5pgw6nUhEoZ8ar",
+          "text": "WHEN [^\"Future Printings\" OF core book] THEN WILL include these changes"
+        },
+        {
+          "hash": "dWQj9EcNdNkjG32qVVNC3r",
+          "text": "WHEN [^\"Latest Errata Document\" AVAILABLE] THEN CONTAINS ^\"[Presence]Lingering Kiss\" update"
+        },
+        {
+          "hash": "dL4A22LCRAKKThPzQr3CME",
+          "text": "WHEN [^\"Table\" ADOPTS errata] THEN SHOULD use consistently throughout chronicle"
+        },
+        {
+          "hash": "cFiLJmBQcTcqxc7SfMgDbw",
+          "text": "WHEN [^\"Mixed Implementation\"] THEN ENSURE all players understand which rules in use"
+        }
+      ],
+      "sources": [
+        "vtm5e-0.4-errata.ttrpg"
+      ]
+    },
+    {
+      "name": "Road",
+      "kind": "def",
+      "applies_to": [
+        "Kindred"
+      ],
+      "rules": [
+        {
+          "hash": "eECQedjov4XKgmNpBP7zfN",
+          "text": "frenzy_resistance_bonus"
+        },
+        {
+          "hash": "JNbhSxmaZc44BrARP8Xriy",
+          "text": "stain_accumulation"
+        },
+        {
+          "hash": "MT9b89PyefjLNPDwyCJhQw",
+          "text": "remorse_test_mechanics"
+        },
+        {
+          "hash": "MULKDxZHx9SwwWNNKfhX56",
+          "text": "degeneration_consequences"
+        },
+        {
+          "hash": "R6Uxif7eEgJfmRCPz3gMfW",
+          "text": "beast_resistance_bonuses"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    },
+    {
+      "name": "Road of Kings",
+      "hash": "roadofkings000001",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Type",
+          "type": "STRING",
+          "value": "ROAD"
+        },
+        {
+          "name": "Category",
+          "type": "STRING",
+          "value": "Road"
+        },
+        {
+          "name": "Aura",
+          "type": "STRING",
+          "value": "Via Regalis"
+        },
+        {
+          "name": "Alternate Names",
+          "type": "LIST OF STRING",
+          "value": "[\"Via Regalis\", \"The Road of Rule\"]"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    },
+    {
+      "name": "Road of Humanity",
+      "hash": "roadofhumanity01",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Type",
+          "type": "STRING",
+          "value": "ROAD"
+        },
+        {
+          "name": "Category",
+          "type": "STRING",
+          "value": "Road"
+        },
+        {
+          "name": "Aura",
+          "type": "STRING",
+          "value": "Via Humanitatis"
+        },
+        {
+          "name": "Alternate Names",
+          "type": "LIST OF STRING",
+          "value": "[\"Via Humanitatis\", \"The Road of Man\"]"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    },
+    {
+      "name": "Road of the Beast",
+      "hash": "roadofbeast0001",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Type",
+          "type": "STRING",
+          "value": "ROAD"
+        },
+        {
+          "name": "Category",
+          "type": "STRING",
+          "value": "Road"
+        },
+        {
+          "name": "Aura",
+          "type": "STRING",
+          "value": "Via Bestiae"
+        },
+        {
+          "name": "Alternate Names",
+          "type": "LIST OF STRING",
+          "value": "[\"Via Bestiae\", \"The Road of the Beast\"]"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    }
+  ]
+}
