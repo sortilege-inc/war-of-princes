@@ -1,0 +1,82 @@
+BASE "VTM5e_WarOfPrinces_Roads" {
+    NAME "War of Princes — Dark Ages Roads (morality track used in place of Humanity)"
+    VERSION "0.4"
+    SPEC_VERSION "0.4"
+    RELEASE_DATE "2026-07-19"
+
+    # Campaign homebrew overlay for the War of Princes chronicle (London, 1242).
+    # In the Dark Ages a Cainite follows a ROAD rather than clinging to Humanity.
+    # Mechanically the Road rating behaves exactly like Humanity in V5 — the same
+    # 0..10 track, the same Stain accumulation, Remorse tests, degeneration, and
+    # frenzy-resistance — but the moral compass is the hierarchy of sins of the
+    # chosen Road, not a generic mortal conscience. This file ADDS the Road track
+    # and the named Roads the chronicle uses; it supersedes ^"Humanity" for these
+    # characters (the household of Bialowieza and the London Envoy).
+
+    ^"Road" DEF {
+        APPLIES TO [^"Kindred"]
+
+        INTEGER MIN 0 MAX 10
+
+        # The Dark Ages morality track. Replaces ^"Humanity" for this chronicle.
+        # A character also records a ^"Road Name" (which Road they walk) and a
+        # single moral guideline / aspiration drawn from that Road's tenets.
+
+        DERIVED_PROPERTIES {
+            ^"Road Name" STRING
+            ^"Moral Guideline" STRING
+            ^"Aura" STRING
+        }
+
+        # Reuses the same rule machinery as ^"Humanity": Stains, Remorse,
+        # degeneration, and frenzy resistance are unchanged.
+        RULES {
+            #eECQedjov4XKgmNpBP7zfN: frenzy_resistance_bonus
+            #JNbhSxmaZc44BrARP8Xriy: stain_accumulation
+            #MT9b89PyefjLNPDwyCJhQw: remorse_test_mechanics
+            #MULKDxZHx9SwwWNNKfhX56: degeneration_consequences
+            #R6Uxif7eEgJfmRCPz3gMfW: beast_resistance_bonuses
+        }
+    }
+
+    #roadofkings000001 ^"Road of Kings" DEF {
+        PROPERTIES {
+            ^"Type" STRING "ROAD"
+            ^"Category" STRING "Road"
+            ^"Aura" STRING "Via Regalis"
+            ^"Alternate Names" LIST OF STRING ["Via Regalis", "The Road of Rule"]
+        }
+
+        DESCRIPTION "The Road of Kings holds that a Cainite is born to rule, and that dignity, authority, and the mastery of self and others are the highest virtues. Weakness shown before one's peers is the cardinal sin."
+
+        # Hierarchy of sins (worst → least): failing in a duty of rank; behaving
+        # shamefully before your peers; treating with inferiors as equals; losing
+        # composure. Tomislawa walks this Road at rating 7; her recorded moral
+        # guideline is "behaving shamefully before your peers."
+    }
+
+    #roadofhumanity01 ^"Road of Humanity" DEF {
+        PROPERTIES {
+            ^"Type" STRING "ROAD"
+            ^"Category" STRING "Road"
+            ^"Aura" STRING "Via Humanitatis"
+            ^"Alternate Names" LIST OF STRING ["Via Humanitatis", "The Road of Man"]
+        }
+
+        DESCRIPTION "The Road of Humanity clings to the mortal conscience the Embrace tries to strip away. Its walkers judge themselves by the harm they do to the living and the ties they keep to their own lost humanity. Oscar walks this Road."
+
+        # Behaves as V5 ^"Humanity" in all particulars; kept here as a named Road
+        # so mixed-Road coteries share one track and one tracker.
+    }
+
+    #roadofbeast0001 ^"Road of the Beast" DEF {
+        PROPERTIES {
+            ^"Type" STRING "ROAD"
+            ^"Category" STRING "Road"
+            ^"Aura" STRING "Via Bestiae"
+            ^"Alternate Names" LIST OF STRING ["Via Bestiae", "The Road of the Beast"]
+        }
+
+        DESCRIPTION "The Road of the Beast makes a virtue of the predator. Its walkers honour instinct, appetite, and the honest hunger of the Beast, and sin by denying their own nature or showing the weakness of mortal sentiment. Meabh walks this Road."
+    }
+}
