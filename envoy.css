@@ -654,3 +654,71 @@
   .card .cat { font-family: "Cormorant SC", serif; text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.56rem; color: var(--gold); }
   .card h3 { font-family: "Cinzel", serif; color: var(--blood-deep); margin: 0.35rem 0 0.5rem; font-size: 1.05rem; letter-spacing: 0.02em; }
   .card p { margin: 0; font-family: "EB Garamond", serif; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.52; }
+
+  /* ============================================================
+     CHRONICLE — floating scroll-spy table of contents
+     Lives in the left gutter on wide screens; built by JS.
+     ============================================================ */
+  html { scroll-behavior: smooth; }
+  .session-block, .scene { scroll-margin-top: 92px; }
+
+  .chron-toc {
+    position: fixed;
+    top: 92px;
+    left: calc((100vw - 960px) / 2 - 210px);
+    width: 194px;
+    max-height: calc(100vh - 130px);
+    overflow-y: auto;
+    z-index: 40;
+    padding: 0.1rem 0.4rem 0.5rem 0.9rem;
+    border-left: 2px solid var(--blood);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+            mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  }
+  /* only show when the gutter is wide enough to hold it cleanly */
+  @media (max-width: 1399px) { .chron-toc { display: none; } }
+
+  .toc-head {
+    font-family: "Cormorant SC", serif; text-transform: uppercase;
+    letter-spacing: 0.26em; font-size: 0.58rem; color: var(--gold);
+    margin: 0 0 0.7rem;
+  }
+  .toc-sessions { list-style: none; margin: 0; padding: 0; }
+  .toc-session { margin-bottom: 0.35rem; }
+  .toc-session > a {
+    display: block; text-decoration: none;
+    font-family: "Cinzel", serif; font-size: 0.68rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: rgba(232,224,208,0.5);
+    padding: 0.35rem 0 0.3rem; transition: color .2s;
+  }
+  .toc-session > a:hover { color: rgba(232,224,208,0.85); }
+  .toc-session > a .toc-sub {
+    display: block; margin-top: 0.15rem;
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 0.8rem; letter-spacing: 0; text-transform: none;
+    color: rgba(232,224,208,0.32); line-height: 1.25;
+  }
+  .toc-session.active > a { color: var(--paper); }
+  .toc-session.active > a .toc-sub { color: var(--gold-pale); }
+
+  .toc-chapters {
+    list-style: none; margin: 0 0 0.2rem; padding: 0;
+    display: none;
+  }
+  .toc-session.active .toc-chapters { display: block; }
+  .toc-chapters a {
+    display: block; text-decoration: none;
+    font-family: "EB Garamond", serif; font-size: 0.82rem; line-height: 1.3;
+    color: rgba(232,224,208,0.42);
+    padding: 0.2rem 0 0.2rem 0.7rem;
+    border-left: 1px solid rgba(160,144,128,0.22);
+    transition: color .15s, border-color .15s;
+  }
+  .toc-chapters a:hover { color: rgba(232,224,208,0.85); }
+  .toc-chapters a.current {
+    color: var(--gold-pale); border-left-color: var(--blood-pale);
+  }
+  .toc-chapters a .cn {
+    font-family: "Cormorant Garamond", serif; color: var(--blood-pale);
+    margin-right: 0.5rem;
+  }

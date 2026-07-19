@@ -245,5 +245,90 @@
     </footer>
   </div>
 </div><!-- .document -->
+
+<script>
+/* Floating scroll-spy table of contents for the Chronicle.
+   Built from the .session-block / .scene structure so new sessions
+   appear automatically. The current session's chapters expand;
+   other sessions show title-only until you scroll into them. */
+(function () {
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('.session-block'));
+  if (!blocks.length) return;
+
+  function slug(s) {
+    return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  function text(el, sel) {
+    var n = el.querySelector(sel);
+    return n ? n.textContent.trim() : '';
+  }
+
+  var toc = document.createElement('nav');
+  toc.className = 'chron-toc';
+  toc.setAttribute('aria-label', 'Chronicle contents');
+  var head = document.createElement('div');
+  head.className = 'toc-head';
+  head.textContent = 'The Chronicle';
+  toc.appendChild(head);
+  var sessionsUl = document.createElement('ul');
+  sessionsUl.className = 'toc-sessions';
+  toc.appendChild(sessionsUl);
+
+  var scenes = []; // { el, sessionLi, link }
+
+  blocks.forEach(function (block, bi) {
+    var num = text(block, '.session-num');
+    var name = text(block, '.session-name');
+    var sid = block.id || slug(num) || ('session-' + bi);
+    block.id = sid;
+
+    var li = document.createElement('li');
+    li.className = 'toc-session';
+    var a = document.createElement('a');
+    a.href = '#' + sid;
+    a.innerHTML = (num || 'Session') + (name ? '<span class="toc-sub">' + name + '</span>' : '');
+    li.appendChild(a);
+
+    var chUl = document.createElement('ul');
+    chUl.className = 'toc-chapters';
+    Array.prototype.forEach.call(block.querySelectorAll('.scene'), function (scene, si) {
+      var idx = text(scene, '.scene-idx').replace(/\.$/, '');
+      var title = text(scene, '.scene-title') || ('Scene ' + (si + 1));
+      var scid = sid + '-' + (si + 1);
+      scene.id = scid;
+      var cli = document.createElement('li');
+      var ca = document.createElement('a');
+      ca.href = '#' + scid;
+      ca.innerHTML = (idx ? '<span class="cn">' + idx + '</span>' : '') + title;
+      cli.appendChild(ca);
+      chUl.appendChild(cli);
+      scenes.push({ el: scene, sessionLi: li, link: ca });
+    });
+    li.appendChild(chUl);
+    sessionsUl.appendChild(li);
+  });
+
+  document.body.appendChild(toc);
+
+  var sessionLis = Array.prototype.slice.call(sessionsUl.querySelectorAll('.toc-session'));
+
+  function update() {
+    var offset = 110; // a scene counts as "current" once its top passes this line
+    var current = scenes[0];
+    for (var i = 0; i < scenes.length; i++) {
+      if (scenes[i].el.getBoundingClientRect().top <= offset) current = scenes[i];
+    }
+    for (var j = 0; j < sessionLis.length; j++) {
+      sessionLis[j].classList.toggle('active', sessionLis[j] === current.sessionLi);
+    }
+    for (var k = 0; k < scenes.length; k++) {
+      scenes[k].link.classList.toggle('current', scenes[k] === current);
+    }
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
+</script>
 </body>
 </html>
