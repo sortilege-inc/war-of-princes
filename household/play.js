@@ -1,0 +1,462 @@
+/* ============================================================
+   The Table — interactive play layer (household characters only)
+   Implements the V5 mechanics compiled in
+   ../rules/vtm5e-war-of-princes.resolved.json :
+     - dice pool (Attribute + Skill), success on 6+, criticals on
+       pairs of 10s (+2 each pair), Hunger dice, messy criticals,
+       bestial failures, Willpower re-roll (up to 3 non-Hunger dice)
+     - Willpower & Health tracks (superficial / aggravated + mend)
+     - Road morality track (in place of Humanity) for Tomisława
+   Tracker state persists in localStorage and exports/imports as JSON.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var ATTR_ORDER = ["Strength","Dexterity","Stamina","Charisma","Manipulation","Composure","Intelligence","Wits","Resolve"];
+
+  // Character data extracted from the household dossier, augmented with
+  // Road/Hunger/Blood Potency (Tomisława) and the Graf's one Discipline.
+  var CHARACTERS = [
+    { id:"tomi", name:"Tomisława z Białowieży", type:"vampire", section:"household",
+      health:5, willpower:5, hunger:1, bloodPotency:2,
+      road:{ name:"Road of Kings", aura:"Via Regalis", rating:7, guideline:"Behaving shamefully before your peers" },
+      attributes:{Strength:2,Dexterity:2,Stamina:2,Charisma:2,Manipulation:4,Composure:3,Intelligence:3,Wits:1,Resolve:2},
+      skills:{Etiquette:3,Intimidation:3,Leadership:3,Politics:3,Occult:4,Persuasion:2,Subterfuge:2,Survival:2,Craft:2,Academics:1,Medicine:1},
+      disciplines:[{name:"Dominate",rating:2,powers:["Compel","Domitor's Favor"]},{name:"Protean",rating:2,powers:["Eyes of the Beast","Vicissitude (Fleshcrafting)"]},{name:"Blood Sorcery (Koldunic)",rating:3,powers:["Koldunic Sorcery — Earth","Koldunic Sorcery — Water","Koldunic Sorcery — Air"]}] },
+
+    { id:"graf", name:"Graf Światosław", type:"ghoul", section:"household",
+      health:5, willpower:5,
+      attributes:{Strength:3,Dexterity:2,Stamina:3,Charisma:3,Manipulation:1,Composure:4,Intelligence:2,Wits:2,Resolve:2},
+      skills:{Athletics:3,"Animal Ken":3,Archery:3,Brawl:2,Melee:2,Riding:2,Awareness:2,Intimidation:2,Etiquette:1,Leadership:1,Politics:1,Finance:1,Medicine:1,Academics:1,Science:1},
+      disciplines:[{name:"Dominate",rating:1,powers:["Cloud Memory"]}] },
+
+    { id:"kuncze", name:"Kuncze", type:"mortal", section:"allies",
+      attributes:{Strength:3,Dexterity:2,Stamina:3,Charisma:1,Manipulation:1,Composure:2,Intelligence:1,Wits:1,Resolve:2},
+      skills:{Athletics:3,Melee:3,Intimidation:3,Survival:2,Etiquette:2}, disciplines:[] },
+    { id:"bartusz", name:"Bartusz", type:"mortal", section:"allies",
+      attributes:{Strength:1,Dexterity:1,Stamina:1,Charisma:3,Manipulation:2,Composure:3,Intelligence:1,Wits:2,Resolve:2},
+      skills:{"Animal Ken":3,Etiquette:3,Riding:3,Medicine:2,Persuasion:2,Craft:2}, disciplines:[] },
+    { id:"andrzej", name:"Andrzej", type:"mortal", section:"allies",
+      attributes:{Strength:1,Dexterity:2,Stamina:1,Charisma:1,Manipulation:2,Composure:1,Intelligence:3,Wits:3,Resolve:2},
+      skills:{Awareness:3,Investigation:3,Survival:3,Insight:2,Larceny:2,"Animal Ken":2,Subterfuge:2}, disciplines:[] },
+    { id:"piers", name:"Piers", type:"mortal", section:"allies",
+      attributes:{Strength:3,Dexterity:3,Stamina:2,Charisma:1,Manipulation:1,Composure:2,Intelligence:1,Wits:2,Resolve:1},
+      skills:{Archery:3,Awareness:3,Survival:3,"Animal Ken":2,Athletics:2,Streetwise:2}, disciplines:[] },
+
+    { id:"przeclaw", name:"Przecław", type:"mortal", section:"herd",
+      attributes:{Strength:2,Dexterity:1,Stamina:1,Charisma:1,Manipulation:3,Composure:2,Intelligence:3,Wits:2,Resolve:1},
+      skills:{Etiquette:3,Finance:3,Politics:3,Larceny:2,Leadership:2,Persuasion:2,Subterfuge:2,Insight:1,Riding:1,Intimidation:1,Melee:1,Archery:1}, disciplines:[] },
+    { id:"tomasz", name:"Tomasz", type:"mortal", section:"herd",
+      attributes:{Strength:1,Dexterity:2,Stamina:1,Charisma:1,Manipulation:1,Composure:1,Intelligence:1,Wits:1,Resolve:2},
+      skills:{Brawl:2,Etiquette:2,Performance:2,Athletics:1,Awareness:1,Riding:1,Larceny:1,Archery:1}, disciplines:[] },
+    { id:"milosz", name:"Miłosz", type:"mortal", section:"herd",
+      attributes:{Strength:1,Dexterity:2,Stamina:3,Charisma:2,Manipulation:2,Composure:1,Intelligence:1,Wits:1,Resolve:3},
+      skills:{Athletics:3,Riding:3,Survival:3,Etiquette:2,Performance:2,Persuasion:2,Politics:2,"Animal Ken":1,Brawl:1,Insight:1,Technology:1,Archery:1}, disciplines:[] },
+    { id:"elzbieta", name:"Elżbieta", type:"mortal", section:"herd",
+      attributes:{Strength:1,Dexterity:1,Stamina:1,Charisma:2,Manipulation:3,Composure:2,Intelligence:1,Wits:3,Resolve:2},
+      skills:{Etiquette:3,Insight:3,Occult:3,Investigation:2,Larceny:2,Politics:2,Subterfuge:2,Athletics:1,Brawl:1,Performance:1,Persuasion:1,Streetwise:1}, disciplines:[] },
+    { id:"bronislawa", name:"Bronisława", type:"mortal", section:"herd",
+      attributes:{Strength:1,Dexterity:2,Stamina:1,Charisma:1,Manipulation:2,Composure:3,Intelligence:3,Wits:2,Resolve:1},
+      skills:{Etiquette:3,Craft:3,Performance:3,Awareness:2,Insight:2,Leadership:2,Persuasion:2,Investigation:1,Medicine:1,Occult:1,Stealth:1,Subterfuge:1}, disciplines:[] },
+    { id:"bogdan", name:"Bogdan", type:"mortal", section:"herd",
+      attributes:{Strength:2,Dexterity:1,Stamina:3,Charisma:1,Manipulation:2,Composure:3,Intelligence:1,Wits:2,Resolve:1},
+      skills:{"Animal Ken":3,Awareness:3,Riding:3,Streetwise:2,Survival:2,Subterfuge:2,Technology:2,Brawl:1,Etiquette:1,Intimidation:1,Larceny:1,Melee:1}, disciplines:[] },
+    { id:"dobrawa", name:"Dobrawa", type:"mortal", section:"herd",
+      attributes:{Strength:3,Dexterity:2,Stamina:3,Charisma:2,Manipulation:1,Composure:1,Intelligence:1,Wits:1,Resolve:2},
+      skills:{Craft:3,Investigation:3,Subterfuge:3,"Animal Ken":2,Intimidation:2,Larceny:2,Stealth:2,Awareness:1,Finance:1,Leadership:1,Medicine:1,Science:1}, disciplines:[] },
+    { id:"wojtek", name:"Wojtek", type:"mortal", section:"herd",
+      attributes:{Strength:1,Dexterity:2,Stamina:1,Charisma:1,Manipulation:1,Composure:1,Intelligence:1,Wits:2,Resolve:1},
+      skills:{"Animal Ken":2,Craft:2,Streetwise:2,Awareness:1,Finance:1,Medicine:1,Larceny:1,Stealth:1}, disciplines:[] }
+  ];
+  var BY_ID = {};
+  CHARACTERS.forEach(function (c) {
+    c.maxHealth = c.health || (c.attributes.Stamina + 3);       // V5: Stamina + 3
+    c.maxWillpower = c.willpower || (c.attributes.Resolve + c.attributes.Composure); // Resolve + Composure
+    BY_ID[c.id] = c;
+  });
+
+  var SECTIONS = [["household","The Household"],["allies","The Four Allies"],["herd","The Herd"]];
+  var STORE_KEY = "wop.table.v1";
+
+  // ---- persistent tracker state -----------------------------------------
+  var state = load();
+  function blankState(c) {
+    return {
+      health: new Array(c.maxHealth).fill(0),      // 0 empty, 1 superficial, 2 aggravated
+      willpower: new Array(c.maxWillpower).fill(0),
+      hunger: (c.type === "vampire") ? (c.hunger || 0) : null,
+      road: c.road ? { rating: c.road.rating, stains: 0 } : null
+    };
+  }
+  function ensure(c) {
+    var s = state[c.id];
+    if (!s) { s = state[c.id] = blankState(c); }
+    // keep track lengths in sync with sheet
+    if (s.health.length !== c.maxHealth) s.health = resize(s.health, c.maxHealth);
+    if (s.willpower.length !== c.maxWillpower) s.willpower = resize(s.willpower, c.maxWillpower);
+    if (c.type === "vampire" && (s.hunger === null || s.hunger === undefined)) s.hunger = c.hunger || 0;
+    if (c.road && !s.road) s.road = { rating: c.road.rating, stains: 0 };
+    return s;
+  }
+  function resize(arr, n) { var out = new Array(n).fill(0); for (var i=0;i<Math.min(arr.length,n);i++) out[i]=arr[i]; return out; }
+  function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+  function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+
+  // ---- dice ------------------------------------------------------------
+  function d10() { return 1 + Math.floor(Math.random() * 10); }
+  function rollPool(regular, hunger) {
+    var dice = [];
+    for (var i=0;i<regular;i++) dice.push({ v:d10(), hunger:false, rerolled:false });
+    for (var j=0;j<hunger;j++) dice.push({ v:d10(), hunger:true, rerolled:false });
+    return dice;
+  }
+  function tally(dice) {
+    var succ = 0, tens = 0, hungerTens = 0, hungerOnes = 0;
+    dice.forEach(function (d) {
+      if (d.v >= 6) succ++;
+      if (d.v === 10) { tens++; if (d.hunger) hungerTens++; }
+      if (d.v === 1 && d.hunger) hungerOnes++;
+    });
+    var critPairs = Math.floor(tens / 2);
+    var total = succ + critPairs * 2;               // each pair of 10s = +2 bonus
+    return {
+      successes: total,
+      critPairs: critPairs,
+      messy: critPairs >= 1 && hungerTens >= 1,
+      bestial: hungerOnes >= 1,
+      hungerOnes: hungerOnes
+    };
+  }
+
+  // ---- rendering -------------------------------------------------------
+  var root, drawer, bodyEl, selectEl;
+  var current = CHARACTERS[0].id;
+  var lastRoll = null; // { char, dice, wpRerollsUsed }
+
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+  function build() {
+    var btn = el("button", "pl-toggle");
+    btn.innerHTML = '<span class="pl-die">&#9860;</span> The Table';
+    btn.addEventListener("click", function () { drawer.classList.toggle("open"); });
+
+    drawer = el("aside", "pl-drawer");
+    var head = el("div", "pl-head");
+    head.appendChild(el("span", "pl-title", "The Table"));
+    var impBtn = el("button", "pl-iconbtn", "&#8681;"); impBtn.title = "Import JSON";
+    var expBtn = el("button", "pl-iconbtn", "&#8679;"); expBtn.title = "Export JSON";
+    var closeBtn = el("button", "pl-iconbtn", "&times;"); closeBtn.title = "Close";
+    impBtn.addEventListener("click", doImport);
+    expBtn.addEventListener("click", doExport);
+    closeBtn.addEventListener("click", function () { drawer.classList.remove("open"); });
+    head.appendChild(impBtn); head.appendChild(expBtn); head.appendChild(closeBtn);
+    drawer.appendChild(head);
+
+    bodyEl = el("div", "pl-body");
+    selectEl = el("select", "pl-select");
+    SECTIONS.forEach(function (sec) {
+      var group = el("optgroup"); group.label = sec[1];
+      CHARACTERS.filter(function (c) { return c.section === sec[0]; }).forEach(function (c) {
+        var o = el("option"); o.value = c.id; o.textContent = c.name; group.appendChild(o);
+      });
+      selectEl.appendChild(group);
+    });
+    selectEl.value = current;
+    selectEl.addEventListener("change", function () { current = selectEl.value; lastRoll = null; renderChar(); });
+    bodyEl.appendChild(selectEl);
+
+    var charWrap = el("div", "pl-charwrap");
+    bodyEl.appendChild(charWrap);
+    drawer.appendChild(bodyEl);
+
+    document.body.appendChild(btn);
+    document.body.appendChild(drawer);
+    renderChar();
+  }
+
+  function renderChar() {
+    var c = BY_ID[current];
+    var s = ensure(c);
+    var w = drawer.querySelector(".pl-charwrap");
+    w.innerHTML = "";
+
+    var typeLabel = c.type === "vampire" ? "Tzimisce · Kindred" : (c.type === "ghoul" ? "Ghoul · Retainer" : "Mortal");
+    w.appendChild(el("div", "pl-chartype", typeLabel));
+
+    // ---- trackers
+    w.appendChild(sectionLabel("Health", "Superficial · Aggravated"));
+    w.appendChild(boxTrack(c, s, "health"));
+    w.appendChild(sectionLabel("Willpower", "click to mark / clear"));
+    w.appendChild(boxTrack(c, s, "willpower"));
+
+    if (c.type === "vampire") {
+      w.appendChild(sectionLabel("Hunger", "0–5"));
+      w.appendChild(hungerRow(c, s));
+    }
+    if (c.road) {
+      w.appendChild(sectionLabel("Road", c.road.aura));
+      w.appendChild(roadBlock(c, s));
+    }
+
+    // ---- disciplines (display only)
+    if (c.disciplines && c.disciplines.length) {
+      w.appendChild(sectionLabel("Disciplines", ""));
+      var dl = el("div", "pl-disc");
+      dl.innerHTML = c.disciplines.map(function (d) {
+        return "<b>" + d.name + " " + dots(d.rating) + "</b> — " + d.powers.join(", ");
+      }).join("<br>");
+      w.appendChild(dl);
+    }
+
+    // ---- dice roller
+    w.appendChild(sectionLabel("Roll", "Attribute + Skill"));
+    w.appendChild(roller(c, s));
+  }
+
+  function sectionLabel(txt, sub) {
+    var e = el("div", "pl-lbl");
+    e.appendChild(el("span", null, txt));
+    if (sub) e.appendChild(el("span", "pl-sub", sub));
+    return e;
+  }
+  function dots(n) { return new Array(n + 1).join("●"); }
+
+  function boxTrack(c, s, key) {
+    var wrap = el("div", "pl-track");
+    var boxes = el("div", "pl-boxes");
+    var arr = s[key];
+    arr.forEach(function (v, i) {
+      var b = el("button", "pl-box");
+      paintBox(b, v);
+      b.addEventListener("click", function () {
+        arr[i] = (arr[i] + 1) % 3;
+        paintBox(b, arr[i]);
+        updateTrackNote(wrap, arr);
+        save();
+      });
+      boxes.appendChild(b);
+    });
+    wrap.appendChild(boxes);
+    var note = el("div", "pl-track-note");
+    wrap.appendChild(note);
+    updateTrackNote(wrap, arr);
+    return wrap;
+  }
+  function paintBox(b, v) {
+    b.className = "pl-box" + (v === 1 ? " superficial" : v === 2 ? " aggravated" : "");
+    b.innerHTML = v === 1 ? '<span class="pl-mark">/</span>' : v === 2 ? '<span class="pl-mark">✕</span>' : "";
+  }
+  function updateTrackNote(wrap, arr) {
+    var sup = arr.filter(function (v) { return v === 1; }).length;
+    var agg = arr.filter(function (v) { return v === 2; }).length;
+    var free = arr.length - sup - agg;
+    var note = wrap.querySelector(".pl-track-note");
+    var msg = sup + " superficial · " + agg + " aggravated · " + free + " unmarked";
+    if (free === 0 && arr.length) msg += (agg === arr.length ? " — incapacitated / torpor" : " — Impaired");
+    note.textContent = msg;
+  }
+
+  function hungerRow(c, s) {
+    var wrap = el("div", "pl-track");
+    var pips = el("div", "pl-pips");
+    function paint() {
+      pips.innerHTML = "";
+      for (var i = 1; i <= 5; i++) {
+        var p = el("button", "pl-pip" + (i <= s.hunger ? " on" : ""));
+        (function (val) {
+          p.addEventListener("click", function () { s.hunger = (s.hunger === val ? val - 1 : val); paint(); save(); if (lastRoll) renderChar(); });
+        })(i);
+        pips.appendChild(p);
+      }
+    }
+    paint();
+    wrap.appendChild(pips);
+    return wrap;
+  }
+
+  function roadBlock(c, s) {
+    var wrap = el("div", "pl-track");
+    wrap.appendChild(el("div", "pl-road-name", c.road.name + " · " + s.road.rating));
+    // rating pips 0..10
+    var pips = el("div", "pl-pips");
+    for (var i = 1; i <= 10; i++) {
+      var p = el("button", "pl-pip road" + (i <= s.road.rating ? " on" : ""));
+      (function (val) {
+        p.addEventListener("click", function () { s.road.rating = (s.road.rating === val ? val - 1 : val); renderChar(); save(); });
+      })(i);
+      pips.appendChild(p);
+    }
+    wrap.appendChild(pips);
+    // stains stepper
+    var st = el("div", "pl-stepper"); st.style.marginTop = "0.5rem";
+    var minus = el("button", null, "−"), val = el("span", "pl-val", String(s.road.stains)), plus = el("button", null, "+");
+    st.appendChild(el("span", "pl-sub", "Stains")); st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
+    minus.addEventListener("click", function () { s.road.stains = Math.max(0, s.road.stains - 1); val.textContent = s.road.stains; save(); });
+    plus.addEventListener("click", function () { s.road.stains += 1; val.textContent = s.road.stains; save(); });
+    wrap.appendChild(st);
+    wrap.appendChild(el("div", "pl-road-guide", "“" + c.road.guideline + "”"));
+    return wrap;
+  }
+
+  function roller(c, s) {
+    var wrap = el("div", "pl-roller");
+    var pick = el("div", "pl-pick");
+    var aSel = el("select"), sSel = el("select");
+    aSel.appendChild(optu("— Attribute —", ""));
+    ATTR_ORDER.forEach(function (a) { if (c.attributes[a] != null) aSel.appendChild(optu(a + " (" + c.attributes[a] + ")", a)); });
+    sSel.appendChild(optu("— Skill —", ""));
+    Object.keys(c.skills).sort().forEach(function (sk) { sSel.appendChild(optu(sk + " (" + c.skills[sk] + ")", sk)); });
+    pick.appendChild(aSel); pick.appendChild(sSel);
+    wrap.appendChild(pick);
+
+    // modifier + pool total
+    var poolrow = el("div", "pl-poolrow");
+    var step = el("div", "pl-stepper");
+    var mMinus = el("button", null, "−"), mVal = el("span", "pl-val", "0"), mPlus = el("button", null, "+");
+    step.appendChild(el("span", "pl-sub", "Mod")); step.appendChild(mMinus); step.appendChild(mVal); step.appendChild(mPlus);
+    var total = el("span", "pl-pool-total");
+    var hungerNote = el("span", "pl-hungernote");
+    poolrow.appendChild(step); poolrow.appendChild(total); poolrow.appendChild(hungerNote);
+    wrap.appendChild(poolrow);
+
+    var mod = 0;
+    function pool() {
+      var a = aSel.value ? c.attributes[aSel.value] : 0;
+      var sk = sSel.value ? c.skills[sSel.value] : 0;
+      return Math.max(0, a + sk + mod);
+    }
+    function refresh() {
+      var p = pool();
+      var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, p) : 0;
+      total.innerHTML = "Pool <b>" + p + "</b>";
+      hungerNote.textContent = hd ? (hd + " hunger " + (hd === 1 ? "die" : "dice")) : "";
+    }
+    aSel.addEventListener("change", refresh); sSel.addEventListener("change", refresh);
+    mMinus.addEventListener("click", function () { mod--; mVal.textContent = mod; refresh(); });
+    mPlus.addEventListener("click", function () { mod++; mVal.textContent = mod; refresh(); });
+    refresh();
+
+    var rollBtn = el("button", "pl-rollbtn", "Roll");
+    wrap.appendChild(rollBtn);
+    var out = el("div", "pl-out");
+    wrap.appendChild(out);
+
+    rollBtn.addEventListener("click", function () {
+      var p = pool();
+      var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, p) : 0;
+      var dice = rollPool(p - hd, hd);
+      lastRoll = { char: c.id, dice: dice, wpRerollsUsed: 0 };
+      renderRoll(out, c, s);
+    });
+
+    if (lastRoll && lastRoll.char === c.id) renderRoll(out, c, s);
+    return wrap;
+  }
+
+  function renderRoll(out, c, s) {
+    out.innerHTML = "";
+    var dice = lastRoll.dice;
+    var t = tally(dice);
+
+    var dwrap = el("div", "pl-dice");
+    dice.forEach(function (d) {
+      var cls = "pl-d " + (d.hunger ? "hunger" : "reg");
+      if (d.v >= 6) cls += " succ";
+      if (d.v === 10) cls += " crit";
+      if (d.hunger && d.v === 1) cls += " bestial";
+      if (d.rerolled) cls += " rerolled";
+      dwrap.appendChild(el("div", cls, String(d.v)));
+    });
+    out.appendChild(dwrap);
+
+    var res = el("div", "pl-result");
+    res.innerHTML = '<span class="pl-succcount">' + t.successes + '</span> <span class="pl-succlabel">' + (t.successes === 1 ? "success" : "successes") + '</span>';
+    out.appendChild(res);
+
+    var flags = el("div", "pl-flags");
+    if (t.successes === 0) {
+      // a Bestial Failure is a failed roll that shows a 1 on a Hunger die
+      flags.appendChild(el("span", "pl-flag bestial", t.bestial ? "Bestial Failure" : "Total Failure"));
+    } else if (t.messy) {
+      flags.appendChild(el("span", "pl-flag messy", "Messy Critical"));
+    } else if (t.critPairs >= 1) {
+      flags.appendChild(el("span", "pl-flag crit", "Critical"));
+    }
+    out.appendChild(flags);
+
+    // Willpower re-roll: up to 3 non-Hunger dice, once per roll
+    var canReroll = lastRoll.wpRerollsUsed === 0 && dice.some(function (d) { return !d.hunger; });
+    var rr = el("button", "pl-subbtn", "Willpower re-roll (≤3 dice, −1 WP)");
+    rr.style.marginTop = "0.6rem";
+    if (!canReroll) rr.setAttribute("disabled", "disabled");
+    rr.addEventListener("click", function () {
+      // reroll up to 3 non-hunger dice, prioritising failures (<6)
+      var idxs = [];
+      dice.forEach(function (d, i) { if (!d.hunger && d.v < 6) idxs.push(i); });
+      dice.forEach(function (d, i) { if (!d.hunger && d.v >= 6 && idxs.length < 3) idxs.push(i); });
+      idxs.slice(0, 3).forEach(function (i) { dice[i].v = d10(); dice[i].rerolled = true; });
+      lastRoll.wpRerollsUsed = 1;
+      markWillpowerSpent(c, s);
+      renderChar(); // re-render trackers (WP spent) and the roll (rerolled dice)
+    });
+    out.appendChild(rr);
+  }
+
+  function markWillpowerSpent(c, s) {
+    // mark one superficial Willpower box (first unmarked)
+    var i = s.willpower.indexOf(0);
+    if (i === -1) i = s.willpower.indexOf(1); // else upgrade a superficial to aggravated
+    if (i !== -1) s.willpower[i] = Math.min(2, s.willpower[i] + 1);
+    save();
+  }
+
+  // ---- export / import -------------------------------------------------
+  function exportText() {
+    return JSON.stringify({ app: "war-of-princes/the-table", version: 1, characters: state }, null, 2);
+  }
+  function doExport() {
+    var text = exportText();
+    try {
+      var blob = new Blob([text], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "war-of-princes-table.json";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    } catch (e) {}
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function () {});
+    }
+  }
+  function applyImport(text) {
+    try {
+      var data = JSON.parse(text);
+      var chars = data && data.characters ? data.characters : data;
+      if (chars && typeof chars === "object" && !Array.isArray(chars)) {
+        state = chars; save(); renderChar();
+        return true;
+      }
+      window.alert("That doesn't look like exported tracker state.");
+    } catch (e) { window.alert("Could not parse JSON: " + e.message); }
+    return false;
+  }
+  function doImport() {
+    var input = document.createElement("input");
+    input.type = "file"; input.accept = "application/json,.json";
+    input.style.display = "none";
+    input.addEventListener("change", function () {
+      var f = input.files && input.files[0];
+      if (!f) return;
+      var r = new FileReader();
+      r.onload = function () { applyImport(String(r.result)); input.remove(); };
+      r.readAsText(f);
+    });
+    document.body.appendChild(input);
+    input.click();
+  }
+
+  function optu(label, value) { var o = document.createElement("option"); o.textContent = label; o.value = value; return o; }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
+  else build();
+})();
