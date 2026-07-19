@@ -1,0 +1,65 @@
+/* ============================================================
+   dice.css — reusable animated dice (companion to dice.js)
+   Game-agnostic. Theme per-site by overriding the --dice-* vars.
+   Defaults suit a dark surface; the caller adds result classes
+   (succ / crit / bestial) and per-die tag classes (e.g. hunger).
+   ============================================================ */
+.dice-stage { display: flex; flex-wrap: wrap; gap: var(--dice-gap, 6px); }
+
+.dice-die {
+  width: var(--dice-size, 30px); height: var(--dice-size, 30px);
+  border-radius: var(--dice-radius, 4px);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--dice-font, "Cormorant Garamond", Georgia, serif);
+  font-size: calc(var(--dice-size, 30px) * 0.5); font-weight: 600; line-height: 1;
+  border: 1px solid var(--dice-border, rgba(160,144,128,0.28));
+  background: var(--dice-bg, #0f0c14); color: var(--dice-face, rgba(232,224,208,0.62));
+  position: relative; will-change: transform; user-select: none;
+}
+
+/* tumble while rolling, bounce on settle */
+.dice-die.rolling { animation: dice-tumble 0.5s linear infinite; }
+@keyframes dice-tumble {
+  0%   { transform: translateY(0)    rotate(0deg); }
+  25%  { transform: translateY(-4px) rotate(-13deg); }
+  50%  { transform: translateY(0)    rotate(11deg); }
+  75%  { transform: translateY(-3px) rotate(-7deg); }
+  100% { transform: translateY(0)    rotate(0deg); }
+}
+.dice-die.settling { animation: dice-settle 0.34s cubic-bezier(.2,1.5,.4,1); }
+@keyframes dice-settle {
+  0%   { transform: scale(0.7); }
+  60%  { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+/* result states (applied by the caller's classify()) */
+.dice-die.succ {
+  background: var(--dice-succ-bg, #23202b);
+  border-color: var(--dice-succ-border, #e8e0d0);
+  color: var(--dice-succ-face, #e8e0d0);
+}
+.dice-die.crit {
+  border-color: var(--dice-crit-border, #c4a055);
+  color: var(--dice-crit-face, #c4a055);
+  background: var(--dice-crit-bg, rgba(154,122,58,0.22));
+}
+
+/* an example per-die tag: "hunger" (V5). Other games define their own. */
+.dice-die.hunger {
+  background: var(--dice-hunger-bg, #2a0d10);
+  border-color: var(--dice-hunger-border, #7a1a22);
+  color: var(--dice-hunger-face, #a03030);
+}
+.dice-die.hunger.succ { color: #e9b7b7; border-color: #a03030; }
+.dice-die.hunger.crit { border-color: #c4a055; color: #c4a055; background: rgba(122,26,34,0.4); }
+.dice-die.bestial { box-shadow: 0 0 0 2px var(--dice-bestial, #a03030); }
+
+.dice-die.rerolled::after {
+  content: "\21bb"; position: absolute; top: -7px; right: -5px;
+  font-size: 0.62rem; color: var(--dice-crit-border, #c4a055);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dice-die.rolling, .dice-die.settling { animation: none; }
+}

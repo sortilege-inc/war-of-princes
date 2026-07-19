@@ -140,20 +140,18 @@
 .pl-subbtn:hover { color: var(--pl-bone); border-color: var(--pl-gold); }
 .pl-subbtn[disabled] { opacity: 0.35; cursor: default; }
 
-.pl-dice { display: flex; flex-wrap: wrap; gap: 6px; margin: 0.7rem 0 0.5rem; }
-.pl-d {
-  width: 30px; height: 30px; border-radius: 4px; display: inline-flex;
-  align-items: center; justify-content: center; font-family: "Cormorant Garamond", serif;
-  font-size: 1.1rem; font-weight: 600; border: 1px solid var(--pl-edge);
-  background: #0f0c14; color: var(--pl-ash); position: relative;
+/* dice themselves are drawn by the reusable module (dice.css); the drawer
+   supplies the theme via the --dice-* variables below. */
+.pl-drawer {
+  --dice-size: 30px; --dice-gap: 6px; --dice-radius: 4px;
+  --dice-bg: #0f0c14; --dice-border: var(--pl-edge); --dice-face: var(--pl-ash);
+  --dice-succ-bg: #23202b; --dice-succ-border: var(--pl-bone); --dice-succ-face: var(--pl-bone);
+  --dice-crit-border: var(--pl-gold-pale); --dice-crit-face: var(--pl-gold-pale); --dice-crit-bg: rgba(154,122,58,0.2);
+  --dice-hunger-bg: #2a0d10; --dice-hunger-border: var(--pl-blood); --dice-hunger-face: var(--pl-blood-pale);
+  --dice-bestial: var(--pl-blood-pale);
 }
-.pl-d.reg.succ  { border-color: var(--pl-bone); color: var(--pl-bone); background: #23202b; }
-.pl-d.reg.crit  { border-color: var(--pl-gold-pale); color: var(--pl-gold-pale); background: rgba(154,122,58,0.2); }
-.pl-d.hunger    { background: #2a0d10; border-color: var(--pl-blood); color: var(--pl-blood-pale); }
-.pl-d.hunger.succ { color: #e9b7b7; border-color: var(--pl-blood-pale); }
-.pl-d.hunger.crit { border-color: var(--pl-gold-pale); color: var(--pl-gold-pale); background: rgba(122,26,34,0.4); }
-.pl-d.hunger.bestial { box-shadow: 0 0 0 2px var(--pl-blood-pale); }
-.pl-d.rerolled::after { content: "↻"; position: absolute; top: -6px; right: -4px; font-size: 0.6rem; color: var(--pl-gold-pale); }
+.pl-stage { margin: 0.7rem 0 0.5rem; min-height: 30px; }
+.pl-score { min-height: 1.6rem; }
 
 .pl-result { font-family: "Cormorant Garamond", serif; margin-top: 0.3rem; }
 .pl-result .pl-succcount { font-size: 1.6rem; color: var(--pl-gold-pale); font-weight: 600; }
