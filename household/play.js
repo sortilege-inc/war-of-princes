@@ -85,7 +85,8 @@
       health: new Array(c.maxHealth).fill(0),      // 0 empty, 1 superficial, 2 aggravated
       willpower: new Array(c.maxWillpower).fill(0),
       hunger: (c.type === "vampire") ? (c.hunger || 0) : null,
-      road: c.road ? { rating: c.road.rating, stains: 0 } : null
+      road: c.road ? { rating: c.road.rating, stains: 0 } : null,
+      xp: (c.type === "vampire") ? { earned: 0, spent: 0 } : null
     };
   }
   function ensure(c) {
@@ -96,6 +97,7 @@
     if (s.willpower.length !== c.maxWillpower) s.willpower = resize(s.willpower, c.maxWillpower);
     if (c.type === "vampire" && (s.hunger === null || s.hunger === undefined)) s.hunger = c.hunger || 0;
     if (c.road && !s.road) s.road = { rating: c.road.rating, stains: 0 };
+    if (c.type === "vampire" && !s.xp) s.xp = { earned: 0, spent: 0 };
     return s;
   }
   function resize(arr, n) { var out = new Array(n).fill(0); for (var i=0;i<Math.min(arr.length,n);i++) out[i]=arr[i]; return out; }
@@ -131,7 +133,8 @@
   // ---- rendering -------------------------------------------------------
   var root, drawer, bodyEl, selectEl;
   var current = CHARACTERS[0].id;
-  var lastRoll = null; // { char, dice, wpRerollsUsed }
+  var lastRoll = null; // { char, dice, wpRerollsUsed, mode, label, applied }
+  var rollOutEl = null; // current roll-output container (set by roller)
 
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 
@@ -197,6 +200,10 @@
       w.appendChild(sectionLabel("Road", c.road.aura));
       w.appendChild(roadBlock(c, s));
     }
+    if (c.type === "vampire") {
+      w.appendChild(sectionLabel("Experience", "earned · spent"));
+      w.appendChild(xpBlock(c, s));
+    }
 
     // ---- disciplines (display only)
     if (c.disciplines && c.disciplines.length) {
@@ -209,8 +216,27 @@
     }
 
     // ---- dice roller
-    w.appendChild(sectionLabel("Roll", "Attribute + Skill"));
+    w.appendChild(sectionLabel("Roll", "Attribute + Skill / Discipline"));
     w.appendChild(roller(c, s));
+  }
+
+  function xpBlock(c, s) {
+    var wrap = el("div", "pl-track");
+    var avail = el("div", "pl-track-note");
+    function updateAvail() { avail.textContent = (s.xp.earned - s.xp.spent) + " available"; }
+    function stepper(label, key) {
+      var row = el("div", "pl-stepper"); row.style.marginBottom = "0.3rem";
+      var minus = el("button", null, "−"), val = el("span", "pl-val", String(s.xp[key])), plus = el("button", null, "+");
+      row.appendChild(el("span", "pl-sub", label)); row.appendChild(minus); row.appendChild(val); row.appendChild(plus);
+      minus.addEventListener("click", function () { s.xp[key] = Math.max(0, s.xp[key] - 1); val.textContent = s.xp[key]; updateAvail(); save(); });
+      plus.addEventListener("click", function () { s.xp[key] += 1; val.textContent = s.xp[key]; updateAvail(); save(); });
+      return row;
+    }
+    wrap.appendChild(stepper("Earned", "earned"));
+    wrap.appendChild(stepper("Spent", "spent"));
+    updateAvail();
+    wrap.appendChild(avail);
+    return wrap;
   }
 
   function sectionLabel(txt, sub) {
@@ -267,14 +293,14 @@
   }
 
   function hungerRow(c, s) {
-    var wrap = el("div", "pl-track");
+    var wrap = el("div", "pl-track"); wrap.setAttribute("data-track", "hunger");
     var pips = el("div", "pl-pips");
     function paint() {
       pips.innerHTML = "";
       for (var i = 1; i <= 5; i++) {
         var p = el("button", "pl-pip" + (i <= s.hunger ? " on" : ""));
         (function (val) {
-          p.addEventListener("click", function () { s.hunger = (s.hunger === val ? val - 1 : val); paint(); save(); if (lastRoll) renderChar(); });
+          p.addEventListener("click", function () { s.hunger = (s.hunger === val ? val - 1 : val); paint(); save(); });
         })(i);
         pips.appendChild(p);
       }
@@ -283,16 +309,26 @@
     wrap.appendChild(pips);
     return wrap;
   }
+  function refreshHunger() {
+    var c = BY_ID[current], s = ensure(c);
+    var old = drawer.querySelector('.pl-track[data-track="hunger"]');
+    if (old) old.replaceWith(hungerRow(c, s));
+  }
+  function refreshRoad() {
+    var c = BY_ID[current], s = ensure(c);
+    var old = drawer.querySelector('.pl-track[data-track="road"]');
+    if (old) old.replaceWith(roadBlock(c, s));
+  }
 
   function roadBlock(c, s) {
-    var wrap = el("div", "pl-track");
+    var wrap = el("div", "pl-track"); wrap.setAttribute("data-track", "road");
     wrap.appendChild(el("div", "pl-road-name", c.road.name + " · " + s.road.rating));
     // rating pips 0..10
     var pips = el("div", "pl-pips");
     for (var i = 1; i <= 10; i++) {
       var p = el("button", "pl-pip road" + (i <= s.road.rating ? " on" : ""));
       (function (val) {
-        p.addEventListener("click", function () { s.road.rating = (s.road.rating === val ? val - 1 : val); renderChar(); save(); });
+        p.addEventListener("click", function () { s.road.rating = (s.road.rating === val ? val - 1 : val); save(); refreshRoad(); });
       })(i);
       pips.appendChild(p);
     }
@@ -310,12 +346,33 @@
 
   function roller(c, s) {
     var wrap = el("div", "pl-roller");
+
+    // ---- quick checks (preset pools) ----
+    var qa = el("div", "pl-quick");
+    function qbtn(label, fn) { var b = el("button", "pl-qbtn", label); b.addEventListener("click", fn); qa.appendChild(b); }
+    if (c.type === "vampire") {
+      qbtn("Rouse", function () { doRouse(c, s); });
+      qbtn("Predator", function () { commitPool(c, s, (c.attributes.Intelligence || 0) + (c.skills.Leadership || 0), "Predator — Intelligence + Leadership"); });
+      qbtn("Frenzy", function () { commitPool(c, s, c.maxWillpower, "Frenzy Resistance — Willpower"); });
+      if (c.road) qbtn("Remorse", function () { doRemorse(c, s); });
+    }
+    qbtn("Willpower", function () { commitPool(c, s, (c.attributes.Resolve || 0) + (c.attributes.Composure || 0), "Willpower — Resolve + Composure"); });
+    wrap.appendChild(qa);
+
+    // ---- pool builder (Attribute + Skill / Discipline) ----
     var pick = el("div", "pl-pick");
     var aSel = el("select"), sSel = el("select");
     aSel.appendChild(optu("— Attribute —", ""));
     ATTR_ORDER.forEach(function (a) { if (c.attributes[a] != null) aSel.appendChild(optu(a + " (" + c.attributes[a] + ")", a)); });
-    sSel.appendChild(optu("— Skill —", ""));
-    Object.keys(c.skills).sort().forEach(function (sk) { sSel.appendChild(optu(sk + " (" + c.skills[sk] + ")", sk)); });
+    sSel.appendChild(optu("— Skill / Discipline —", ""));
+    var gS = document.createElement("optgroup"); gS.label = "Skills";
+    Object.keys(c.skills).sort().forEach(function (sk) { gS.appendChild(optu(sk + " (" + c.skills[sk] + ")", "s:" + sk)); });
+    sSel.appendChild(gS);
+    if (c.disciplines && c.disciplines.length) {
+      var gD = document.createElement("optgroup"); gD.label = "Disciplines / Rituals";
+      c.disciplines.forEach(function (d) { gD.appendChild(optu(d.name + " (" + d.rating + ")", "d:" + d.name)); });
+      sSel.appendChild(gD);
+    }
     pick.appendChild(aSel); pick.appendChild(sSel);
     wrap.appendChild(pick);
 
@@ -330,11 +387,13 @@
     wrap.appendChild(poolrow);
 
     var mod = 0;
-    function pool() {
-      var a = aSel.value ? c.attributes[aSel.value] : 0;
-      var sk = sSel.value ? c.skills[sSel.value] : 0;
-      return Math.max(0, a + sk + mod);
+    function secondVal() {
+      var v = sSel.value; if (!v) return 0;
+      if (v.indexOf("s:") === 0) return c.skills[v.slice(2)] || 0;
+      if (v.indexOf("d:") === 0) { var d = c.disciplines.filter(function (x) { return x.name === v.slice(2); })[0]; return d ? d.rating : 0; }
+      return 0;
     }
+    function pool() { var a = aSel.value ? c.attributes[aSel.value] : 0; return Math.max(0, a + secondVal() + mod); }
     function refresh() {
       var p = pool();
       var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, p) : 0;
@@ -350,17 +409,36 @@
     wrap.appendChild(rollBtn);
     var out = el("div", "pl-out");
     wrap.appendChild(out);
+    rollOutEl = out;
 
     rollBtn.addEventListener("click", function () {
-      var p = pool();
-      var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, p) : 0;
-      var dice = rollPool(p - hd, hd);
-      lastRoll = { char: c.id, dice: dice, wpRerollsUsed: 0 };
-      renderRoll(out, c, s);            // animate the whole pool
+      var a = aSel.value, sTxt = sSel.value ? sSel.options[sSel.selectedIndex].text.replace(/\s*\(\d+\)$/, "") : "";
+      var label = (a && sTxt) ? (a + " + " + sTxt) : (a || sTxt || "Roll");
+      commitPool(c, s, pool(), label);
     });
 
     if (lastRoll && lastRoll.char === c.id) renderRoll(out, c, s, []); // settled, no animation on rebuild
     return wrap;
+  }
+
+  // build dice for a straight pool (Hunger dice for vampires) and roll
+  function commitPool(c, s, n, label) {
+    var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, n) : 0;
+    commitRoll(c, s, rollPool(n - hd, hd), "pool", label);
+  }
+  function commitRoll(c, s, dice, mode, label) {
+    lastRoll = { char: c.id, dice: dice, wpRerollsUsed: (mode === "rouse" || mode === "remorse") ? 1 : 0, mode: mode, label: label, applied: false };
+    renderRoll(rollOutEl, c, s); // animate the whole pool
+  }
+  function doRouse(c, s) {
+    var v = d10(), failed = v < 6;
+    if (failed) { s.hunger = Math.min(5, (s.hunger || 0) + 1); save(); refreshHunger(); }
+    commitRoll(c, s, [{ v: v, hunger: false, rerolled: false }], "rouse", "Rouse Check");
+  }
+  function doRemorse(c, s) {
+    var n = Math.max(1, 10 - s.road.rating - s.road.stains);
+    var dice = []; for (var i = 0; i < n; i++) dice.push({ v: d10(), hunger: false, rerolled: false });
+    commitRoll(c, s, dice, "remorse", "Remorse — " + n + (n === 1 ? " die" : " dice"));
   }
 
   // per-die styling for the animated dice (success / critical / bestial)
@@ -385,6 +463,7 @@
     Dice.roll({
       mount: stage,
       dice: specs,
+      shape: "d10",                      // pentagonal-trapezohedron faces
       animateOnly: animateOnly,          // undefined = animate all, [] = none, [i…] = subset
       duration: 600,
       stagger: 45,
@@ -394,9 +473,13 @@
   }
 
   function drawScore(score, out, c, s) {
+    score.innerHTML = "";
+    if (lastRoll.label) score.appendChild(el("div", "pl-rolllabel", lastRoll.label));
+    if (lastRoll.mode === "rouse") return drawRouse(score, c, s);
+    if (lastRoll.mode === "remorse") return drawRemorse(score, c, s);
+
     var dice = lastRoll.dice;
     var t = tally(dice);
-    score.innerHTML = "";
 
     var res = el("div", "pl-result");
     res.innerHTML = '<span class="pl-succcount">' + t.successes + '</span> <span class="pl-succlabel">' + (t.successes === 1 ? "success" : "successes") + '</span>';
@@ -429,6 +512,34 @@
       renderRoll(out, c, s, idxs);         // re-animate only the rerolled dice
     });
     score.appendChild(rr);
+  }
+
+  function drawRouse(score, c, s) {
+    var v = lastRoll.dice[0].v, ok = v >= 6;
+    var res = el("div", "pl-result");
+    res.innerHTML = ok
+      ? '<span class="pl-succlabel">Success — no Hunger gained</span>'
+      : '<span class="pl-succlabel">Failure — <b style="color:var(--pl-blood-pale)">Hunger +1</b></span>';
+    score.appendChild(res);
+    score.appendChild(el("div", "pl-io-note", "A Rouse Check covers waking, mending, Blood Surge, activating powers, and rousing the Blood."));
+  }
+
+  function drawRemorse(score, c, s) {
+    var t = tally(lastRoll.dice);
+    var held = t.successes >= 1;
+    var res = el("div", "pl-result");
+    res.innerHTML = '<span class="pl-succcount">' + t.successes + '</span> <span class="pl-succlabel">' + (held ? "— Remorse holds" : "— degeneration") + '</span>';
+    score.appendChild(res);
+    var apply = el("button", "pl-subbtn", held ? "Apply: clear Stains" : "Apply: −1 Road, clear Stains");
+    apply.style.marginTop = "0.6rem";
+    if (lastRoll.applied) apply.setAttribute("disabled", "disabled");
+    apply.addEventListener("click", function () {
+      if (lastRoll.applied) return;
+      if (!held) s.road.rating = Math.max(0, s.road.rating - 1);
+      s.road.stains = 0; lastRoll.applied = true; save(); refreshRoad();
+      apply.setAttribute("disabled", "disabled");
+    });
+    score.appendChild(apply);
   }
 
   function markWillpowerSpent(c, s) {

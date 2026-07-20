@@ -120,6 +120,19 @@
   background: #0f0c14; color: var(--pl-bone); border: 1px solid var(--pl-edge);
   border-radius: 3px; padding: 0.35rem;
 }
+/* quick-check buttons (Rouse / Predator / Frenzy / Remorse / Willpower) */
+.pl-quick { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.7rem; }
+.pl-qbtn {
+  font-family: "Cormorant SC", serif; letter-spacing: 0.12em; text-transform: uppercase;
+  font-size: 0.58rem; color: var(--pl-bone);
+  background: linear-gradient(180deg, #241c2c, #17131e);
+  border: 1px solid var(--pl-edge); border-radius: 3px; padding: 0.34rem 0.6rem; cursor: pointer;
+}
+.pl-qbtn:hover { border-color: var(--pl-gold); color: #fff; }
+.pl-rolllabel {
+  font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 0.9rem;
+  color: var(--pl-gold-pale); margin-bottom: 0.35rem;
+}
 .pl-poolrow { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
 .pl-pool-total { font-family: "Cinzel", serif; font-size: 1rem; color: var(--pl-bone); }
 .pl-pool-total b { color: var(--pl-gold-pale); font-size: 1.3rem; }
