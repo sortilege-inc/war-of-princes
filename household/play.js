@@ -102,7 +102,8 @@
       willpower: new Array(c.maxWillpower).fill(0),
       hunger: (c.type === "vampire") ? (c.hunger || 0) : null,
       road: c.road ? { rating: c.road.rating, stains: 0 } : null,
-      xp: (c.type === "vampire") ? { earned: 0, spent: 0 } : null
+      xp: (c.type === "vampire") ? { earned: 0, spent: 0 } : null,
+      notes: ""
     };
   }
   function ensure(c) {
@@ -114,6 +115,7 @@
     if (c.type === "vampire" && (s.hunger === null || s.hunger === undefined)) s.hunger = c.hunger || 0;
     if (c.road && !s.road) s.road = { rating: c.road.rating, stains: 0 };
     if (c.type === "vampire" && !s.xp) s.xp = { earned: 0, spent: 0 };
+    if (s.notes == null) s.notes = "";
     return s;
   }
   function resize(arr, n) { var out = new Array(n).fill(0); for (var i=0;i<Math.min(arr.length,n);i++) out[i]=arr[i]; return out; }
@@ -239,6 +241,21 @@
     // ---- dice roller
     w.appendChild(sectionLabel("Roll", "Attribute + Skill / Discipline"));
     w.appendChild(roller(c, s));
+
+    // ---- player notes (saved & exported)
+    w.appendChild(sectionLabel("Notes", "saved & exported"));
+    w.appendChild(notesBlock(c, s));
+  }
+
+  function notesBlock(c, s) {
+    var wrap = el("div", "pl-track");
+    var ta = document.createElement("textarea");
+    ta.className = "pl-notes";
+    ta.value = s.notes || "";
+    ta.placeholder = "Player notes for " + c.name + "…";
+    ta.addEventListener("input", function () { s.notes = ta.value; save(); });
+    wrap.appendChild(ta);
+    return wrap;
   }
 
   function xpBlock(c, s) {

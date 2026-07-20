@@ -205,6 +205,16 @@
 }
 
 .pl-io-note { font-size: 0.72rem; color: var(--pl-ash); font-style: italic; margin-top: 0.4rem; line-height: 1.4; }
+
+/* player notes */
+.pl-notes {
+  width: 100%; min-height: 84px; resize: vertical; box-sizing: border-box;
+  font-family: "EB Garamond", serif; font-size: 0.92rem; line-height: 1.5;
+  background: #0f0c14; color: var(--pl-bone);
+  border: 1px solid var(--pl-edge); border-radius: 3px; padding: 0.5rem;
+}
+.pl-notes:focus { outline: none; border-color: var(--pl-gold); }
+.pl-notes::placeholder { color: var(--pl-ash); font-style: italic; }
 .pl-hidden { display: none !important; }
 
 @media (max-width: 480px) {
