@@ -346,17 +346,18 @@
 
   function roller(c, s) {
     var wrap = el("div", "pl-roller");
+    var req = (lastRoll && lastRoll.char === c.id && lastRoll.required) ? lastRoll.required : 1;
 
     // ---- quick checks (preset pools) ----
     var qa = el("div", "pl-quick");
     function qbtn(label, fn) { var b = el("button", "pl-qbtn", label); b.addEventListener("click", fn); qa.appendChild(b); }
     if (c.type === "vampire") {
       qbtn("Rouse", function () { doRouse(c, s); });
-      qbtn("Predator", function () { commitPool(c, s, (c.attributes.Intelligence || 0) + (c.skills.Leadership || 0), "Predator — Intelligence + Leadership"); });
-      qbtn("Frenzy", function () { commitPool(c, s, c.maxWillpower, "Frenzy Resistance — Willpower"); });
+      qbtn("Predator", function () { commitPool(c, s, (c.attributes.Intelligence || 0) + (c.skills.Leadership || 0), "Predator — Intelligence + Leadership", req); });
+      qbtn("Frenzy", function () { commitPool(c, s, c.maxWillpower, "Frenzy Resistance — Willpower", req); });
       if (c.road) qbtn("Remorse", function () { doRemorse(c, s); });
     }
-    qbtn("Willpower", function () { commitPool(c, s, (c.attributes.Resolve || 0) + (c.attributes.Composure || 0), "Willpower — Resolve + Composure"); });
+    qbtn("Willpower", function () { commitPool(c, s, (c.attributes.Resolve || 0) + (c.attributes.Composure || 0), "Willpower — Resolve + Composure", req); });
     wrap.appendChild(qa);
 
     // ---- pool builder (Attribute + Skill / Discipline) ----
@@ -376,15 +377,29 @@
     pick.appendChild(aSel); pick.appendChild(sSel);
     wrap.appendChild(pick);
 
-    // modifier + pool total
+    // modifier / difficulty / pool total
     var poolrow = el("div", "pl-poolrow");
     var step = el("div", "pl-stepper");
     var mMinus = el("button", null, "−"), mVal = el("span", "pl-val", "0"), mPlus = el("button", null, "+");
     step.appendChild(el("span", "pl-sub", "Mod")); step.appendChild(mMinus); step.appendChild(mVal); step.appendChild(mPlus);
+    var reqStep = el("div", "pl-stepper");
+    var rMinus = el("button", null, "−"), rVal = el("span", "pl-val", String(req)), rPlus = el("button", null, "+");
+    reqStep.appendChild(el("span", "pl-sub", "Needs")); reqStep.appendChild(rMinus); reqStep.appendChild(rVal); reqStep.appendChild(rPlus);
     var total = el("span", "pl-pool-total");
     var hungerNote = el("span", "pl-hungernote");
-    poolrow.appendChild(step); poolrow.appendChild(total); poolrow.appendChild(hungerNote);
+    poolrow.appendChild(step); poolrow.appendChild(reqStep); poolrow.appendChild(total); poolrow.appendChild(hungerNote);
     wrap.appendChild(poolrow);
+
+    function onReqChange() {
+      rVal.textContent = req;
+      if (lastRoll && lastRoll.char === c.id && lastRoll.mode === "pool") {
+        lastRoll.required = req;
+        var scoreEl = rollOutEl && rollOutEl.querySelector(".pl-score");
+        if (scoreEl) drawScore(scoreEl, rollOutEl, c, s); // re-judge, no re-roll
+      }
+    }
+    rMinus.addEventListener("click", function () { req = Math.max(1, req - 1); onReqChange(); });
+    rPlus.addEventListener("click", function () { req = req + 1; onReqChange(); });
 
     var mod = 0;
     function secondVal() {
@@ -414,7 +429,7 @@
     rollBtn.addEventListener("click", function () {
       var a = aSel.value, sTxt = sSel.value ? sSel.options[sSel.selectedIndex].text.replace(/\s*\(\d+\)$/, "") : "";
       var label = (a && sTxt) ? (a + " + " + sTxt) : (a || sTxt || "Roll");
-      commitPool(c, s, pool(), label);
+      commitPool(c, s, pool(), label, req);
     });
 
     if (lastRoll && lastRoll.char === c.id) renderRoll(out, c, s, []); // settled, no animation on rebuild
@@ -422,12 +437,12 @@
   }
 
   // build dice for a straight pool (Hunger dice for vampires) and roll
-  function commitPool(c, s, n, label) {
+  function commitPool(c, s, n, label, required) {
     var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, n) : 0;
-    commitRoll(c, s, rollPool(n - hd, hd), "pool", label);
+    commitRoll(c, s, rollPool(n - hd, hd), "pool", label, required);
   }
-  function commitRoll(c, s, dice, mode, label) {
-    lastRoll = { char: c.id, dice: dice, wpRerollsUsed: (mode === "rouse" || mode === "remorse") ? 1 : 0, mode: mode, label: label, applied: false };
+  function commitRoll(c, s, dice, mode, label, required) {
+    lastRoll = { char: c.id, dice: dice, wpRerollsUsed: (mode === "rouse" || mode === "remorse") ? 1 : 0, mode: mode, label: label, required: required || 1, applied: false };
     renderRoll(rollOutEl, c, s); // animate the whole pool
   }
   function doRouse(c, s) {
@@ -480,18 +495,23 @@
 
     var dice = lastRoll.dice;
     var t = tally(dice);
+    var need = lastRoll.required || 1;
+    var win = t.successes >= need;
 
     var res = el("div", "pl-result");
-    res.innerHTML = '<span class="pl-succcount">' + t.successes + '</span> <span class="pl-succlabel">' + (t.successes === 1 ? "success" : "successes") + '</span>';
+    res.innerHTML = '<span class="pl-succcount">' + t.successes + '</span> <span class="pl-succlabel">of ' + need + ' needed</span>';
     score.appendChild(res);
 
     var flags = el("div", "pl-flags");
-    if (t.successes === 0) {
-      flags.appendChild(el("span", "pl-flag bestial", t.bestial ? "Bestial Failure" : "Total Failure"));
-    } else if (t.messy) {
-      flags.appendChild(el("span", "pl-flag messy", "Messy Critical"));
-    } else if (t.critPairs >= 1) {
-      flags.appendChild(el("span", "pl-flag crit", "Critical"));
+    if (win) {
+      if (t.messy) flags.appendChild(el("span", "pl-flag messy", "Messy Critical"));
+      else if (t.critPairs >= 1) flags.appendChild(el("span", "pl-flag crit", "Critical Success"));
+      else flags.appendChild(el("span", "pl-flag win", "Success"));
+    } else {
+      // a Bestial Failure is any failed roll showing a 1 on a Hunger die
+      if (t.bestial) flags.appendChild(el("span", "pl-flag bestial", "Bestial Failure"));
+      else if (t.successes === 0) flags.appendChild(el("span", "pl-flag fail", "Total Failure"));
+      else flags.appendChild(el("span", "pl-flag fail", "Failure"));
     }
     score.appendChild(flags);
 

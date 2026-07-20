@@ -178,6 +178,7 @@
 .pl-flag.bestial { color: var(--pl-blood-pale); border-color: var(--pl-blood-pale); background: rgba(122,26,34,0.18); }
 .pl-flag.crit    { color: var(--pl-gold-pale); border-color: var(--pl-gold); }
 .pl-flag.fail    { color: var(--pl-ash); border-color: var(--pl-edge); }
+.pl-flag.win     { color: var(--pl-bone); border-color: var(--pl-bone); background: rgba(232,224,208,0.08); }
 
 .pl-disc { font-size: 0.8rem; color: var(--pl-ash); line-height: 1.5; }
 .pl-disc b { color: var(--pl-bone); font-weight: 600; }
