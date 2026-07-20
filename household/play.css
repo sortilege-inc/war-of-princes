@@ -183,6 +183,27 @@
 .pl-disc { font-size: 0.8rem; color: var(--pl-ash); line-height: 1.5; }
 .pl-disc b { color: var(--pl-bone); font-weight: 600; }
 
+/* powers & rituals preset buttons */
+.pl-powers { margin-top: 0.2rem; }
+.pl-disc-hdr {
+  font-family: "Cinzel", serif; font-size: 0.7rem; letter-spacing: 0.06em;
+  color: var(--pl-gold-pale); margin: 0.6rem 0 0.35rem;
+}
+.pl-powrow { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.pl-power {
+  display: inline-flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  font-family: "Cormorant Garamond", serif; color: var(--pl-bone);
+  background: linear-gradient(180deg, #241c2c, #17131e);
+  border: 1px solid var(--pl-edge); border-radius: 3px; padding: 0.3rem 0.55rem; cursor: pointer;
+  text-align: left;
+}
+.pl-power:hover { border-color: var(--pl-gold); }
+.pl-power-name { font-size: 0.88rem; line-height: 1.1; }
+.pl-power-meta {
+  font-family: "Cormorant SC", serif; font-size: 0.52rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--pl-ash);
+}
+
 .pl-io-note { font-size: 0.72rem; color: var(--pl-ash); font-style: italic; margin-top: 0.4rem; line-height: 1.4; }
 .pl-hidden { display: none !important; }
 

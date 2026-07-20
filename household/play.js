@@ -22,13 +22,29 @@
       road:{ name:"Road of Kings", aura:"Via Regalis", rating:7, guideline:"Behaving shamefully before your peers" },
       attributes:{Strength:2,Dexterity:2,Stamina:2,Charisma:2,Manipulation:4,Composure:3,Intelligence:3,Wits:1,Resolve:2},
       skills:{Etiquette:3,Intimidation:3,Leadership:3,Politics:3,Occult:4,Persuasion:2,Subterfuge:2,Survival:2,Craft:2,Academics:1,Medicine:1},
-      disciplines:[{name:"Dominate",rating:2,powers:["Compel","Domitor's Favor"]},{name:"Protean",rating:2,powers:["Eyes of the Beast","Vicissitude (Fleshcrafting)"]},{name:"Blood Sorcery (Koldunic)",rating:3,powers:["Koldunic Sorcery — Earth","Koldunic Sorcery — Water","Koldunic Sorcery — Air"]}] },
+      disciplines:[{name:"Dominate",rating:2,powers:["Compel","Domitor's Favor"]},{name:"Protean",rating:2,powers:["Eyes of the Beast","Vicissitude (Fleshcrafting)"]},{name:"Blood Sorcery (Koldunic)",rating:3,powers:["Koldunic Sorcery — Earth","Koldunic Sorcery — Water","Koldunic Sorcery — Air"]}],
+      powers:[
+        {name:"Compel", disc:"Dominate", attr:"Charisma", roll:true, cost:"Free", vs:"Intelligence + Resolve"},
+        {name:"Domitor's Favor", disc:"Dominate", roll:false, cost:"1 Rouse", note:"Monthly · −3 dice to a thrall's defiance rolls (used on Światosław)."},
+        {name:"Eyes of the Beast", disc:"Protean", roll:false, cost:"Free", note:"Sight in total darkness; +2 dice Intimidation vs mortals."},
+        {name:"Vicissitude", disc:"Protean", attr:"Resolve", roll:true, cost:"1 Rouse", note:"Fleshcrafting — known but never used."},
+        {name:"Koldunic Sorcery — Earth", disc:"Blood Sorcery (Koldunic)", attr:"Resolve", roll:true, cost:"Rouse + 1 Aggravated per dot of Sorcery", vs:"Wits/Resolve + Obfuscate (to perceive hidden)"},
+        {name:"Koldunic Sorcery — Water", disc:"Blood Sorcery (Koldunic)", attr:"Resolve", roll:true, cost:"Rouse + 1 Aggravated per dot of Sorcery", vs:"Wits/Resolve + Obfuscate (to perceive hidden)"},
+        {name:"Koldunic Sorcery — Air", disc:"Blood Sorcery (Koldunic)", attr:"Resolve", roll:true, cost:"Rouse + 1 Aggravated per dot of Sorcery", vs:"Wits/Resolve + Obfuscate (to perceive hidden)"},
+        {name:"Ward Against Ghouls", disc:"Blood Sorcery (Koldunic)", attr:"Intelligence", roll:true, diff:2, cost:"1 Rouse · cast 5 min", ritual:true},
+        {name:"Elemental Grasp", disc:"Blood Sorcery (Koldunic)", attr:"Intelligence", roll:true, diff:3, cost:"1 Rouse · cast 10 min", ritual:true},
+        {name:"Seeking Tiamat", disc:"Blood Sorcery (Koldunic)", attr:"Intelligence", roll:true, diff:4, cost:"1 Rouse · cast 15 min", ritual:true},
+        {name:"Elemental Shelter", disc:"Blood Sorcery (Koldunic)", attr:"Intelligence", roll:true, diff:4, cost:"1 Rouse · cast 15 min", ritual:true}
+      ] },
 
     { id:"graf", name:"Graf Światosław", type:"ghoul", section:"household",
       health:5, willpower:5,
       attributes:{Strength:3,Dexterity:2,Stamina:3,Charisma:3,Manipulation:1,Composure:4,Intelligence:2,Wits:2,Resolve:2},
       skills:{Athletics:3,"Animal Ken":3,Archery:3,Brawl:2,Melee:2,Riding:2,Awareness:2,Intimidation:2,Etiquette:1,Leadership:1,Politics:1,Finance:1,Medicine:1,Academics:1,Science:1},
-      disciplines:[{name:"Dominate",rating:1,powers:["Cloud Memory"]}] },
+      disciplines:[{name:"Dominate",rating:1,powers:["Cloud Memory"]}],
+      powers:[
+        {name:"Cloud Memory", disc:"Dominate", roll:false, cost:"Free", note:"Makes a mortal forget the last few minutes; requires touch. No roll vs an unengaged mortal (if contested: Manipulation + Dominate vs Wits + Resolve)."}
+      ] },
 
     { id:"kuncze", name:"Kuncze", type:"mortal", section:"allies",
       attributes:{Strength:3,Dexterity:2,Stamina:3,Charisma:1,Manipulation:1,Composure:2,Intelligence:1,Wits:1,Resolve:2},
@@ -135,6 +151,8 @@
   var current = CHARACTERS[0].id;
   var lastRoll = null; // { char, dice, wpRerollsUsed, mode, label, applied }
   var rollOutEl = null; // current roll-output container (set by roller)
+  var rollReq = 1;      // current "successes needed" (difficulty), shared so power presets can set it
+  var reqValEl = null;  // the Needs stepper's value element
 
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 
@@ -165,7 +183,7 @@
       selectEl.appendChild(group);
     });
     selectEl.value = current;
-    selectEl.addEventListener("change", function () { current = selectEl.value; lastRoll = null; renderChar(); });
+    selectEl.addEventListener("change", function () { current = selectEl.value; lastRoll = null; rollReq = 1; renderChar(); });
     bodyEl.appendChild(selectEl);
 
     var charWrap = el("div", "pl-charwrap");
@@ -205,8 +223,11 @@
       w.appendChild(xpBlock(c, s));
     }
 
-    // ---- disciplines (display only)
-    if (c.disciplines && c.disciplines.length) {
+    // ---- disciplines, powers & rituals (clickable presets)
+    if (c.powers && c.powers.length) {
+      w.appendChild(sectionLabel("Powers & Rituals", "tap to roll"));
+      w.appendChild(powersBlock(c, s));
+    } else if (c.disciplines && c.disciplines.length) {
       w.appendChild(sectionLabel("Disciplines", ""));
       var dl = el("div", "pl-disc");
       dl.innerHTML = c.disciplines.map(function (d) {
@@ -246,6 +267,60 @@
     return e;
   }
   function dots(n) { return new Array(n + 1).join("●"); }
+
+  // ---- powers & rituals (clickable presets) ----
+  function discRating(c, name) { var d = (c.disciplines || []).filter(function (x) { return x.name === name; })[0]; return d ? d.rating : 0; }
+  function powerPool(c, p) { return (c.attributes[p.attr] || 0) + discRating(c, p.disc); }
+  function powerNote(c, p) {
+    var parts = [];
+    if (p.roll) parts.push("Pool: " + p.attr + " + " + p.disc + " = " + powerPool(c, p));
+    if (p.diff) parts.push("Difficulty " + p.diff);
+    if (p.vs) parts.push("vs " + p.vs);
+    if (p.cost) parts.push("Cost: " + p.cost);
+    if (p.note) parts.push(p.note);
+    return parts.join(" · ");
+  }
+  function powerBlockMeta(c, p) {
+    if (!p.roll) return p.cost || "no roll";
+    if (p.ritual) return "Diff " + p.diff;
+    return powerPool(c, p) + " dice";
+  }
+  function powerBtn(c, s, p) {
+    var b = el("button", "pl-power");
+    b.innerHTML = '<span class="pl-power-name">' + p.name + '</span><span class="pl-power-meta">' + powerBlockMeta(c, p) + '</span>';
+    b.addEventListener("click", function () {
+      if (p.roll) commitPool(c, s, powerPool(c, p), p.name, p.diff || 1, powerNote(c, p));
+      else showInfo(p.name, powerNote(c, p));
+    });
+    return b;
+  }
+  function powersBlock(c, s) {
+    var wrap = el("div", "pl-powers");
+    (c.disciplines || []).forEach(function (d) {
+      var ps = c.powers.filter(function (p) { return p.disc === d.name && !p.ritual; });
+      if (!ps.length) return;
+      wrap.appendChild(el("div", "pl-disc-hdr", d.name + " " + dots(d.rating)));
+      var row = el("div", "pl-powrow");
+      ps.forEach(function (p) { row.appendChild(powerBtn(c, s, p)); });
+      wrap.appendChild(row);
+    });
+    var rits = c.powers.filter(function (p) { return p.ritual; });
+    if (rits.length) {
+      wrap.appendChild(el("div", "pl-disc-hdr", "Rituals"));
+      var rrow = el("div", "pl-powrow");
+      rits.forEach(function (p) { rrow.appendChild(powerBtn(c, s, p)); });
+      wrap.appendChild(rrow);
+    }
+    return wrap;
+  }
+  function showInfo(label, note) {
+    if (!rollOutEl) return;
+    rollOutEl.innerHTML = "";
+    var box = el("div", "pl-score");
+    box.appendChild(el("div", "pl-rolllabel", label));
+    if (note) box.appendChild(el("div", "pl-io-note", note));
+    rollOutEl.appendChild(box);
+  }
 
   function boxTrack(c, s, key) {
     var wrap = el("div", "pl-track");
@@ -346,18 +421,18 @@
 
   function roller(c, s) {
     var wrap = el("div", "pl-roller");
-    var req = (lastRoll && lastRoll.char === c.id && lastRoll.required) ? lastRoll.required : 1;
+    if (lastRoll && lastRoll.char === c.id && lastRoll.required) rollReq = lastRoll.required;
 
     // ---- quick checks (preset pools) ----
     var qa = el("div", "pl-quick");
     function qbtn(label, fn) { var b = el("button", "pl-qbtn", label); b.addEventListener("click", fn); qa.appendChild(b); }
     if (c.type === "vampire") {
       qbtn("Rouse", function () { doRouse(c, s); });
-      qbtn("Predator", function () { commitPool(c, s, (c.attributes.Intelligence || 0) + (c.skills.Leadership || 0), "Predator — Intelligence + Leadership", req); });
-      qbtn("Frenzy", function () { commitPool(c, s, c.maxWillpower, "Frenzy Resistance — Willpower", req); });
+      qbtn("Predator", function () { commitPool(c, s, (c.attributes.Intelligence || 0) + (c.skills.Leadership || 0), "Predator — Intelligence + Leadership", rollReq); });
+      qbtn("Frenzy", function () { commitPool(c, s, c.maxWillpower, "Frenzy Resistance — Willpower", rollReq); });
       if (c.road) qbtn("Remorse", function () { doRemorse(c, s); });
     }
-    qbtn("Willpower", function () { commitPool(c, s, (c.attributes.Resolve || 0) + (c.attributes.Composure || 0), "Willpower — Resolve + Composure", req); });
+    qbtn("Willpower", function () { commitPool(c, s, (c.attributes.Resolve || 0) + (c.attributes.Composure || 0), "Willpower — Resolve + Composure", rollReq); });
     wrap.appendChild(qa);
 
     // ---- pool builder (Attribute + Skill / Discipline) ----
@@ -383,23 +458,24 @@
     var mMinus = el("button", null, "−"), mVal = el("span", "pl-val", "0"), mPlus = el("button", null, "+");
     step.appendChild(el("span", "pl-sub", "Mod")); step.appendChild(mMinus); step.appendChild(mVal); step.appendChild(mPlus);
     var reqStep = el("div", "pl-stepper");
-    var rMinus = el("button", null, "−"), rVal = el("span", "pl-val", String(req)), rPlus = el("button", null, "+");
+    var rMinus = el("button", null, "−"), rVal = el("span", "pl-val", String(rollReq)), rPlus = el("button", null, "+");
     reqStep.appendChild(el("span", "pl-sub", "Needs")); reqStep.appendChild(rMinus); reqStep.appendChild(rVal); reqStep.appendChild(rPlus);
+    reqValEl = rVal;
     var total = el("span", "pl-pool-total");
     var hungerNote = el("span", "pl-hungernote");
     poolrow.appendChild(step); poolrow.appendChild(reqStep); poolrow.appendChild(total); poolrow.appendChild(hungerNote);
     wrap.appendChild(poolrow);
 
     function onReqChange() {
-      rVal.textContent = req;
+      rVal.textContent = rollReq;
       if (lastRoll && lastRoll.char === c.id && lastRoll.mode === "pool") {
-        lastRoll.required = req;
+        lastRoll.required = rollReq;
         var scoreEl = rollOutEl && rollOutEl.querySelector(".pl-score");
         if (scoreEl) drawScore(scoreEl, rollOutEl, c, s); // re-judge, no re-roll
       }
     }
-    rMinus.addEventListener("click", function () { req = Math.max(1, req - 1); onReqChange(); });
-    rPlus.addEventListener("click", function () { req = req + 1; onReqChange(); });
+    rMinus.addEventListener("click", function () { rollReq = Math.max(1, rollReq - 1); onReqChange(); });
+    rPlus.addEventListener("click", function () { rollReq = rollReq + 1; onReqChange(); });
 
     var mod = 0;
     function secondVal() {
@@ -429,7 +505,7 @@
     rollBtn.addEventListener("click", function () {
       var a = aSel.value, sTxt = sSel.value ? sSel.options[sSel.selectedIndex].text.replace(/\s*\(\d+\)$/, "") : "";
       var label = (a && sTxt) ? (a + " + " + sTxt) : (a || sTxt || "Roll");
-      commitPool(c, s, pool(), label, req);
+      commitPool(c, s, pool(), label, rollReq);
     });
 
     if (lastRoll && lastRoll.char === c.id) renderRoll(out, c, s, []); // settled, no animation on rebuild
@@ -437,12 +513,14 @@
   }
 
   // build dice for a straight pool (Hunger dice for vampires) and roll
-  function commitPool(c, s, n, label, required) {
+  function commitPool(c, s, n, label, required, note) {
     var hd = (c.type === "vampire") ? Math.min(s.hunger || 0, n) : 0;
-    commitRoll(c, s, rollPool(n - hd, hd), "pool", label, required);
+    commitRoll(c, s, rollPool(n - hd, hd), "pool", label, required, note);
   }
-  function commitRoll(c, s, dice, mode, label, required) {
-    lastRoll = { char: c.id, dice: dice, wpRerollsUsed: (mode === "rouse" || mode === "remorse") ? 1 : 0, mode: mode, label: label, required: required || 1, applied: false };
+  function commitRoll(c, s, dice, mode, label, required, note) {
+    lastRoll = { char: c.id, dice: dice, wpRerollsUsed: (mode === "rouse" || mode === "remorse") ? 1 : 0, mode: mode, label: label, required: required || 1, note: note || "", applied: false };
+    rollReq = lastRoll.required;                       // keep the Needs stepper in sync (e.g. a ritual's Difficulty)
+    if (reqValEl) reqValEl.textContent = rollReq;
     renderRoll(rollOutEl, c, s); // animate the whole pool
   }
   function doRouse(c, s) {
@@ -490,6 +568,7 @@
   function drawScore(score, out, c, s) {
     score.innerHTML = "";
     if (lastRoll.label) score.appendChild(el("div", "pl-rolllabel", lastRoll.label));
+    if (lastRoll.note) score.appendChild(el("div", "pl-io-note", lastRoll.note));
     if (lastRoll.mode === "rouse") return drawRouse(score, c, s);
     if (lastRoll.mode === "remorse") return drawRemorse(score, c, s);
 
