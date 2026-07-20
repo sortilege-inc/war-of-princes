@@ -1,7 +1,7 @@
 {
   "edition": "vtm5e",
   "spec_version": "0.4",
-  "entity_count": 151,
+  "entity_count": 158,
   "entities": [
     {
       "name": "Entity",
@@ -7220,30 +7220,39 @@
     },
     {
       "name": "Road",
+      "hash": "wopRoadTrack000001",
       "kind": "def",
       "applies_to": [
         "Kindred"
       ],
       "rules": [
         {
-          "hash": "eECQedjov4XKgmNpBP7zfN",
-          "text": "frenzy_resistance_bonus"
+          "hash": "wopRoadRuleFrenzy1",
+          "text": "higher_road_rating_grants_more_dice_to_resist_frenzy"
         },
         {
-          "hash": "JNbhSxmaZc44BrARP8Xriy",
-          "text": "stain_accumulation"
+          "hash": "wopRoadRuleDegen01",
+          "text": "committing_a_recognized_sin_causes_stains"
         },
         {
-          "hash": "MT9b89PyefjLNPDwyCJhQw",
-          "text": "remorse_test_mechanics"
+          "hash": "wopRoadRuleRemors1",
+          "text": "unresolved_stains_force_a_remorse_roll_at_end_of_session"
         },
         {
-          "hash": "MULKDxZHx9SwwWNNKfhX56",
-          "text": "degeneration_consequences"
+          "hash": "wopRoadRuleFall001",
+          "text": "failing_the_remorse_roll_lowers_the_road_rating_by_one"
         },
         {
-          "hash": "R6Uxif7eEgJfmRCPz3gMfW",
-          "text": "beast_resistance_bonuses"
+          "hash": "wopRoadRuleRaise01",
+          "text": "raising_the_road_rating_requires_great_commitment_or_sudden_growth"
+        },
+        {
+          "hash": "wopRoadRulePenal01",
+          "text": "low_ratings_impose_escalating_social_interaction_penalties"
+        },
+        {
+          "hash": "wopRoadRuleAura001",
+          "text": "aura_is_projected_with_a_rouse_check_and_lasts_one_scene"
         }
       ],
       "sources": [
@@ -7251,59 +7260,37 @@
       ]
     },
     {
-      "name": "Road of Kings",
-      "hash": "roadofkings000001",
+      "name": "Road Degeneration",
+      "hash": "wopRoadDegen000001",
       "kind": "def",
-      "properties": [
-        {
-          "name": "Type",
-          "type": "STRING",
-          "value": "ROAD"
-        },
-        {
-          "name": "Category",
-          "type": "STRING",
-          "value": "Road"
-        },
-        {
-          "name": "Aura",
-          "type": "STRING",
-          "value": "Via Regalis"
-        },
-        {
-          "name": "Alternate Names",
-          "type": "LIST OF STRING",
-          "value": "[\"Via Regalis\", \"The Road of Rule\"]"
-        }
-      ],
       "sources": [
         "vtm5e-war-of-princes-roads.ttrpg"
       ]
     },
     {
-      "name": "Road of Humanity",
-      "hash": "roadofhumanity01",
+      "name": "Road Aura",
+      "hash": "wopRoadAura0000001",
       "kind": "def",
       "properties": [
         {
-          "name": "Type",
+          "name": "Beast Aura",
           "type": "STRING",
-          "value": "ROAD"
+          "value": "Predator's Instinct"
         },
         {
-          "name": "Category",
+          "name": "Humanity Aura",
           "type": "STRING",
-          "value": "Road"
+          "value": "Blush of Life"
         },
         {
-          "name": "Aura",
+          "name": "Heaven Aura",
           "type": "STRING",
-          "value": "Via Humanitatis"
+          "value": "Holy Radiance"
         },
         {
-          "name": "Alternate Names",
-          "type": "LIST OF STRING",
-          "value": "[\"Via Humanitatis\", \"The Road of Man\"]"
+          "name": "Kings Aura",
+          "type": "STRING",
+          "value": "Air of Authority"
         }
       ],
       "sources": [
@@ -7312,32 +7299,1252 @@
     },
     {
       "name": "Road of the Beast",
-      "hash": "roadofbeast0001",
+      "hash": "wopRoadBeast000001",
       "kind": "def",
+      "extends": "Road",
       "properties": [
         {
-          "name": "Type",
-          "type": "STRING",
-          "value": "ROAD"
-        },
-        {
-          "name": "Category",
-          "type": "STRING",
-          "value": "Road"
-        },
-        {
-          "name": "Aura",
+          "name": "Latin Name",
           "type": "STRING",
           "value": "Via Bestiae"
         },
         {
-          "name": "Alternate Names",
+          "name": "Followers",
+          "type": "STRING",
+          "value": "Ferals"
+        },
+        {
+          "name": "Aura",
+          "type": "STRING",
+          "value": "Predator's Instinct"
+        },
+        {
+          "name": "Tenets",
           "type": "LIST OF STRING",
-          "value": "[\"Via Bestiae\", \"The Road of the Beast\"]"
+          "value": "[\n                \"Exist in accord with the needs of the Beast\",\n                \"Do what you must to survive. No more, no less.\",\n                \"Mercy is for the weak. Only the strong survive.\",\n                \"The past is dead, the future is unborn. The moment is yours.\",\n                \"Respect only the strong\"\n            ]"
+        },
+        {
+          "name": "Hierarchy of Sins",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Rating 10",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Taking foolhardy risks"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Survival is paramount"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Permanently have the effects of Aura; appear as a living creature to beasts\", \"Heal Superficial damage as a mortal\", \"You can taste, eat, and digest food that you hunt\", \"Healing Aggravated damage during day sleep requires one Rouse check\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 9",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Leaving the weak unchallenged"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Only the strongest should lead"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Permanently have the effects of Aura; appear as an ill creature\", \"Heal Superficial damage as a mortal\", \"Healing Aggravated damage during day sleep requires two Rouse checks\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 8",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Killing without need"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Murder is a creation of society"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Roll two dice for the Aura Rouse check and take the highest result\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 7",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Avoiding the wilds"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "In nature lies strength; civilization is soft and weak"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Using Aura negates penalties from drinking animal blood\", \"With no penalties from animal blood, you can sate one additional Hunger than usual from an animal regardless of size\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 6",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Tormenting others needlessly"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Only civilized folk engage in these things"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"With Aura, penalties from drinking animal blood are treated as one Blood Potency level lower\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 5",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Making unbidden sacrifice"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "You owe others nothing"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a one-die penalty to interact with non-hostiles outside of Intimidation or inhuman ways\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 4",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Failing to kill when necessary"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Nothing is more important than survival"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a two-dice penalty to interact with non-hostiles\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 3",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Not defending your territory"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Those who do not defend their territory have it taken from them"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a four-dice penalty to interact with non-hostiles\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 2",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Showing your enemies mercy"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Mercy is for the weak"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a six-dice penalty to interact with non-hostiles; Aura reduces the penalty to four\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 1",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Failing to feed your hunger"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "The Beast must be satisfied"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer an eight-dice penalty to interact with non-hostiles; Aura reduces this to five\"]"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "wopRoadRuleFrenzy1",
+          "text": "higher_road_rating_grants_more_dice_to_resist_frenzy"
+        },
+        {
+          "hash": "wopRoadRuleDegen01",
+          "text": "committing_a_recognized_sin_causes_stains"
+        },
+        {
+          "hash": "wopRoadRuleRemors1",
+          "text": "unresolved_stains_force_a_remorse_roll_at_end_of_session"
+        },
+        {
+          "hash": "wopRoadRuleFall001",
+          "text": "failing_the_remorse_roll_lowers_the_road_rating_by_one"
+        },
+        {
+          "hash": "wopRoadRuleRaise01",
+          "text": "raising_the_road_rating_requires_great_commitment_or_sudden_growth"
+        },
+        {
+          "hash": "wopRoadRulePenal01",
+          "text": "low_ratings_impose_escalating_social_interaction_penalties"
+        },
+        {
+          "hash": "wopRoadRuleAura001",
+          "text": "aura_is_projected_with_a_rouse_check_and_lasts_one_scene"
         }
       ],
       "sources": [
         "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    },
+    {
+      "name": "Road of Humanity",
+      "hash": "wopRoadHumanity01",
+      "kind": "def",
+      "extends": "Road",
+      "properties": [
+        {
+          "name": "Latin Name",
+          "type": "STRING",
+          "value": "Via Humanitatis"
+        },
+        {
+          "name": "Followers",
+          "type": "STRING",
+          "value": "Prodigals"
+        },
+        {
+          "name": "Aura",
+          "type": "STRING",
+          "value": "Blush of Life"
+        },
+        {
+          "name": "Tenets",
+          "type": "LIST OF STRING",
+          "value": "[\n                \"A man is measured by his words, his deeds and his heart, not an accident of birth or circumstance\",\n                \"The ability to reason separates man from beast\",\n                \"Do unto others as you would have them do unto you\",\n                \"All men are brothers\",\n                \"Freedom is earned with dignity and justice\"\n            ]"
+        },
+        {
+          "name": "Hierarchy of Sins",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Rating 10",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Selfish thoughts"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Thought is as good as deed"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Permanently have the effects of Aura; appear as a healthy human\", \"Heal Superficial damage as a mortal\", \"You can taste, eat, and digest food as if human\", \"You can stay awake during the day as if human\", \"The rate of sunlight damage you take is halved\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 9",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Minor selfish acts"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Compassion separates us from the beasts"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Permanently have the effects of Aura; appear as an ill human\", \"Heal Superficial damage as a mortal\", \"You can taste, eat, and digest rare or raw meat and many liquids\", \"You can rise from day-sleep up to an hour before sunset and stay awake an hour after dawn\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 8",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Injury to another person (deliberate or otherwise)"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Follow the golden rule"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Roll two dice for the Aura Rouse check and take the highest result\", \"Aura allows you to digest and taste wine\", \"You can rise from day-sleep up to an hour before sunset\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 7",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Theft and robbery"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Respect the property of others"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Unless using Aura, food and drink makes you immediately vomit unless a Composure + Stamina check is passed\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 6",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Accidental killing"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Ignorance does not excuse cruelty"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"With Aura, make a check to keep food and drink down for an hour\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 5",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Wanton destruction"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Man creates; beast destroys"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a one-die penalty to interact with humans outside of Intimidation or inhuman ways\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 4",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Impassioned killing"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Those who act as beasts become beasts"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a two-dice penalty to interact with humans\", \"Can no longer keep food or drink down, even with Aura\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 3",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Planned killing"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "If you surrender to the Beast, you become its slave"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a four-dice penalty to interact with humans\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 2",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Casual killing"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Others are worthy of respect"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a six-dice penalty to interact with humans; Aura reduces the penalty to four\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 1",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "The most heinous and demented acts"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Are you man or beast?"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer an eight-dice penalty to interact with humans; Aura reduces this to five\"]"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "wopRoadRuleFrenzy1",
+          "text": "higher_road_rating_grants_more_dice_to_resist_frenzy"
+        },
+        {
+          "hash": "wopRoadRuleDegen01",
+          "text": "committing_a_recognized_sin_causes_stains"
+        },
+        {
+          "hash": "wopRoadRuleRemors1",
+          "text": "unresolved_stains_force_a_remorse_roll_at_end_of_session"
+        },
+        {
+          "hash": "wopRoadRuleFall001",
+          "text": "failing_the_remorse_roll_lowers_the_road_rating_by_one"
+        },
+        {
+          "hash": "wopRoadRuleRaise01",
+          "text": "raising_the_road_rating_requires_great_commitment_or_sudden_growth"
+        },
+        {
+          "hash": "wopRoadRulePenal01",
+          "text": "low_ratings_impose_escalating_social_interaction_penalties"
+        },
+        {
+          "hash": "wopRoadRuleAura001",
+          "text": "aura_is_projected_with_a_rouse_check_and_lasts_one_scene"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    },
+    {
+      "name": "Road of Heaven",
+      "hash": "wopRoadHeaven00001",
+      "kind": "def",
+      "extends": "Road",
+      "properties": [
+        {
+          "name": "Latin Name",
+          "type": "STRING",
+          "value": "Via Caeli"
+        },
+        {
+          "name": "Followers",
+          "type": "STRING",
+          "value": "Faithful"
+        },
+        {
+          "name": "Aura",
+          "type": "STRING",
+          "value": "Holy Radiance"
+        },
+        {
+          "name": "Tenets",
+          "type": "LIST OF STRING",
+          "value": "[\n                \"God laid His mark upon Caine and his childer are part of His great plan\",\n                \"The word of God is law. Defiance of God is a sin that leads to damnation\",\n                \"No one is above God's law\",\n                \"Love and serve God in all things\",\n                \"Deny the Devil through denial of the Beast and all creatures of Hell\"\n            ]"
+        },
+        {
+          "name": "Hierarchy of Sins",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Rating 10",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Violating any of the Ten Commandments"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "God's word is law"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Permanently have the effects of Aura; appear as a divine being\", \"Add 2 additional dice when resisting True Faith abilities\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 9",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Failing to speak out against corruption and sin"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "All the Devil requires is for the faithful to do nothing"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Blush of Life hides your undead aura from supernatural detection by non-Cainites\", \"Add 1 additional die when resisting True Faith abilities\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 8",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Acting out of pride, avarice, gluttony, or some other sinful impulse"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Sin is the road to the Beast"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Roll two dice for the Aura Rouse check and take the highest result\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 7",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Theft, robbery, willful vandalism"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Thou shalt not steal"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"With Aura, add 2 dice to checks made to hide your undead aura from supernatural detection by non-Cainites\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 6",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Causing harm to pious and virtuous persons"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "God sees all and punishes such sins"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"With Aura, add 1 die to checks made to hide your undead aura from supernatural detection by non-Cainites\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 5",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Feeding from an innocent without permission"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "God protects the innocent"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a one-die penalty to interact with pious humans outside of Intimidation or inhuman ways\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 4",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Blasphemous or heretical acts"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Denial of God leads only to damnation"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a two-dice penalty to interact with pious humans\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 3",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Allowing crime or major sin to go unpunished"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Vengeance is mine, sayeth the Lord"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a four-dice penalty to interact with the pious\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 2",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "The murder of innocents"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Thou shalt not kill"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a six-dice penalty to interact with the pious; Aura reduces the penalty to four\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 1",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Aiding a demon or other supernatural agent of evil"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Serve evil and you serve the Beast"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer an eight-dice penalty to interact with the pious; Aura reduces this to five\"]"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "wopRoadRuleFrenzy1",
+          "text": "higher_road_rating_grants_more_dice_to_resist_frenzy"
+        },
+        {
+          "hash": "wopRoadRuleDegen01",
+          "text": "committing_a_recognized_sin_causes_stains"
+        },
+        {
+          "hash": "wopRoadRuleRemors1",
+          "text": "unresolved_stains_force_a_remorse_roll_at_end_of_session"
+        },
+        {
+          "hash": "wopRoadRuleFall001",
+          "text": "failing_the_remorse_roll_lowers_the_road_rating_by_one"
+        },
+        {
+          "hash": "wopRoadRuleRaise01",
+          "text": "raising_the_road_rating_requires_great_commitment_or_sudden_growth"
+        },
+        {
+          "hash": "wopRoadRulePenal01",
+          "text": "low_ratings_impose_escalating_social_interaction_penalties"
+        },
+        {
+          "hash": "wopRoadRuleAura001",
+          "text": "aura_is_projected_with_a_rouse_check_and_lasts_one_scene"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    },
+    {
+      "name": "Road of Kings",
+      "hash": "wopRoadKings000001",
+      "kind": "def",
+      "extends": "Road",
+      "properties": [
+        {
+          "name": "Latin Name",
+          "type": "STRING",
+          "value": "Via Regalis"
+        },
+        {
+          "name": "Followers",
+          "type": "STRING",
+          "value": "Scions"
+        },
+        {
+          "name": "Aura",
+          "type": "STRING",
+          "value": "Air of Authority"
+        },
+        {
+          "name": "Tenets",
+          "type": "LIST OF STRING",
+          "value": "[\n                \"There are only two roles in this world: that of master and that of servant\",\n                \"You are superior to mortals, made to rule\",\n                \"To master others, you must first master yourself and the Beast within\",\n                \"Only those who seize power gain it; only those who use power keep it\",\n                \"Your word is your bond. Without it, you are nothing\"\n            ]"
+        },
+        {
+          "name": "Hierarchy of Sins",
+          "type": "DEF",
+          "nested": [
+            {
+              "name": "Rating 10",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Neglecting your duty"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Those who fail in their responsibilities often lose them"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Permanently have the effects of Aura; appear as an authority figure\", \"You may use your Mending ability to heal Superficial Willpower instead of physical damage once a night\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 9",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Treating a peer with disrespect"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "A leader earns respect by acting respectfully"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Permanently have the effects of Blush of Life; appear as an important figure\", \"You heal your full Willpower rating in Superficial damage at the beginning of a session\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 8",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Treating an inferior as an equal"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Everyone should know their place, including you"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"Roll two dice for the Aura Rouse check and take the highest result\", \"While your Aura is active, you may re-roll one additional die when spending Willpower to do so\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 7",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Breaking your word to a peer"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Trust is earned by being trustworthy"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"While Aura is active, reduce any Superficial Willpower damage caused by Social Combat by two\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 6",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Behaving shamefully before your peers"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Honor and reputation are everything"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"While Aura is active, reduce any Superficial Willpower damage caused by Social Combat by one\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 5",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Showing weakness in front of your inferiors"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "A leader must be seen as strong"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a one-die penalty to interact with those of lower station\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 4",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Failing to answer a challenge to your honor"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Honor must be maintained; challenges cannot go unanswered"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a two-dice penalty to interact with those of lower station\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 3",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Treating a superior with disrespect"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Superiors must be given the respect they are due"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a four-dice penalty to interact with those of lower station\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 2",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Breaking your word to your superiors"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Your word is your bond; if your word is worthless, then so are you"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer a six-dice penalty to interact with those of lower station; Aura reduces the penalty to four\"]"
+                }
+              ]
+            },
+            {
+              "name": "Rating 1",
+              "type": "DEF",
+              "nested": [
+                {
+                  "name": "Moral Guideline",
+                  "type": "STRING",
+                  "value": "Breaking a sworn oath"
+                },
+                {
+                  "name": "Rationale",
+                  "type": "STRING",
+                  "value": "Oaths of fealty hold the world together"
+                },
+                {
+                  "name": "Effects",
+                  "type": "LIST OF STRING",
+                  "value": "[\"You suffer an eight-dice penalty to interact with those of lower station; Aura reduces this to five\"]"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "hash": "wopRoadRuleFrenzy1",
+          "text": "higher_road_rating_grants_more_dice_to_resist_frenzy"
+        },
+        {
+          "hash": "wopRoadRuleDegen01",
+          "text": "committing_a_recognized_sin_causes_stains"
+        },
+        {
+          "hash": "wopRoadRuleRemors1",
+          "text": "unresolved_stains_force_a_remorse_roll_at_end_of_session"
+        },
+        {
+          "hash": "wopRoadRuleFall001",
+          "text": "failing_the_remorse_roll_lowers_the_road_rating_by_one"
+        },
+        {
+          "hash": "wopRoadRuleRaise01",
+          "text": "raising_the_road_rating_requires_great_commitment_or_sudden_growth"
+        },
+        {
+          "hash": "wopRoadRulePenal01",
+          "text": "low_ratings_impose_escalating_social_interaction_penalties"
+        },
+        {
+          "hash": "wopRoadRuleAura001",
+          "text": "aura_is_projected_with_a_rouse_check_and_lasts_one_scene"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-roads.ttrpg"
+      ]
+    },
+    {
+      "name": "War of Princes Character Creation",
+      "hash": "wopCharCreation001",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Age",
+          "type": "STRING",
+          "value": "Neonate — embraced less than 100 years ago; the earliest a Cainite would be trusted with autonomy"
+        },
+        {
+          "name": "Generation",
+          "type": "ENUM",
+          "value": "[\"10th\", \"11th\"]"
+        },
+        {
+          "name": "Base Experience",
+          "type": "INTEGER",
+          "value": "15"
+        },
+        {
+          "name": "Bonus Experience",
+          "type": "INTEGER",
+          "value": "30"
+        },
+        {
+          "name": "Total Starting Experience",
+          "type": "INTEGER",
+          "value": "45"
+        },
+        {
+          "name": "Free Languages Besides English",
+          "type": "INTEGER",
+          "value": "1"
+        },
+        {
+          "name": "Max Flaw Dots For Advantages",
+          "type": "INTEGER",
+          "value": "7"
+        },
+        {
+          "name": "Uses Touchstones And Convictions",
+          "type": "BOOLEAN"
+        },
+        {
+          "raw": "false"
+        },
+        {
+          "name": "Morality System",
+          "type": "STRING",
+          "value": "Road"
+        },
+        {
+          "name": "Starting Road Rating",
+          "type": "INTEGER",
+          "value": "7"
+        },
+        {
+          "name": "Available Roads",
+          "type": "LIST OF",
+          "value": "Road"
+        }
+      ],
+      "rules": [
+        {
+          "hash": "wopCCRuleGen000001",
+          "text": "play_a_10th_or_11th_generation_neonate_under_100_years_embraced"
+        },
+        {
+          "hash": "wopCCRuleXP0000001",
+          "text": "start_with_45_total_experience_including_30_bonus"
+        },
+        {
+          "hash": "wopCCRuleLang00001",
+          "text": "one_language_besides_english_is_free_linguistics_merit_required_for_more"
+        },
+        {
+          "hash": "wopCCRuleFlaws0001",
+          "text": "spend_up_to_seven_flaw_dots_for_an_equal_number_of_advantage_dots"
+        },
+        {
+          "hash": "wopCCRuleNomad0001",
+          "text": "avoid_modern_or_haven_bound_backgrounds_the_coterie_is_nomadic"
+        },
+        {
+          "hash": "wopCCRuleNoTouch01",
+          "text": "touchstones_and_convictions_are_not_used_in_this_chronicle"
+        },
+        {
+          "hash": "wopCCRuleRoad00001",
+          "text": "humanity_is_replaced_by_the_road_system_choose_one_road_starting_at_rating_7"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-character-creation.ttrpg"
+      ]
+    },
+    {
+      "name": "High Clans",
+      "hash": "wopHighClans000001",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Clans",
+          "type": "LIST OF STRING",
+          "value": "[\"Brujah\", \"Cappadocian\", \"Lasombra\", \"Toreador\", \"Tzimisce\", \"Ventrue\"]"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-character-creation.ttrpg"
+      ]
+    },
+    {
+      "name": "Low Clans",
+      "hash": "wopLowClans0000001",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Clans",
+          "type": "LIST OF STRING",
+          "value": "[\"Assamite\", \"Followers of Set\", \"Gangrel\", \"Malkavian\", \"Nosferatu\", \"Ravnos\", \"Tremere\"]"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-character-creation.ttrpg"
+      ]
+    },
+    {
+      "name": "Traditions of Caine",
+      "hash": "wopTraditions00001",
+      "kind": "def",
+      "properties": [
+        {
+          "name": "Traditions",
+          "type": "LIST OF STRING",
+          "value": "[\"Covenant (Caine)\", \"Domain\", \"Progeny\", \"Accounting\", \"Destruction\", \"Silence (discretion in the Masquerade)\"]"
+        }
+      ],
+      "sources": [
+        "vtm5e-war-of-princes-character-creation.ttrpg"
       ]
     }
   ]
