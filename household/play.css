@@ -110,7 +110,17 @@
 .pl-stepper button:hover { border-color: var(--pl-gold); }
 .pl-stepper .pl-val { min-width: 1.4rem; text-align: center; font-family: "Cormorant Garamond", serif; font-size: 1.15rem; color: var(--pl-bone); }
 .pl-road-name { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 0.9rem; color: var(--pl-gold-pale); margin-bottom: 0.35rem; }
-.pl-road-guide { font-size: 0.78rem; color: var(--pl-ash); font-style: italic; margin-top: 0.3rem; }
+.pl-road-guide { font-size: 0.82rem; color: var(--pl-bone); margin-top: 0.4rem; line-height: 1.4; }
+.pl-road-guide b { color: var(--pl-gold-pale); }
+.pl-road-guide em { color: var(--pl-ash); }
+.pl-road-fx { font-size: 0.74rem; color: var(--pl-ash); margin-top: 0.3rem; line-height: 1.45; }
+.pl-tenets { margin-top: 0.5rem; }
+.pl-tenets summary {
+  font-family: "Cormorant SC", serif; font-size: 0.58rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--pl-gold); cursor: pointer; list-style: revert;
+}
+.pl-tenets ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+.pl-tenets li { font-size: 0.8rem; color: var(--pl-ash); line-height: 1.4; margin-bottom: 0.2rem; }
 
 /* dice roller */
 .pl-roller { margin-top: 0.4rem; }

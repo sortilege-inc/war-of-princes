@@ -19,7 +19,7 @@
   var CHARACTERS = [
     { id:"tomi", name:"Tomisława z Białowieży", type:"vampire", section:"household",
       health:5, willpower:5, hunger:1, bloodPotency:2,
-      road:{ name:"Road of Kings", aura:"Via Regalis", rating:7, guideline:"Behaving shamefully before your peers" },
+      road:{ name:"Road of Kings", rating:7 },   // aura/tenets/moral-guideline come from the compiled rules artifact
       attributes:{Strength:2,Dexterity:2,Stamina:2,Charisma:2,Manipulation:4,Composure:3,Intelligence:3,Wits:1,Resolve:2},
       skills:{Etiquette:3,Intimidation:3,Leadership:3,Politics:3,Occult:4,Persuasion:2,Subterfuge:2,Survival:2,Craft:2,Academics:1,Medicine:1},
       disciplines:[{name:"Dominate",rating:2,powers:["Compel","Domitor's Favor"]},{name:"Protean",rating:2,powers:["Eyes of the Beast","Vicissitude (Fleshcrafting)"]},{name:"Blood Sorcery (Koldunic)",rating:3,powers:["Koldunic Sorcery — Earth","Koldunic Sorcery — Water","Koldunic Sorcery — Air"]}],
@@ -156,6 +156,53 @@
   var rollReq = 1;      // current "successes needed" (difficulty), shared so power presets can set it
   var reqValEl = null;  // the Needs stepper's value element
 
+  // ---- canonical Road data, loaded from the compiled rules artifact ----
+  // (../rules/vtm5e-war-of-princes.resolved.json — the synthesist output). Keeps the
+  // Road auras / tenets / hierarchy-of-sins in sync with the homebrew DSL rather than
+  // hard-coding them here. Falls back gracefully to a bare tracker if the fetch fails.
+  var ROADS = {};
+  function parseList(raw) { if (!raw) return []; try { return JSON.parse(raw); } catch (e) { return []; } }
+  function buildRoads(json) {
+    var roads = {};
+    (json.entities || []).forEach(function (e) {
+      if (e.extends !== "Road") return;
+      var props = {}; (e.properties || []).forEach(function (p) { props[p.name] = p; });
+      var hier = [];
+      var hp = props["Hierarchy of Sins"];
+      if (hp && hp.nested) hp.nested.forEach(function (t) {
+        var f = {}; (t.nested || []).forEach(function (x) { f[x.name] = x; });
+        var m = (t.name || "").match(/\d+/);
+        hier.push({
+          rating: m ? parseInt(m[0], 10) : 0,
+          guideline: (f["Moral Guideline"] || {}).value || "",
+          rationale: (f["Rationale"] || {}).value || "",
+          effects: parseList((f["Effects"] || {}).value)
+        });
+      });
+      hier.sort(function (a, b) { return b.rating - a.rating; });
+      roads[e.name] = {
+        name: e.name,
+        latin: (props["Latin Name"] || {}).value || "",
+        followers: (props["Followers"] || {}).value || "",
+        aura: (props["Aura"] || {}).value || "",
+        tenets: parseList((props["Tenets"] || {}).value),
+        hierarchy: hier
+      };
+    });
+    return roads;
+  }
+  function loadRoads() {
+    fetch("../rules/vtm5e-war-of-princes.resolved.json", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j) return;
+        ROADS = buildRoads(j);
+        var c = BY_ID[current];
+        if (drawer && c && c.road) renderChar(); // re-render now that canonical Road data is in
+      })
+      .catch(function () {});
+  }
+
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 
   function build() {
@@ -195,6 +242,7 @@
     document.body.appendChild(btn);
     document.body.appendChild(drawer);
     renderChar();
+    loadRoads(); // pull canonical Road data from the compiled rules artifact
   }
 
   function renderChar() {
@@ -217,7 +265,7 @@
       w.appendChild(hungerRow(c, s));
     }
     if (c.road) {
-      w.appendChild(sectionLabel("Road", c.road.aura));
+      w.appendChild(sectionLabel("Road", (ROADS[c.road.name] || {}).aura || ""));
       w.appendChild(roadBlock(c, s));
     }
     if (c.type === "vampire") {
@@ -413,8 +461,10 @@
   }
 
   function roadBlock(c, s) {
+    var rd = ROADS[c.road.name]; // canonical Road data (may be undefined until loaded)
     var wrap = el("div", "pl-track"); wrap.setAttribute("data-track", "road");
-    wrap.appendChild(el("div", "pl-road-name", c.road.name + " · " + s.road.rating));
+    var title = c.road.name + (rd && rd.latin ? " · " + rd.latin : "");
+    wrap.appendChild(el("div", "pl-road-name", title + " · " + s.road.rating));
     // rating pips 0..10
     var pips = el("div", "pl-pips");
     for (var i = 1; i <= 10; i++) {
@@ -425,6 +475,20 @@
       pips.appendChild(p);
     }
     wrap.appendChild(pips);
+    // current moral guideline — the hierarchy-of-sins tier at the current rating
+    if (rd && rd.hierarchy.length) {
+      var tier = rd.hierarchy.filter(function (t) { return t.rating === s.road.rating; })[0];
+      if (tier) {
+        var g = el("div", "pl-road-guide");
+        g.innerHTML = "<b>" + tier.guideline + "</b> — <em>" + tier.rationale + "</em>";
+        wrap.appendChild(g);
+        if (tier.effects && tier.effects.length) {
+          var fx = el("div", "pl-road-fx");
+          fx.innerHTML = tier.effects.map(function (t) { return "• " + t; }).join("<br>");
+          wrap.appendChild(fx);
+        }
+      }
+    }
     // stains stepper
     var st = el("div", "pl-stepper"); st.style.marginTop = "0.5rem";
     var minus = el("button", null, "−"), val = el("span", "pl-val", String(s.road.stains)), plus = el("button", null, "+");
@@ -432,7 +496,15 @@
     minus.addEventListener("click", function () { s.road.stains = Math.max(0, s.road.stains - 1); val.textContent = s.road.stains; save(); });
     plus.addEventListener("click", function () { s.road.stains += 1; val.textContent = s.road.stains; save(); });
     wrap.appendChild(st);
-    wrap.appendChild(el("div", "pl-road-guide", "“" + c.road.guideline + "”"));
+    // tenets (collapsible)
+    if (rd && rd.tenets.length) {
+      var det = document.createElement("details"); det.className = "pl-tenets";
+      var sum = document.createElement("summary"); sum.textContent = "Tenets"; det.appendChild(sum);
+      var ul = document.createElement("ul");
+      rd.tenets.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+      det.appendChild(ul);
+      wrap.appendChild(det);
+    }
     return wrap;
   }
 
