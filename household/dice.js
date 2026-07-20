@@ -33,6 +33,19 @@
     if (die.faces && die.faces.length) return die.faces[(die.value - 1) % die.faces.length];
     return String(die.value);
   }
+  function writeFace(die, text) {
+    if (die.numEl) die.numEl.textContent = text;   // shaped dice keep their <svg>
+    else die.el.textContent = text;
+  }
+  function shapeSVG(shape) {
+    if (shape === "d10") {
+      return '<svg class="dice-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+             '<polygon class="dice-poly" points="50,3 96,38 78,97 22,97 4,38"/>' +
+             '<path class="dice-facet" d="M50,3 L50,55 M4,38 L50,55 L96,38 M22,97 L50,55 L78,97"/>' +
+             '</svg>';
+    }
+    return "";
+  }
 
   function roll(opts) {
     var mount = opts.mount;
@@ -52,6 +65,7 @@
         sides: sides,
         value: (spec.value != null) ? spec.value : rnd(sides),
         tag: spec.tag || "",
+        shape: spec.shape || opts.shape || "square",
         faces: spec.faces,
         rerolled: !!spec.rerolled,
         index: i
@@ -62,7 +76,9 @@
     stage.className = "dice-stage";
     dice.forEach(function (die) {
       var el = document.createElement("div");
-      el.className = "dice-die" + (die.tag ? " " + die.tag : "");
+      el.className = "dice-die shape-" + die.shape + (die.tag ? " " + die.tag : "");
+      var svg = shapeSVG(die.shape);
+      if (svg) { el.innerHTML = svg + '<span class="dice-num"></span>'; die.numEl = el.querySelector(".dice-num"); }
       die.el = el;
       stage.appendChild(el);
     });
@@ -72,13 +88,13 @@
     var timers = [], intervals = [], remaining = dice.length, finished = false;
 
     function settle(die) {
-      var cls = "dice-die settling";
+      var cls = "dice-die shape-" + die.shape + " settling";
       if (die.tag) cls += " " + die.tag;
       var extra = classify(die);
       if (extra) cls += " " + extra;
       if (die.rerolled) cls += " rerolled";
-      die.el.className = cls;
-      die.el.textContent = faceText(die, renderFace);
+      die.el.className = cls;   // note: className swap keeps the die's <svg>/<span> children
+      writeFace(die, faceText(die, renderFace));
     }
     function finish() {
       if (finished) return;
@@ -98,7 +114,7 @@
         return;
       }
       die.el.classList.add("rolling");
-      var iv = setInterval(function () { die.el.textContent = String(rnd(die.sides)); }, 70);
+      var iv = setInterval(function () { writeFace(die, String(rnd(die.sides))); }, 70);
       intervals.push(iv);
       var t = setTimeout(function () {
         clearInterval(iv);

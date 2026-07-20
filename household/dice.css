@@ -15,6 +15,7 @@
   border: 1px solid var(--dice-border, rgba(160,144,128,0.28));
   background: var(--dice-bg, #0f0c14); color: var(--dice-face, rgba(232,224,208,0.62));
   position: relative; will-change: transform; user-select: none;
+  flex: 0 0 auto;   /* fixed size; dice wrap rather than shrink (content-less shaped dice) */
 }
 
 /* tumble while rolling, bounce on settle */
@@ -63,3 +64,28 @@
 @media (prefers-reduced-motion: reduce) {
   .dice-die.rolling, .dice-die.settling { animation: none; }
 }
+
+/* ---- d10 (pentagonal trapezohedron) shape --------------------------- */
+/* The silhouette + facets are drawn as an inline <svg> so they inherit
+   the --dice-* theme; the number sits in the upper kite facet. */
+.dice-die.shape-d10 {
+  background: transparent !important; border: none !important; box-shadow: none !important;
+  overflow: visible;
+}
+.dice-die.shape-d10 .dice-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.dice-die.shape-d10 .dice-poly {
+  fill: var(--dice-bg, #0f0c14);
+  stroke: var(--dice-border, rgba(160,144,128,0.5)); stroke-width: 4; stroke-linejoin: round;
+}
+.dice-die.shape-d10 .dice-facet {
+  fill: none; stroke: var(--dice-border, rgba(160,144,128,0.5));
+  stroke-width: 1.4; opacity: 0.4; stroke-linejoin: round;
+}
+.dice-die.shape-d10 .dice-num {
+  position: absolute; left: 0; right: 0; top: 38%; transform: translateY(-50%);
+  text-align: center; line-height: 1; font-size: calc(var(--dice-size, 30px) * 0.42);
+}
+.dice-die.shape-d10.succ   .dice-poly { fill: var(--dice-succ-bg); stroke: var(--dice-succ-border); }
+.dice-die.shape-d10.crit   .dice-poly { fill: var(--dice-crit-bg); stroke: var(--dice-crit-border); }
+.dice-die.shape-d10.hunger .dice-poly { fill: var(--dice-hunger-bg); stroke: var(--dice-hunger-border); }
+.dice-die.shape-d10.bestial .dice-poly { stroke: var(--dice-bestial); stroke-width: 6; }
