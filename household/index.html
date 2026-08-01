@@ -479,6 +479,23 @@
     min-width: 1.2rem;
     flex-shrink: 0;
   }
+  /* hover tooltip: full rules text for a Merit/Flaw */
+  .mf-item[data-tip] { cursor: help; position: relative; }
+  .mf-item[data-tip] > :last-child { text-decoration: underline dotted var(--rule); text-underline-offset: 3px; }
+  .mf-item[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute; left: 0; bottom: calc(100% + 6px); z-index: 60;
+    width: max-content; max-width: 300px;
+    background: var(--ground); color: var(--paper);
+    border: 1px solid var(--gold); border-radius: 3px;
+    padding: 0.55rem 0.7rem;
+    font-family: "EB Garamond", serif; font-size: 0.86rem; font-style: normal;
+    line-height: 1.45; letter-spacing: normal; text-transform: none; text-align: left;
+    box-shadow: 0 6px 22px rgba(14,12,16,0.5);
+    opacity: 0; visibility: hidden; transition: opacity 0.15s;
+    pointer-events: none; white-space: normal;
+  }
+  .mf-item[data-tip]:hover::after, .mf-item[data-tip]:focus::after { opacity: 1; visibility: visible; }
 
   /* Narrative callout */
   .callout {
@@ -978,7 +995,7 @@
           <div class="mf-item"><span class="mf-pts">2</span> Eat Food</div>
           <div class="mf-item"><span class="mf-pts">1</span> Status: Known</div>
           <div class="mf-item"><span class="mf-pts">1</span> Mawla</div>
-          <div class="mf-item"><span class="mf-pts">1</span> Reserved for Coterie</div>
+          <div class="mf-item" data-tip="Seeking a Vein: You've developed a knack for finding weird things, and it's only now that you've realized that it's because you just know where the planet's blood converges. Once per story at the Storyteller's discretion, you may declare that the location you are on is a furcus."><span class="mf-pts">1</span> Seeking a Vein</div>
           <div class="mf-item"><span class="mf-pts">1</span> Language: Old Polish</div>
           <div class="mf-item"><span class="mf-pts">1</span> Language: English</div>
         </div>
