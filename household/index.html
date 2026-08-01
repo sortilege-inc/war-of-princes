@@ -415,6 +415,23 @@
     color: var(--blood);
     font-weight: 500;
   }
+  /* hover tooltip: concise summary of what the Discipline is */
+  .disc-header[data-tip] { position: relative; cursor: help; }
+  .disc-header[data-tip] .disc-name { text-decoration: underline dotted var(--rule); text-underline-offset: 3px; }
+  .disc-header[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute; left: 0; top: calc(100% + 6px); z-index: 60;
+    width: max-content; max-width: 320px;
+    background: var(--ground); color: var(--paper);
+    border: 1px solid var(--gold); border-radius: 3px;
+    padding: 0.55rem 0.7rem;
+    font-family: "EB Garamond", serif; font-size: 0.86rem; font-style: normal; font-weight: 400;
+    line-height: 1.45; letter-spacing: normal; text-transform: none; text-align: left;
+    box-shadow: 0 6px 22px rgba(14,12,16,0.5);
+    opacity: 0; visibility: hidden; transition: opacity 0.15s;
+    pointer-events: none; white-space: normal;
+  }
+  .disc-header[data-tip]:hover::after, .disc-header[data-tip]:focus::after { opacity: 1; visibility: visible; }
   .power-item {
     margin: 0 0 0.65rem;
     padding: 0.7rem 0.9rem;
@@ -444,6 +461,44 @@
     line-height: 1.55;
     margin: 0;
   }
+  /* click-to-expand full verbatim rules text */
+  .power-full { margin-top: 0.55rem; }
+  .power-full > summary {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); cursor: pointer; list-style: none;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.1rem 0; user-select: none;
+  }
+  .power-full > summary::-webkit-details-marker { display: none; }
+  .power-full > summary::before {
+    content: "❧"; color: var(--blood); font-size: 0.8rem;
+    transition: transform 0.15s;
+  }
+  .power-full[open] > summary::before { transform: rotate(90deg); }
+  .power-full > summary:hover { color: var(--gold-pale); }
+  .rules-verbatim {
+    margin-top: 0.5rem;
+    padding: 0.7rem 0.9rem;
+    background: var(--paper);
+    border: 1px solid var(--rule-soft);
+    border-left: 3px solid var(--gold);
+  }
+  .rules-verbatim p {
+    font-family: "EB Garamond", serif;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.58;
+    margin: 0 0 0.6rem;
+  }
+  .rules-verbatim p:last-child { margin-bottom: 0; }
+  .rules-key {
+    font-family: "Cormorant SC", serif;
+    font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--blood); font-weight: 600;
+    margin-right: 0.15rem;
+  }
+  .rules-verbatim em { font-style: italic; }
 
   /* Merits/Flaws */
   .mf-grid {
@@ -763,6 +818,7 @@
 <nav class="topnav">
   <span class="brand">War of Princes</span>
   <a href="../index.html">Home</a>
+  <a href="../setting/index.html">The Setting</a>
   <a href="../coterie/index.html">The Coterie</a>
   <a href="../dramatis-personae/index.html">Dramatis Personae</a>
   <a href="../chronicle/index.html">The Chronicle</a>
@@ -899,7 +955,7 @@
       </div>
 
       <div class="disc-block">
-        <div class="disc-header">
+        <div class="disc-header" data-tip="Dominate — the Discipline of the imposed will. Meeting a victim's eyes, the vampire issues commands that must be obeyed and, with greater mastery, reshapes thought and memory. The Discipline that binds her ghoul-husband to her.">
           <span class="disc-name">Dominate</span>
           <span class="disc-rating">●●</span>
         </div>
@@ -916,7 +972,7 @@
       </div>
 
       <div class="disc-block">
-        <div class="disc-header">
+        <div class="disc-header" data-tip="Protean — the Discipline of the roused Beast, worn in the body: night-seeing eyes, and the power to sink into raw earth or take a beast's shape. Hers carries the Tzimisce amalgam Vicissitude, the sculpting of living flesh and bone.">
           <span class="disc-name">Protean</span>
           <span class="disc-rating">●●</span>
         </div>
@@ -933,7 +989,7 @@
       </div>
 
       <div class="disc-block">
-        <div class="disc-header">
+        <div class="disc-header" data-tip="Blood Sorcery — vampiric blood magic. The Tzimisce work it as Koldunism, swearing the sorcerer's blood to the elements of the land — earth, water, air, but never fire — for a price paid in blood and pain, and widened through learned rituals.">
           <span class="disc-name">Blood Sorcery (Koldunic)</span>
           <span class="disc-rating">●●●</span>
         </div>
@@ -964,16 +1020,45 @@
         <div class="power-title">Elemental Grasp <span style="font-weight:400;color:var(--ink-faint)">· Level 2</span></div>
         <div class="power-meta">Cost: Rouse Check · Cast Time: 10 min · Test: Intelligence + Blood Sorcery (Diff 3)</div>
         <p class="power-body">Commands the sorcerer's chosen element to slow or obstruct a target.</p>
+        <details class="power-full">
+          <summary>Full ritual text</summary>
+          <div class="rules-verbatim">
+            <p>This koldunic ritual commands the sorcerer's chosen element to slow or otherwise interfere with a target: sticky mud or sudden rockslide, flash flood or stinging hail, icy wind or choking fog, a wave of enervating heat or a brush fire across the path. So far, it remains exclusive to the koldunry, although rituals have a way of twisting themselves into another tradition's grasp eventually.</p>
+            <p><span class="rules-key">Prerequisite:</span> Koldunic Sorcery</p>
+            <p><span class="rules-key">Ingredients:</span> A handful of the koldun's element or a ritual representation of it, such as a wooden staff for earth, a knife or bunch of feathers for air, etc.</p>
+            <p><span class="rules-key">Process:</span> The koldun scratches open their initiation scar and makes a Rouse Check while commanding the element to hinder a target the koldun perceives. Magical perception counts for this purpose.</p>
+            <p><span class="rules-key">System:</span> On a win, the element rises against the target. If the element is already awake during the casting (commanding air during a thunderstorm, for instance), the koldun adds one die to their Ritual pool. The target takes one point of Superficial Health damage per success, and must make an appropriate skill roll (e.g., Toughness + Athletics, or Composure + Drive) to continue against the element against a Difficulty equal to 1 + the total successes on the Ritual roll. On a critical win, the element rises against every suitable target within sight of the main target. The effect continues until the koldun does anything else besides command the elements: fight, move, make any other skill roll, etc.</p>
+          </div>
+        </details>
       </div>
       <div class="power-item ritual">
         <div class="power-title">Seeking Tiamat <span style="font-weight:400;color:var(--ink-faint)">· Level 3</span></div>
         <div class="power-meta">Cost: Rouse Check · Cast Time: 15 min · Test: Intelligence + Blood Sorcery (Diff 4)</div>
         <p class="power-body">Helps Blood sorcerers seek out the veins of the Earth — the Blood Serpent, the ley lines called Tiamat by those who study such things. Central to her personal religious practice.</p>
+        <details class="power-full">
+          <summary>Full ritual text</summary>
+          <div class="rules-verbatim">
+            <p>This ritual helps Blood sorcerers seek out the veins of the Earth, bringing the flow of their Blood into harmony with the blood of Tiamat.</p>
+            <p><span class="rules-key">Ingredients:</span> A foot-long, sharpened piece of witch hazel or magnetized iron.</p>
+            <p><span class="rules-key">Process:</span> The caster jams the wood or iron into their forearm along the ulnar vein, causing themselves 1 point of Aggravated damage, and makes a Rouse Check. Then they must walk around the city or region for at least fifteen minutes.</p>
+            <p><span class="rules-key">System:</span> On a win, their arm begins twitching and pointing toward the closest furcus in the area; by changing their direction, intelligent casters can triangulate a location within a few minutes. On a critical win, the tool discovers the closest vein of the Earth, and points toward two furcae on that vein.</p>
+          </div>
+        </details>
       </div>
       <div class="power-item ritual">
         <div class="power-title">Elemental Shelter <span style="font-weight:400;color:var(--ink-faint)">· Level 3</span></div>
         <div class="power-meta">Cost: Rouse Check · Cast Time: 15 min · Test: Intelligence + Blood Sorcery (Diff 4)</div>
         <p class="power-body">Allows the koldun to melt into and shelter within their chosen element.</p>
+        <details class="power-full">
+          <summary>Full ritual text</summary>
+          <div class="rules-verbatim">
+            <p>This ritual allows the koldun to melt into and shelter within their chosen element, as with Earth Meld (Protean 3). A fire-bonded koldun does not check for Rötschreck against any fire they ignite for the purpose of this ritual, but must resist terror frenzy before casting this Ritual to meld with the flames in a suddenly-burning Haven, for example.</p>
+            <p><span class="rules-key">Prerequisite:</span> Koldunic Sorcery</p>
+            <p><span class="rules-key">Ingredients:</span> At least enough of the element to envelop the koldun's body.</p>
+            <p><span class="rules-key">Process:</span> The koldun scratches open their initiatory scar, bleeds into the element, commands it to receive them, and falls or dives into it.</p>
+            <p><span class="rules-key">System:</span> On a win, the koldun melds into the element. No physical attack can injure them, nor can sunlight or fire. While in the element, the koldun remains aware of their surroundings, except during day-sleep. At those times, disturbances such as digging or loud noises awaken them or not, as with all vampires (<em>Vampire: The Masquerade</em>, p. 219). The koldun's form remains waveringly visible to Sense the Unseen (Auspex 1) or to normal sight (Wits + Awareness) with a Difficulty equal to the margin of the Ritual roll. On a critical win, the koldun completely merges with the element, becoming entirely invisible. The koldun can emerge from the element at will by night at the spot they entered it. If a fire-bonded koldun's fire goes out (or less likely, if someone drains a water-bonded koldun's aqueous shelter), the koldun enters torpor within or beneath the ashes and coals. They can make a Resolve + Awareness test (Difficulty 2) to awaken in the presence of potential prey just as if they had fallen into torpor from hunger.</p>
+          </div>
+        </details>
       </div>
     </section>
 
