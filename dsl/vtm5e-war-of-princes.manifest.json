@@ -1,0 +1,27 @@
+{
+  "edition": "vtm5e",
+  "spec_version": "0.5",
+  "base_dir": "../../../../Titterpig/DSL/titterpig-dsl-vtm5e/0.5",
+  "output_dir": "../rules",
+  "load_order": [
+    "vtm5e-0.5-base.ttrpg",
+    "vtm5e-0.5-core-advanced-systems.ttrpg",
+    "vtm5e-0.5-core-caitiff.ttrpg",
+    "vtm5e-0.5-core-characters.ttrpg",
+    "vtm5e-0.5-core-chronicles.ttrpg",
+    "vtm5e-0.5-core-cities.ttrpg",
+    "vtm5e-0.5-core-clans.ttrpg",
+    "vtm5e-0.5-core-concepts.ttrpg",
+    "vtm5e-0.5-core-disciplines.ttrpg",
+    "vtm5e-0.5-core-kindred-society.ttrpg",
+    "vtm5e-0.5-core-lore-sheets.ttrpg",
+    "vtm5e-0.5-core-rules.ttrpg",
+    "vtm5e-0.5-core-thin-blooded.ttrpg",
+    "vtm5e-0.5-core-tools.ttrpg",
+    "vtm5e-0.5-core-vampires.ttrpg",
+    "vtm5e-0.5-core-you-are-what-you-eat.ttrpg",
+    "vtm5e-0.5-errata-part-iv-errata-and-rules-update.ttrpg",
+    "../../../../Campaigns/2026 War of Princes/war-of-princes/dsl/vtm5e-war-of-princes-roads.ttrpg",
+    "../../../../Campaigns/2026 War of Princes/war-of-princes/dsl/vtm5e-war-of-princes-character-creation.ttrpg"
+  ]
+}

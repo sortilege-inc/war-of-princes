@@ -1,0 +1,61 @@
+EXTENSION "VTM5e_WarOfPrinces_CharacterCreation" {
+    NAME "War of Princes — Character Creation (house rules)"
+    VERSION "1.0"
+    SPEC_VERSION "0.4"
+    RELEASE_DATE "2026-06-22"
+    DEPENDS_ON "VTM5e_Core_Core" VERSION "0.4"
+
+    # House rules for the War of Princes chronicle (London, 1242). Characters use the
+    # standard V5 creation rules with the parameters below. The coterie is a
+    # London-based, nomadic envoy of moderate status serving Mithras. Setting lore
+    # (Mithras, the Rose Treaty, the governing powers, etc.) is narrative and lives in
+    # a .lore/.setting companion, not here.
+
+    #wopCharCreation001 ^"War of Princes Character Creation" DEF {
+        DESCRIPTION "Standard V5 character creation with the following chronicle parameters. Use common sense to avoid predator types, backgrounds, and disciplines that only have modern applications; the Storyteller will adjust as needed."
+        PROPERTIES {
+            ^"Age" STRING "Neonate — embraced less than 100 years ago; the earliest a Cainite would be trusted with autonomy"
+            ^"Generation" ENUM ["10th", "11th"]
+            ^"Base Experience" INTEGER 15
+            ^"Bonus Experience" INTEGER 30
+            ^"Total Starting Experience" INTEGER 45
+            ^"Free Languages Besides English" INTEGER 1
+            ^"Max Flaw Dots For Advantages" INTEGER 7
+            ^"Uses Touchstones And Convictions" BOOLEAN false
+            ^"Morality System" STRING "Road"
+            ^"Starting Road Rating" INTEGER 7
+            ^"Available Roads" LIST OF ^"Road"
+        }
+        RULES {
+            #wopCCRuleGen000001: play_a_10th_or_11th_generation_neonate_under_100_years_embraced
+            #wopCCRuleXP0000001: start_with_45_total_experience_including_30_bonus
+            #wopCCRuleLang00001: one_language_besides_english_is_free_linguistics_merit_required_for_more
+            #wopCCRuleFlaws0001: spend_up_to_seven_flaw_dots_for_an_equal_number_of_advantage_dots
+            #wopCCRuleNomad0001: avoid_modern_or_haven_bound_backgrounds_the_coterie_is_nomadic
+            #wopCCRuleNoTouch01: touchstones_and_convictions_are_not_used_in_this_chronicle
+            #wopCCRuleRoad00001: humanity_is_replaced_by_the_road_system_choose_one_road_starting_at_rating_7
+        }
+    }
+
+    # ---- Clan availability (High / Low social standing in the Dark Ages) ----
+    #wopHighClans000001 ^"High Clans" DEF {
+        DESCRIPTION "Clans with greater social status. Generalizations that can fluctuate by domain."
+        PROPERTIES {
+            ^"Clans" LIST OF STRING ["Brujah", "Cappadocian", "Lasombra", "Toreador", "Tzimisce", "Ventrue"]
+        }
+    }
+    #wopLowClans0000001 ^"Low Clans" DEF {
+        DESCRIPTION "Clans with lesser social status. Some, as written in 5th edition, require adjustments to fit the Dark Ages setting."
+        PROPERTIES {
+            ^"Clans" LIST OF STRING ["Assamite", "Followers of Set", "Gangrel", "Malkavian", "Nosferatu", "Ravnos", "Tremere"]
+        }
+    }
+
+    # ---- Traditions of Caine (social/legal framework most domains follow) ----
+    #wopTraditions00001 ^"Traditions of Caine" DEF {
+        DESCRIPTION "Most domains follow the Traditions of Caine. Mithras enforces his Blood Laws, which remove worship of Caine (the Covenant) as a rule."
+        PROPERTIES {
+            ^"Traditions" LIST OF STRING ["Covenant (Caine)", "Domain", "Progeny", "Accounting", "Destruction", "Silence (discretion in the Masquerade)"]
+        }
+    }
+}
