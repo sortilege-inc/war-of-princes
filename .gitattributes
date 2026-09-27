@@ -1,0 +1,11 @@
+# The instance's side of the fork boundary (campaign/PLAN.md; ~/Sortilege/VTT/INSTANCES.md).
+# These paths are per-deployment: an upstream pull keeps this repo's copy. The `ours` driver is
+# not stored in the repo; run once per clone:
+#     git config merge.ours.driver true
+engine/config.js      merge=ours
+worker/wrangler.jsonc merge=ours
+README.md             merge=ours
+CNAME                 merge=ours
+.gitignore            merge=ours
+.claude/launch.json   merge=ours
+.gitattributes        merge=ours

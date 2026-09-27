@@ -1,9 +1,9 @@
 // engine/config.js — where things are. The one file a deployment edits.
 window.VttConfig = {
   system: 'vtm5e',
-  title: 'Vampire: The Masquerade',
-  channel: 'sortilege-vtt-vtm5e',        // BroadcastChannel name (same-machine windows)
-  storagePrefix: 'sortilege-vtt-vtm5e',  // localStorage key prefix
+  title: 'War of Princes',
+  channel: 'wop-vtt',                    // BroadcastChannel name (same-machine windows)
+  storagePrefix: 'wop-vtt',              // localStorage key prefix
   dataGlobal: 'VTM5E',                   // the global data/*.js registers into
   // The pages, relative to the site root; the gm/ pages carry <base href="../"> so every
   // path stays root-relative.
@@ -15,7 +15,7 @@ window.VttConfig = {
   //   notes: { src: 'campaign/docs/state.html', title: '…', class: '…',
   //            gate: { title: '…', text: '…', enter: 'Enter' } }
   // a .html src is the instance's own fragment, inserted as it is; anything else reads as Markdown.
-  defaultCampaign: { name: 'A new chronicle', modules: ['chronicle'], books: [] },
+  defaultCampaign: { name: 'War of Princes', modules: ['chronicle'], books: [] },
   // the three panels the GM page opens on (engine/app.js)
   defaultSlots: ['chronicle', 'party', 'inspector'],
   // What an instance adds to these pages (engine/instance.js). Upstream declares none, so
@@ -41,13 +41,13 @@ window.VttConfig = {
   siteBooks: false,
   gmGate: {
     title: 'The Storyteller\u2019s table',
-    text: 'Beyond is the Storyteller\u2019s material \u2014 the prep, the threads, what the players have not yet found. If you are playing, turn back.',
+    text: 'Beyond is the Storyteller\u2019s material for War of Princes \u2014 the prep, the threads, what the envoy has not yet found. If you are playing, turn back.',
     enter: 'Enter',
     leave: 'Turn back',
   },
   worker: {
     deployed: '',
-    local: 'http://localhost:8789',
+    local: 'http://localhost:8803',
   },
 };
 window.VttConfig.workerUrl = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? window.VttConfig.worker.local : window.VttConfig.worker.deployed;

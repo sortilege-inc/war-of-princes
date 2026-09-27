@@ -2,16 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "vtt-vtm5e",
+      "name": "war-of-princes",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8738"],
-      "port": 8738
+      "runtimeArgs": ["-m", "http.server", "8751"],
+      "port": 8751
     },
     {
-      "name": "vtt-vtm5e-worker",
+      "name": "war-of-princes-worker",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["wrangler", "dev", "--port", "8789"],
-      "port": 8789,
+      "runtimeArgs": ["wrangler", "dev", "--port", "8803"],
+      "port": 8803,
       "cwd": "worker"
     }
   ]

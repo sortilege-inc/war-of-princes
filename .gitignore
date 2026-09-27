@@ -7,3 +7,7 @@ build/__pycache__/
 campaigns/
 node_modules/
 .wrangler/
+# the instance's project skills are tracked (upstream ignores all of .claude/*)
+!.claude/skills/
+campaign/source/__pycache__/
+campaign/build/__pycache__/
