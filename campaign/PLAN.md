@@ -56,7 +56,7 @@ In order:
 
 - **Méabh, Eustace, Oscar** are seated by name with their Roads unrecorded, until their sheets arrive.
 - **The Setting page** is the old site's retelling of the brief, not the brief's own words (which are on the shelf). Left as prose; it could be rebuilt from the brief verbatim.
-- **Upstream gap for ghouls:** Advancement prices by the Kindred's costs (a ghoul's level-1 powers at 10 XP each are not priced). The creator makes mortals and ghouls since upstream decision 42.
+- ~~Upstream gap for ghouls~~ closed: the creator makes mortals and ghouls (upstream decision 42) and Advancement prices a ghoul's level-1 powers at the Companion's 10 XP (decision 43).
 - **The chronicle** is now `campaign/docs/chronicle.html`: a new session is written there, as before, and `bash campaign/build/build.sh` rebuilds the tabs.
 
 ## Decision log
