@@ -56,7 +56,7 @@ In order:
 
 - **Méabh, Eustace, Oscar** are seated by name with their Roads unrecorded, until their sheets arrive.
 - **The Setting page** is the old site's retelling of the brief, not the brief's own words (which are on the shelf). Left as prose; it could be rebuilt from the brief verbatim.
-- **Upstream gaps for mortals and ghouls:** the creator makes Kindred kinds only; Advancement prices by the Kindred's costs (a ghoul's level-1 powers at 10 XP each are not priced).
+- **Upstream gap for ghouls:** Advancement prices by the Kindred's costs (a ghoul's level-1 powers at 10 XP each are not priced). The creator makes mortals and ghouls since upstream decision 42.
 - **The chronicle** is now `campaign/docs/chronicle.html`: a new session is written there, as before, and `bash campaign/build/build.sh` rebuilds the tabs.
 
 ## Decision log
@@ -79,5 +79,5 @@ In order:
 | 2026-09-27 | autonomous, scope | **Piers is not seated** in the party (his file stays) | The Chronicle's Session Four ends his life |
 | 2026-09-27 | autonomous, scope | **No GM material seeded** | The owner plays in this chronicle; its Storyteller's prep is not in any source here |
 | 2026-09-27 | **owner ruling** | **The Graf's Health and Willpower by the rule** (6 and 6: Stamina 3 + 3, Composure 4 + Resolve 2), not the page's 5 and 5; **Humanity 7** for the ghoul and the mortals stands; the rest of the open list is fine. `convert_household.py` derives them, `check_household.py` expects the rule (781 all match; the page's 5 planted back is caught, 11/11) | The owner's answers |
-| 2026-09-27 | **owner request** | **The creator makes mortals and ghouls** | Built upstream (sortilege-vtt-vtm5e), pulled here |
+| 2026-09-27 | **owner request** | **The creator makes mortals and ghouls** — landed upstream (`f3ce0be`, its decision 42: the Companion's own walk, chosen on Sources), merged and published here | Built upstream (sortilege-vtt-vtm5e), pulled here |
 | 2026-09-27 | autonomous, method | The old tracker state (`wop.table.v1`) is carried over **on claim, once**, into the claimed character and its retinue only | INSTANCES step 4; it lives at the same origin as the deployed site |
