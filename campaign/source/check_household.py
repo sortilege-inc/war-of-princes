@@ -5,7 +5,7 @@ check_household.py — every character file in campaign/characters/ against the 
     python3 campaign/source/check_household.py          # exit 1 on any mismatch
     python3 campaign/source/check_household.py --plant  # prove it: plant faults, expect each named
 
-Shares no code with convert_household.py. The household page is read here as a tree (the standard
+Shares no code with convert_household.py. The household page (campaign/source/household.html) is read here as a tree (the standard
 library's HTML parser), not by patterns over its source; each character's panel or card is found by
 its heading, and every value the page prints is compared with the file, both ways:
 
@@ -30,7 +30,7 @@ from html.parser import HTMLParser
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
-PAGE = os.path.join(ROOT, "campaign", "household", "index.html")
+PAGE = os.path.join(ROOT, "campaign", "source", "household.html")   # the table's record, byte for byte
 CHARS = os.path.join(ROOT, "campaign", "characters")
 
 RENAMED = {"Archery": "Firearms", "Riding": "Drive"}     # the campaign's house rule (campaign/dsl)

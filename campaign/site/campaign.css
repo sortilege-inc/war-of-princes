@@ -1,0 +1,47 @@
+/* campaign/site/campaign.css — War of Princes' look on the VTT, and the frame its old pages sit in.
+   The old site was the London Envoy's archive: parchment documents on a near-black ground washed
+   with dried blood, Cinzel capitals, EB Garamond text. The VTT's own tokens (assets/css/vtm5e.css)
+   are re-pointed at that ground and that blood, so every page — site, table, player — takes it
+   without an upstream file being touched. The pages themselves keep their own stylesheets, scoped
+   (campaign/data/docs.css); this file only fits them to the frame. */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+SC:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+  --night: #0e0c10;       /* envoy.css --ground */
+  --night-2: #1a1520;     /* --ground-mid */
+  --night-3: #2a2230;
+  --bone: #e8e0d0;        /* --paper, as text on the ground */
+  --bone-2: #c0b49e;      /* --rule-soft */
+  --blood: #7a1a22;       /* --blood */
+  --blood-2: #a03030;     /* --blood-pale */
+  --blood-dark: #4e0f16;  /* --blood-deep */
+  --font-display: 'Cinzel', 'Bodoni Moda', serif;
+}
+body {
+  background-color: var(--night);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(122, 26, 34, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(14, 12, 16, 0.9) 0%, transparent 55%);
+  background-attachment: fixed;
+}
+.brand-title { font-weight: 600; letter-spacing: .05em; }
+
+/* ── the old pages in the frame ──
+   Their `body` rules became the doc element's (docs.css): undo what a whole page needed and a
+   tab does not — the full-viewport height, the page padding, a second ground behind the ground. */
+.wop-page { padding: 18px 12px 60px; }
+.wop-doc.wop-envoy, .wop-doc.doc-household {
+  min-height: 0;
+  padding: 0;
+  background: none;
+  font-size: 16px;
+}
+/* the VTT's prose sizes do not reach into a doc */
+.wop-doc p, .wop-doc li { font-size: inherit; }
+/* the household's own tab bar sits on the ground, as it did */
+.wop-doc.doc-household .tab-nav-wrap { margin-top: 0; }
+/* the chronicle's floating contents: below the VTT's sticky header */
+.wop-doc .chron-toc { top: 84px; max-height: calc(100vh - 110px); }
+@media (max-width: 640px) {
+  .wop-page { padding: 10px 0 40px; }
+}

@@ -4,7 +4,7 @@ convert_household.py — Tomisława's household, from the table's own record, as
 
     python3 campaign/source/convert_household.py
 
-The source is the household page as the table wrote it (campaign/household/index.html — owner,
+The source is the household page as the table wrote it (kept byte for byte as campaign/source/household.html — owner,
 2026-09-27: "the household page" is the record where it and Tomisława's PDF sheet disagree). What
 the page does not carry and her PDF sheet does (her Predator type) is read from the sheet's form
 fields, which live beside the repo in the support archive and never in it (the sheet names its
@@ -41,7 +41,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
-PAGE = os.path.join(ROOT, "campaign", "household", "index.html")
+PAGE = os.path.join(ROOT, "campaign", "source", "household.html")   # the table's record, byte for byte
 OUT = os.path.join(ROOT, "campaign", "characters")
 PDF = os.path.join(os.path.dirname(ROOT), "war-of-princes-support", "archive", "reference", "pcs",
                    "Tomisława z Białowieży.pdf")

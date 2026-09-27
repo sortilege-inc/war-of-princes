@@ -1,35 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Chronicle — War of Princes</title>
-<link rel="icon" href="../favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+SC:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../envoy.css">
-</head>
-<body>
-
-<nav class="topnav">
-  <span class="brand">War of Princes</span>
-  <a href="../index.html">Home</a>
-  <a href="../setting/index.html">The Setting</a>
-  <a href="../coterie/index.html">The Coterie</a>
-  <a href="../dramatis-personae/index.html">Dramatis Personae</a>
-  <a href="../chronicle/index.html" class="active">The Chronicle</a>
-  <a href="../household/index.html">Household</a>
-</nav>
-
 <div class="document">
   <div class="doc-inner">
 
 
-    <p class="crumb"><a href="../index.html">Home</a><span class="sep">›</span>The Chronicle</p>
     <div class="page-eyebrow">Compiled from the session audio · most recent first</div>
     <h1 class="page-title">The Chronicle</h1>
     <p class="page-subtitle">A running record of the envoy's nights</p>
@@ -769,7 +741,7 @@
       <div class="scene">
         <div class="scene-head"><span class="scene-idx">§</span><h4 class="scene-title">The Coterie</h4></div>
         <p class="scene-body">The arrangement going in: two high-clan aristocrats at the top, two displaced exiles beneath them, and Méabh moving across the seam. <strong>Tomisława z Białowieży</strong>, Tzimisce koldun of the Road of Kings — the occult and infrastructural core. <strong>Eustace the Kiasyd</strong>, fae-touched Lasombra of Marconius's line, Road of Kings — her one true peer, by armistice. <strong>Méabh</strong>, Lhiannan hiding as high-clan kin, Road of the Beast — guide, liar, and the coterie's hinge, whom Tomisława holds <em>out-of-category</em>. <strong>Oscar "Disgraced" Castro Avis</strong>, fallen Brujah knight of Lisbon, Road of Humanity — the muscle, and the group's reluctant conscience, whom Tomisława files as her inferior for having thrown his rank away.</p>
-        <em class="beat">Full portraits and profiles are on the <a href="../coterie/index.html" style="color:var(--blood-deep);">Coterie</a> page.</em>
+        <em class="beat">Full portraits and profiles are on the <a href="#coterie" style="color:var(--blood-deep);">Coterie</a> page.</em>
         <div class="scene-tags">
           <span class="tags-label">Established</span>
           <span class="char-tag coterie">Tomisława</span>
@@ -808,97 +780,5 @@
       </div>
     </div>
 
-    <footer class="doc-foot">
-      <span class="foot-ornament">✦</span>
-      <div class="foot-text">War of Princes · 1242 · The Chronicle</div>
-      <span class="foot-ornament">✦</span>
-    </footer>
-  </div>
+    </div>
 </div><!-- .document -->
-
-<script>
-/* Floating scroll-spy table of contents for the Chronicle.
-   Built from the .session-block / .scene structure so new sessions
-   appear automatically. The current session's chapters expand;
-   other sessions show title-only until you scroll into them. */
-(function () {
-  var blocks = Array.prototype.slice.call(document.querySelectorAll('.session-block'));
-  if (!blocks.length) return;
-
-  function slug(s) {
-    return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  }
-  function text(el, sel) {
-    var n = el.querySelector(sel);
-    return n ? n.textContent.trim() : '';
-  }
-
-  var toc = document.createElement('nav');
-  toc.className = 'chron-toc';
-  toc.setAttribute('aria-label', 'Chronicle contents');
-  var head = document.createElement('div');
-  head.className = 'toc-head';
-  head.textContent = 'The Chronicle';
-  toc.appendChild(head);
-  var sessionsUl = document.createElement('ul');
-  sessionsUl.className = 'toc-sessions';
-  toc.appendChild(sessionsUl);
-
-  var scenes = []; // { el, sessionLi, link }
-
-  blocks.forEach(function (block, bi) {
-    var num = text(block, '.session-num');
-    var name = text(block, '.session-name');
-    var sid = block.id || slug(num) || ('session-' + bi);
-    block.id = sid;
-
-    var li = document.createElement('li');
-    li.className = 'toc-session';
-    var a = document.createElement('a');
-    a.href = '#' + sid;
-    a.innerHTML = (num || 'Session') + (name ? '<span class="toc-sub">' + name + '</span>' : '');
-    li.appendChild(a);
-
-    var chUl = document.createElement('ul');
-    chUl.className = 'toc-chapters';
-    Array.prototype.forEach.call(block.querySelectorAll('.scene'), function (scene, si) {
-      var idx = text(scene, '.scene-idx').replace(/\.$/, '');
-      var title = text(scene, '.scene-title') || ('Scene ' + (si + 1));
-      var scid = sid + '-' + (si + 1);
-      scene.id = scid;
-      var cli = document.createElement('li');
-      var ca = document.createElement('a');
-      ca.href = '#' + scid;
-      ca.innerHTML = (idx ? '<span class="cn">' + idx + '</span>' : '') + title;
-      cli.appendChild(ca);
-      chUl.appendChild(cli);
-      scenes.push({ el: scene, sessionLi: li, link: ca });
-    });
-    li.appendChild(chUl);
-    sessionsUl.appendChild(li);
-  });
-
-  document.body.appendChild(toc);
-
-  var sessionLis = Array.prototype.slice.call(sessionsUl.querySelectorAll('.toc-session'));
-
-  function update() {
-    var offset = 110; // a scene counts as "current" once its top passes this line
-    var current = scenes[0];
-    for (var i = 0; i < scenes.length; i++) {
-      if (scenes[i].el.getBoundingClientRect().top <= offset) current = scenes[i];
-    }
-    for (var j = 0; j < sessionLis.length; j++) {
-      sessionLis[j].classList.toggle('active', sessionLis[j] === current.sessionLi);
-    }
-    for (var k = 0; k < scenes.length; k++) {
-      scenes[k].link.classList.toggle('current', scenes[k] === current);
-    }
-  }
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update, { passive: true });
-  update();
-})();
-</script>
-</body>
-</html>

@@ -31,7 +31,14 @@ window.VttConfig = {
   //       table: [], play: [],                 // the map table's and the player's page, before they boot
   //     },
   //   },
-  instance: null,
+  instance: {
+    styles: ['campaign/data/docs.css', 'campaign/site/campaign.css'],
+    stages: {
+      data: ['campaign/data/index.js'],                         // the campaign layer: the Archery/Riding house rule
+      site: ['campaign/data/docs.js', 'campaign/site/site.js'],  // the old site's pages as tabs, ahead of the books
+      gm: [], table: [], play: [], maps: [],
+    },
+  },
   // The Worker that holds player sessions. Served from localhost the app talks to
   // `wrangler dev`; deployed, to the URL below. Empty = sessions disabled until the owner
   // deploys (PLAN.md D3).

@@ -1,0 +1,30 @@
+/* moved from campaign/index.html's <style> (campaign/build/move_pages.py) */
+  /* index-only masthead cover styling (paper document surface) */
+  .cover-head { text-align: center; padding-bottom: 2rem; border-bottom: 1px solid var(--rule); margin-bottom: 0; }
+  .cover-eyebrow {
+    font-family: "Cormorant SC", serif; font-size: 0.72rem; letter-spacing: 0.42em;
+    color: var(--blood); text-transform: uppercase; margin-bottom: 0.9rem;
+  }
+  h1.cover-title {
+    font-family: "Cinzel", serif; font-weight: 700; font-size: 3rem; line-height: 1.05;
+    margin: 0 0 0.6rem; color: var(--ink); letter-spacing: 0.03em;
+  }
+  .cover-sub {
+    font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 1.15rem;
+    color: var(--ink-soft); margin: 0;
+  }
+  .cover-kicker {
+    font-family: "Cormorant SC", serif; letter-spacing: 0.24em; text-transform: uppercase;
+    font-size: 0.62rem; color: var(--ink-faint); margin-top: 1rem;
+  }
+  .lede {
+    font-family: "EB Garamond", serif; font-size: 1.1rem; color: var(--ink-soft);
+    line-height: 1.72; margin: 0 auto; max-width: 62ch; text-align: left;
+  }
+  .lede::first-letter {
+    font-family: "Cinzel", serif; font-weight: 600; font-size: 3.1em; float: left;
+    line-height: 0.82; margin: 0.08em 0.1em 0 0; color: var(--blood-deep);
+  }
+  @media (max-width: 640px) {
+    h1.cover-title { font-size: 2.1rem; }
+  }

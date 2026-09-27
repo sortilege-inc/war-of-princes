@@ -1,0 +1,14 @@
+/* moved from campaign/setting/index.html's <style> (campaign/build/move_pages.py) */
+  /* setting-page: governing-powers grid + reusable prose block */
+  .prose {
+    font-family: "EB Garamond", serif; font-size: 1.02rem; color: var(--ink-soft);
+    line-height: 1.7; margin: 0 0 1rem;
+  }
+  .prose:last-child { margin-bottom: 0; }
+  .prose strong { color: var(--ink); font-weight: 600; }
+  .prose em { color: var(--blood-deep); }
+  .powers-grid {
+    display: grid; gap: 0.9rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    margin: 1.25rem 0 0;
+  }
