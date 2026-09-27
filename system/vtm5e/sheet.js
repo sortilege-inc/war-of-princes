@@ -263,7 +263,11 @@ window.VtmSheet = (function () {
       ...rows.map((d) => el('div', { class: 'power-disc' }, [
         el('div', { class: 'power-disc-h' }, [d.Discipline + ' ', el('span', { class: 'muted small' }, ['●'.repeat(+d.Dots || 0)])]),
         ...(d.Powers || []).map((name) => {
-          const r = D.powers().find((x) => x.discipline === d.Discipline && x.name === name);
+          // a power taken more than once carries the table's note in brackets ("Koldunic Sorcery
+          // (Earth)" - the book: "A koldun character can command multiple elements only by taking
+          // the Koldunic Sorcery power multiple times"); the book's name is what it resolves by
+          const r = D.powers().find((x) => x.discipline === d.Discipline && x.name === name)
+            || D.powers().find((x) => x.discipline === d.Discipline && x.name === String(name).replace(/\s*\([^()]*\)$/, ''));
           if (!r) return el('div', { class: 'power-card muted' }, [name + ' (not found in the books)']);
           const f = r.fields || {};
           const lvl = D.levelNumber(r);
