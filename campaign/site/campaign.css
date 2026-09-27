@@ -45,3 +45,12 @@ body {
 @media (max-width: 640px) {
   .wop-page { padding: 10px 0 40px; }
 }
+
+/* the household's traits and rules, drawn from the character files and the books (household.js) */
+.wop-doc .wop-spec { font-size: 0.88rem; color: var(--ink-faint); font-style: italic; }
+.wop-doc .wop-meta { font-weight: 400; color: var(--ink-faint); }
+.wop-doc .power-full { margin: 0.3rem 0 0.6rem; }
+.wop-doc .power-full > summary { cursor: pointer; font-family: "Cormorant SC", serif; letter-spacing: 0.12em; font-size: 0.78rem; color: var(--blood); }
+.wop-doc .mf-item .power-full { margin: 0.15rem 0 0.4rem 1.6rem; }
+.wop-doc .rules-verbatim p { margin: 0.35rem 0; line-height: 1.55; }
+.wop-doc .wop-book .rules-verbatim { margin-top: 0.4rem; }

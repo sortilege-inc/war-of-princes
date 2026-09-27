@@ -35,7 +35,7 @@ window.VttConfig = {
     styles: ['campaign/data/docs.css', 'campaign/site/campaign.css'],
     stages: {
       data: ['campaign/data/index.js'],                         // the campaign layer: the Archery/Riding house rule
-      site: ['campaign/data/docs.js', 'campaign/site/site.js'],  // the old site's pages as tabs, ahead of the books
+      site: ['campaign/data/docs.js', 'campaign/site/household.js', 'campaign/site/site.js'],  // the old site's pages as tabs, ahead of the books
       gm: [], table: [], play: [], maps: [],
     },
   },
