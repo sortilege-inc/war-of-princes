@@ -54,7 +54,7 @@ window.VttConfig = {
     leave: 'Turn back',
   },
   worker: {
-    deployed: '',
+    deployed: 'https://war-of-princes.sortilege.workers.dev',
     local: 'http://localhost:8803',
   },
 };

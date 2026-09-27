@@ -25,6 +25,7 @@ What this converter decides, each named once here and reported on every run:
     sheet (campaign/dsl), so the value is written under the core's trait (SKILL_NAMES).
   * A power taken three times is written three times, each with the element the page names
     ("Koldunic Bonds: Earth · Water · Air").
+  * The Graf's Health and Willpower follow the rule, not the page (owner, 2026-09-27).
   * What the page leaves blank is left blank - except Humanity for the ghoul and the mortals,
     which the Companion starts at 7 ("Mortals begin play with a Humanity value of 7"; "Ghouls
     start play with Humanity at 7") and the page never records (HUMANITY_START).
@@ -51,7 +52,10 @@ GHOUL = "#vtm5Ghoul00000000001"
 MORTAL = "#vtm5Mortal0000000001"
 CHRONICLE = "War of Princes"
 DOMITOR = "Tomisława z Białowieży"
-HUMANITY_START = 7
+HUMANITY_START = 7                 # owner, 2026-09-27: "use the humanity 7"
+# "Add three to your Stamina to derive your Health. Add your Resolve to your Composure to derive your
+# Willpower." - the Companion, Creating a Ghoul Character
+HEALTH_PLUS = 3
 
 ATTR_ABBR = {"STR": "Strength", "DEX": "Dexterity", "STA": "Stamina", "CHA": "Charisma", "MAN": "Manipulation",
              "COM": "Composure", "INT": "Intelligence", "WIT": "Wits", "RES": "Resolve"}
@@ -278,7 +282,11 @@ def graf(page):
     d = derived(p)
     v = {"Name": title, "Concept": concept, "Chronicle": CHRONICLE, "Domitor": DOMITOR}
     v.update(attr_cards(p))
-    v["Health"], v["Willpower"] = int(d["Health"]), int(d["Willpower"])
+    # Health and Willpower from the rule, not the page (owner, 2026-09-27: "use the rules for health and
+    # willpower for the graf"): the page records 5 and 5; Stamina 3 + 3 and Composure 4 + Resolve 2 are 6 and 6
+    v["Health"], v["Willpower"] = v["Stamina"] + HEALTH_PLUS, v["Composure"] + v["Resolve"]
+    if (v["Health"], v["Willpower"]) != (int(d["Health"]), int(d["Willpower"])):
+        notes.append("the Graf: Health %d, Willpower %d by the rule (the page records %s, %s)" % (v["Health"], v["Willpower"], d["Health"], d["Willpower"]))
     blank_skills(v)
     sk, specs = skill_rows(p)
     v.update(sk)

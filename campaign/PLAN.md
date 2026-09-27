@@ -41,11 +41,11 @@ Status words: **PROPOSED** (awaiting the owner), **(owner)** decided, **landed**
 | **M2** | here | The house rule and the household | **landed** `42224bd`. Layer: `build_layer` OK — 10 strings 0/0, 2 corrections, 4 references resolve; the DSL validator 0/0 with both corpora. Household: `convert_household.py` → 14 files (Tomisława as Cainite, the Graf as Ghoul, 12 Mortals), rerun byte-identical; `check_household.py` (a tree reading, no shared code) **781 checks, all match**; `--plant` **10 of 10 faults caught** |
 | **M3** | here | The old pages as site tabs; their rules text out | **landed** `23ad944`, `507f6d0`. `move_pages.py`: 6 pages, **text identical**, every link a tab, every image on disk; a planted change caught — run before the old pages were deleted. `build_docs.py` scopes envoy.css and the pages' own styles. `household_rules_out.py`: 27 blocks → mounts, the text outside them identical (whitespace aside), **0** tooltips / power summaries / stat or merit lines left. Browser: every tab renders, 0 broken images, the chronicle's contents rebuilt (52 links), the household's panels route (`#household/graf`), all 27 mounts filled from the files and the books, Archery/Riding on the Graf, no horizontal scroll at 375px, 0 app console errors |
 | **M4** | here | The first pack; the old tracker state carried over | **landed** (this commit). `build_seed.py`: 16 members (12 in Tomisława's retinue), Veins of the Earth available, Roads allowed. Browser (8751 + Worker 8803, two origins): the seed fills a fresh table once past the veil; the claim screen reads "with a retinue of 12"; claiming Tomisława shows all 13 as tabs; a planted `wop.table.v1` carries over on claim (her Health 2 Superficial, Willpower 1 Aggravated, Hunger 3, a Stain, XP 12/5, her note; the Graf's Health) and the Storyteller sees it; Kuncze's empty marks are not sent; it records itself and does not run twice |
-| **M5** | here | Deploy | **not started — waits on the owner** (see Deploy) |
+| **M5** | here | Deploy (owner: "push and deploy") | **landed 2026-09-27.** Corpora `938c9bc` / `d85a2ba` and the VTT `f43aa69` pushed (each remote = local; nobody else had pushed). Worker `war-of-princes` deployed (version 5d1dc94a) → https://war-of-princes.sortilege.workers.dev; `curl` POST /session: warofprinces.sortilege.online 200, sortilege-inc.github.io 200, a foreign origin 403. `main` fast-forwarded to `vtt-instance` and pushed; `.nojekyll` added |
 
-## Deploy — for the owner, when ready
+## Deploy — done 2026-09-27 (M5); kept as the order to repeat
 
-Nothing is pushed. In order:
+In order:
 
 1. `titterpig-dsl-vtm5e` (`938c9bc`) and `titterpig-dsl-vtm5e-3rdparty` (`d85a2ba`): `git pull --rebase --autostash origin main && git push`.
 2. `sortilege-vtt-vtm5e` (`26a03ec`, `37f70a6`, `f43aa69`): push. **Its engine ops changed** (retinues): each sibling instance's Worker must be redeployed when that instance next merges upstream.
@@ -54,8 +54,6 @@ Nothing is pushed. In order:
 
 ## Open
 
-- **The Graf's Health and Willpower.** The page records 5 and 5; the rules derive 6 (Stamina 3 + 3) and 6 (Composure 4 + Resolve 2). Kept as recorded (O3); say if they should follow the rule.
-- **Humanity 7 for the ghoul and the mortals** — the page records none; the Companion starts both at 7. Written; say if not.
 - **Méabh, Eustace, Oscar** are seated by name with their Roads unrecorded, until their sheets arrive.
 - **The Setting page** is the old site's retelling of the brief, not the brief's own words (which are on the shelf). Left as prose; it could be rebuilt from the brief verbatim.
 - **Upstream gaps for mortals and ghouls:** the creator makes Kindred kinds only; Advancement prices by the Kindred's costs (a ghoul's level-1 powers at 10 XP each are not priced).
@@ -80,4 +78,6 @@ Nothing is pushed. In order:
 | 2026-09-27 | autonomous, method | The old pages **moved, not rewritten**, then the household's rules text taken out in a separate, proven step | Each step has its own proof; the move's text identity would mean nothing if the edit were folded in |
 | 2026-09-27 | autonomous, scope | **Piers is not seated** in the party (his file stays) | The Chronicle's Session Four ends his life |
 | 2026-09-27 | autonomous, scope | **No GM material seeded** | The owner plays in this chronicle; its Storyteller's prep is not in any source here |
+| 2026-09-27 | **owner ruling** | **The Graf's Health and Willpower by the rule** (6 and 6: Stamina 3 + 3, Composure 4 + Resolve 2), not the page's 5 and 5; **Humanity 7** for the ghoul and the mortals stands; the rest of the open list is fine. `convert_household.py` derives them, `check_household.py` expects the rule (781 all match; the page's 5 planted back is caught, 11/11) | The owner's answers |
+| 2026-09-27 | **owner request** | **The creator makes mortals and ghouls** | Built upstream (sortilege-vtt-vtm5e), pulled here |
 | 2026-09-27 | autonomous, method | The old tracker state (`wop.table.v1`) is carried over **on claim, once**, into the claimed character and its retinue only | INSTANCES step 4; it lives at the same origin as the deployed site |

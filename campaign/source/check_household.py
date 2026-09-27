@@ -285,8 +285,9 @@ def run(files, plant=False):
     skills = {r.find(cls="skill-name")[0].text(): int(r.find(cls="skill-val")[0].text()) for r in graf.find(cls="skill-row")}
     check_values(c, who, v, attrs, skills, [])
     der = {d.find(cls="derived-label")[0].text(): d.find(cls="derived-val")[0].text() for d in graf.find(cls="derived-cell")}
-    for k in ("Health", "Willpower"):
-        c.eq(who, k, v.get(k), int(der[k]))
+    # owner, 2026-09-27: the Graf's Health and Willpower by the rule, not as the page records them
+    c.eq(who, "Health (Stamina + 3)", v.get("Health"), attrs["Stamina"] + 3)
+    c.eq(who, "Willpower (Composure + Resolve)", v.get("Willpower"), attrs["Composure"] + attrs["Resolve"])
     pw = graf.find(cls="power-title")[0].text()          # Cloud Memory · Dominate 1
     name, disc, n = re.match(r"^(.*?) · (\w+) (\d)$", pw).groups()
     c.eq(who, "Disciplines", v.get("Disciplines"), [{"Discipline": disc, "Dots": int(n), "Powers": [name]}])
@@ -339,6 +340,7 @@ def main():
             ("the Graf's Archery written as nothing", lambda F: F["graf"]["values"].__setitem__("Firearms", 0)),
             ("Kuncze given an unprinted Skill", lambda F: F["kuncze"]["values"].__setitem__("Stealth", 2)),
             ("an invented Merit on Elżbieta", lambda F: F["elzbieta"]["values"]["Advantages & Flaws"].append({"Name": "Iron Will", "Dots": 1, "Flaw": False})),
+            ("the Graf's Health back to the page's 5", lambda F: F["graf"]["values"].__setitem__("Health", 5)),
             ("a power no book prints", lambda F: F["graf"]["values"]["Disciplines"][0]["Powers"].__setitem__(0, "Cloud Memories")),
             ("her Clan Bane cut short", lambda F: F["tomislawa"]["values"].__setitem__("Clan Bane", F["tomislawa"]["values"]["Clan Bane"][:200])),
             ("a Flaw written in the page's spelling", lambda F: F["kuncze"]["values"]["Advantages & Flaws"][3].__setitem__("Name", "Weak-Willed")),
