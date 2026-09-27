@@ -55,7 +55,7 @@ window.VtmCreatorGuides = (function () {
     const row = (n) => {
       const cur = own(n);
       return el('div', { class: 'alloc-row' + (cur !== base ? ' placed' : '') }, [
-        el('span', { class: 'alloc-name' }, [n, plus[n] ? el('span', { class: 'alloc-plus' }, [' +' + plus[n] + ' from the Predator type']) : null]),
+        el('span', { class: 'alloc-name' }, [Sheet.label ? Sheet.label(n) : n, plus[n] ? el('span', { class: 'alloc-plus' }, [' +' + plus[n] + ' from the Predator type']) : null]),
         el('span', { class: 'alloc-levels' }, counted.map((l) => {
           const on = cur === l;
           const b = button(String(l), () => set({ [n]: (on ? base : l) + (plus[n] || 0) }), 'tiny' + (on ? '' : ' ghost'));
@@ -378,7 +378,7 @@ window.VtmCreatorGuides = (function () {
     sec('Attributes · ' + C.attribute.text, [traits(Sheet.attributes(), 'attribute', C.attribute, 5)]);
     sec('Skills · ' + C.skill.text, [traits(Sheet.skills(), 'skill', C.skill, 5)]);
     // a specialty: a Skill the character has, and its name
-    const sk = el('select', { class: 'scope' }, Sheet.skills().filter((n) => (+v[n] || 0) > 0).map((n) => el('option', { value: n }, [n])));
+    const sk = el('select', { class: 'scope' }, Sheet.skills().filter((n) => (+v[n] || 0) > 0).map((n) => el('option', { value: n }, [Sheet.label(n)])));
     const sp = el('input', { type: 'text', class: 'text', placeholder: 'the specialty' });
     const spBtn = button('Add · ' + price(C.specialty, 1) + ' XP', () => { if (sp.value.trim()) buy({ kind: 'specialty', key: sp.value.trim(), cost: price(C.specialty, 1), what: 'Specialty: ' + sk.value + ' (' + sp.value.trim() + ')', extra: { skill: sk.value } }); }, 'ghost tiny');
     if (price(C.specialty, 1) > left) spBtn.disabled = true;

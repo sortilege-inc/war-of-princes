@@ -98,6 +98,22 @@ window.VtmSheet = (function () {
   // the track a character's Beast is held by: Humanity, or a Cainite's Road rating
   const morality = (v) => (kindOf(v) === 'cainite' ? { key: 'Road Rating', label: v.Road || 'Road' } : { key: 'Humanity', label: 'Humanity' });
 
+  // A trait's name on the sheet: its own, or the one a campaign's house rule gives it - a MODIFY on
+  // the core's entity for the trait that sets ^"Label" (an instance's layer; a Dark Ages table's
+  // Archery for Firearms). The value stays under the trait's own name; only what the sheet prints
+  // changes, so a pool, a power's Dice Pools and a character file read as before.
+  let labels = null;
+  function label(name) {
+    if (!labels) {
+      labels = {};
+      (D.index().corrections || []).forEach((c) => {
+        const l = (c.props || []).find((p) => p.name === 'Label' && typeof p.value === 'string');
+        if (l && c.target && c.target.name && !(c.target.name in labels)) labels[c.target.name] = l.value;
+      });
+    }
+    return labels[name] || name;
+  }
+
   // Where the core's Characters chapter prints a field: the heading its entity sits under.
   let parentOf = null;
   function groupOf(name) {
@@ -417,7 +433,7 @@ window.VtmSheet = (function () {
         });
         box.appendChild(el('div', { class: 'dot-groups' }, groups.map((g) => el('div', { class: 'dot-group' }, [
           el('div', { class: 'group-h' }, [g.label]),
-          ...g.fields.map((f) => el('div', { class: 'dot-row' }, [el('span', { class: 'dot-k' }, [f.name]), o.readOnly ? dots(v[f.name], f.min, f.max) : input(f, v[f.name], (val) => set(f.name, val))])),
+          ...g.fields.map((f) => el('div', { class: 'dot-row' }, [el('span', { class: 'dot-k', title: label(f.name) !== f.name ? f.name : null }, [label(f.name)]), o.readOnly ? dots(v[f.name], f.min, f.max) : input(f, v[f.name], (val) => set(f.name, val))])),
         ]))));
         continue;
       }
@@ -767,7 +783,7 @@ window.VtmSheet = (function () {
     const sheetW = +v.Willpower || derived(v).Willpower;
     const attrSel = el('select', { class: 'scope' }, [el('option', { value: '' }, ['Attribute…'])].concat(attributes().map((a) => el('option', { value: a }, [a + ' ' + (v[a] || 0)]))));
     const second = el('select', { class: 'scope' }, [el('option', { value: '' }, ['+ Skill or Discipline…'])].concat(
-      skills().map((s) => el('option', { value: 'S:' + s }, [s + ' ' + (v[s] || 0)])),
+      skills().map((s) => el('option', { value: 'S:' + s }, [label(s) + ' ' + (v[s] || 0)])),
       (v.Disciplines || []).filter((d) => d.Discipline).map((d) => el('option', { value: 'D:' + d.Discipline }, [d.Discipline + ' ' + (d.Dots || 0)])),
     ));
     const note = el('span', { class: 'muted small' });
@@ -775,17 +791,17 @@ window.VtmSheet = (function () {
       const a = attrSel.value;
       if (!a) return;
       let n = +v[a] || 0;
-      let label = a;
+      let what = a;
       const s2 = second.value;
-      if (s2.startsWith('S:')) { n += +v[s2.slice(2)] || 0; label += ' + ' + s2.slice(2); }
-      if (s2.startsWith('D:')) { const d = (v.Disciplines || []).find((x) => x.Discipline === s2.slice(2)); n += +(d && d.Dots) || 0; label += ' + ' + s2.slice(2); }
+      if (s2.startsWith('S:')) { n += +v[s2.slice(2)] || 0; what += ' + ' + label(s2.slice(2)); }
+      if (s2.startsWith('D:')) { const d = (v.Disciplines || []).find((x) => x.Discipline === s2.slice(2)); n += +(d && d.Dots) || 0; what += ' + ' + s2.slice(2); }
       // Impairment: Physical pools from a full Health tracker, Social and Mental from Willpower
       const g = groupOf(a) || '';
       let pen = 0;
       if (/Physical/.test(g) && impaired(sheetH, live.health || {})) pen = IMPAIRED_PENALTY;
       if (/Social|Mental/.test(g) && impaired(sheetW, live.willpower || {})) pen = IMPAIRED_PENALTY;
       note.textContent = pen ? ' Impaired: −' + pen : '';
-      roller.setPool(Math.max(0, n - pen), label + (pen ? ' (Impaired −' + pen + ')' : ''));
+      roller.setPool(Math.max(0, n - pen), what + (pen ? ' (Impaired −' + pen + ')' : ''));
     };
     attrSel.addEventListener('change', apply);
     second.addEventListener('change', apply);
@@ -890,11 +906,11 @@ window.VtmSheet = (function () {
       let pen = 0;
       if (/Physical/.test(g) && impaired(sheetH, live.health || {})) pen = IMPAIRED_PENALTY;
       if (/Social|Mental/.test(g) && impaired(sheetW, live.willpower || {})) pen = IMPAIRED_PENALTY;
-      roller.setPool(Math.max(0, n - pen), [pk.a, pk.b].filter(Boolean).join(' + ') + (pen ? ' (Impaired −' + pen + ')' : ''), true);
+      roller.setPool(Math.max(0, n - pen), [pk.a, pk.b].filter(Boolean).map(label).join(' + ') + (pen ? ' (Impaired −' + pen + ')' : ''), true);
     };
     const row = (t, key) => el('button', { type: 'button', class: 'sk-row' + (pk[key] === t ? ' on' : ''),
       onclick: () => { pk[key] = pk[key] === t ? null : t; apply(); window.VttBus.emit('state:remote', { view: true }, { local: true }); } },
-      [el('span', {}, [t]), el('span', { class: 'sk-dots' }, ['●'.repeat(valueOf(t)) + '○'.repeat(Math.max(0, 5 - valueOf(t)))])]);
+      [el('span', {}, [label(t)]), el('span', { class: 'sk-dots' }, ['●'.repeat(valueOf(t)) + '○'.repeat(Math.max(0, 5 - valueOf(t)))])]);
     const groups = (names) => {
       const by = [];
       names.forEach((t) => { const g = groupOf(t) || ''; let x = by.find((y) => y[0] === g); if (!x) by.push(x = [g, []]); x[1].push(t); });
@@ -962,6 +978,6 @@ window.VtmSheet = (function () {
     spec, field, blank, complete, attributes, skills, derived, potencyRow, groupOf, sentence, render,
     fileOf, download, readMember, newMember, downloadMember, values, hunger, setHunger, change, damage, spendWillpower, trackLine,
     xp, logOf, isViewingArchive, versionsOf, surgeFor, potencyRow,
-    memberSentence, live, powersFor, templateId, KINDS, kindOf, isVampire, morality, specOfKind,
+    memberSentence, live, powersFor, templateId, label, KINDS, kindOf, isVampire, morality, specOfKind,
   };
 })();
