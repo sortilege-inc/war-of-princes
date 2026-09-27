@@ -982,6 +982,6 @@ window.VtmSheet = (function () {
     spec, field, blank, complete, attributes, skills, derived, potencyRow, groupOf, sentence, render,
     fileOf, download, readMember, newMember, downloadMember, values, hunger, setHunger, change, damage, spendWillpower, trackLine,
     xp, logOf, isViewingArchive, versionsOf, surgeFor, potencyRow,
-    memberSentence, live, powersFor, templateId, label, KINDS, kindOf, isVampire, morality, specOfKind,
+    memberSentence, live, powersFor, templateId, label, KINDS, kindOf, isVampire, morality, specOfKind, specFor,
   };
 })();

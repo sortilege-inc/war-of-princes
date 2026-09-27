@@ -25,6 +25,14 @@
 // Convictions" - so a draft using it is Summoned Stories' ACTOR "Cainite", which takes a Road and
 // its rating ("Start with rating of 7", read from the brief's Starting Rating) in their place. A
 // Road and a Path are two answers to one question; a draft takes one book or the other.
+//
+// Mortals and ghouls (owner, 2026-09-27): chosen on the Sources step, they are walked through the
+// Companion's own "Creating a Mortal Character" / "Creating a Ghoul Character" (Part III), each of
+// its headings a step, its text beside the controls. Where the Companion's step is the core's -
+// Attributes, Skills, Advantages, Convictions - the same controls are used, their numbers parsed
+// from the Companion's sentences; a ghoul's Skills follow the core's Quick Skills Assignment, as
+// the Companion directs; a ghoul's Disciplines step takes a domitor and one level-1 power. The
+// character is the BASE's ACTOR "Mortal" or "Ghoul" (Sheet.kindOf).
 window.VtmCreator = (function () {
   const { el, button, debounce } = window.VttRender;
   const D = window.VtmData;
@@ -50,6 +58,9 @@ window.VtmCreator = (function () {
     ADVANTAGES: ['Advantages & Flaws'],
     'CONVICTIONS AND TOUCHSTONES': ['Path of Enlightenment', 'Road', 'Road Rating', 'Touchstones & Convictions', 'Chronicle Tenets', 'Humanity'],
     'SEA OF TIME': ['Generation', 'Blood Potency', 'Total Experience', 'Spent Experience'],
+    // the Companion's walk (mortals and ghouls)
+    'GHOUL DISCIPLINES': ['Domitor', 'Disciplines'],
+    NOTE: [],                              // a heading that sets nothing (the text alone)
   };
   // What The Black Hand adds to a core step: the core step, and the heading under its Quick
   // Character Creation (p. 107) whose text is shown beside the core's
@@ -99,6 +110,35 @@ window.VtmCreator = (function () {
     });
     return out.map((s) => Object.assign(s, { text: s.paras.filter(Boolean).join('\n\n') }));
   }
+  // ── the Companion's walk for a mortal or a ghoul ──
+  const COMPANION = 'companion';
+  const LIVING = { mortal: 'Creating a Mortal Character', ghoul: 'Creating a Ghoul Character' };
+  // each Companion heading → the core step whose controls it uses (NOTE: its text only)
+  const COMPANION_STEP = {
+    'Character Concept': 'CORE CONCEPT', 'Set Your Attributes': 'ATTRIBUTES', 'Choose Your Skills': 'SKILLS',
+    Advantages: 'ADVANTAGES', 'Convictions & Touchstones': 'CONVICTIONS AND TOUCHSTONES',
+  };
+  const living = (v) => { const k = Sheet.kindOf(v); return k === 'mortal' || k === 'ghoul' ? k : null; };
+  function companionSteps(kind) {
+    const top = D.loaded(COMPANION) ? D.all([COMPANION]).find((e) => e.name === LIVING[kind]) : null;
+    if (!top) return [];
+    // an entity's words as paragraphs: its description, each printed field "Name: value", each
+    // heading under it "Name: its description" (the Skill distributions: "Balanced: Three Skills at 3 …")
+    const paras = (e) => [].concat(String(e.desc || '').split(/\n\s*\n/),
+      (e.props || []).filter((p) => p.vk === 'scalar').map((p) => p.name + ': ' + p.value),
+      (e.props || []).filter((p) => p.vk === 'list').map((p) => (p.items || []).map((x) => (x && x.value) || x).join('\n\n')),
+      D.children(e.id).map((k) => k.name + ': ' + (k.desc || ''))).map((x) => String(x).trim()).filter(Boolean);
+    const core = steps();
+    return D.children(top.id).map((e) => {
+      let key = COMPANION_STEP[e.name] || 'NOTE';
+      if (e.name === 'Disciplines and Predator Type' && kind === 'ghoul') key = 'GHOUL DISCIPLINES';
+      let ps = paras(e);
+      // "use the Quick Skills Assignment method (see Vampire: The Masquerade, p. 147)": the core's step
+      if (key === 'SKILLS' && !skillDistributions(ps).length) { const c = core.find((x) => x.key === 'SKILLS'); if (c) ps = ps.concat(c.paras); }
+      return { key, label: e.name, entity: e, kids: true, paras: ps, text: ps.join('\n\n') };
+    });
+  }
+
   // the heading The Black Hand's Quick Character Creation prints for what it adds to a core step
   function bhAdds(key) {
     const q = BH_ADDS[key] && D.loaded(BH_BOOK) ? D.all([BH_BOOK]).find((e) => e.name === 'Quick Character Creation') : null;
@@ -111,6 +151,9 @@ window.VtmCreator = (function () {
     let m;
     const re = /(\w+) Attributes? at (\d)/g;
     while ((m = re.exec(text))) out[m[2]] = (out[m[2]] || 0) + num(m[1]);
+    // the Companion's table: "Best Attribute 4 Dots Three Attributes 3 Dots Four Attributes 2 Dots Worst Attribute 1 Dot"
+    const re2 = /(Best|Worst|\w+) Attributes? (\d) Dots?/g;
+    if (!Object.keys(out).length) while ((m = re2.exec(text))) out[m[2]] = (out[m[2]] || 0) + (/^(Best|Worst)$/.test(m[1]) ? 1 : num(m[1]));
     return out;                                           // { "4": 1, "3": 3, "2": 4, "1": 1 }
   }
   function skillDistributions(paras) {
@@ -137,12 +180,16 @@ window.VtmCreator = (function () {
     return m ? [num(m[1]), num(m[2])] : null;
   }
   function advantagePoints(text) {
-    const m = /Spend (\d+) points on Advantages, and take (\d+) points of Flaws/.exec(text);
+    // the core: "Spend 7 points on Advantages, and take 2 points of Flaws"; the Companion: "Mortals take 7
+    // points of Advantages and 2 points of Flaws"
+    const m = /Spend (\d+) points on Advantages, and take (\d+) points of Flaws/.exec(text) || /take (\d+) points of Advantages and (\d+) points of Flaws/.exec(text);
     return m ? { advantages: +m[1], flaws: +m[2] } : null;
   }
   function convictions(text) {
-    const m = /(?:Select|and) (\w+) to (\w+) Convictions/.exec(text);   // the core: "Select one to three"; The Black Hand: "…and one to three Convictions"
-    const h = /Set your Humanity to (\d+)/.exec(text);
+    // the core: "Select one to three"; The Black Hand: "…and one to three Convictions"; the Companion's ghoul: "choose one to three of each"
+    const m = /(?:Select|and) (\w+) to (\w+) Convictions/.exec(text) || /choose (\w+) to (\w+) of each/.exec(text);
+    // the core: "Set your Humanity to 7"; the Companion: "Mortals start with Humanity at 7", "Ghouls start play with Humanity at 7"
+    const h = /Set your Humanity to (\d+)/.exec(text) || /start (?:play )?with Humanity at (\d+)/.exec(text);
     return { min: m ? num(m[1]) : null, max: m ? num(m[2]) : null, humanity: h ? +h[1] : null };
   }
 
@@ -257,7 +304,14 @@ window.VtmCreator = (function () {
       save(roster);
     }
     const v = roster.drafts[roster.current];
-    const st = steps();
+    const kind = living(v);
+    if (kind && !D.loaded(COMPANION)) {
+      page.innerHTML = '';
+      page.appendChild(el('div', { class: 'loading' }, ['Opening the Companion…']));
+      D.ready([COMPANION]).then(() => draw(page));
+      return;
+    }
+    const st = kind ? companionSteps(kind) : steps();
     if (Sheet.isSabbat(v) && !D.loaded(BH_BOOK)) {
       page.innerHTML = '';
       page.appendChild(el('div', { class: 'loading' }, ['Opening The Black Hand…']));
@@ -290,7 +344,7 @@ window.VtmCreator = (function () {
     // the roster
     page.appendChild(el('div', { class: 'chiprow' }, [
       el('select', { class: 'scope', onchange: (ev) => { roster.current = ev.target.value; save(roster); draw(page); } },
-        Object.keys(roster.drafts).map((id) => el('option', { value: id, selected: id === roster.current || null }, [(roster.drafts[id].Name || 'An unnamed Kindred') + (Sheet.isSabbat(roster.drafts[id]) ? ' · Sabbat' : '')]))),
+        Object.keys(roster.drafts).map((id) => el('option', { value: id, selected: id === roster.current || null }, [(roster.drafts[id].Name || 'An unnamed ' + Sheet.KINDS[Sheet.kindOf(roster.drafts[id])].label) + (Sheet.isSabbat(roster.drafts[id]) ? ' · Sabbat' : '') + (living(roster.drafts[id]) && roster.drafts[id].Name ? ' · ' + Sheet.KINDS[Sheet.kindOf(roster.drafts[id])].label : '')]))),
       button('New character', () => { const id = newId(); roster.drafts[id] = Sheet.blank(); roster.current = id; save(roster); stepIndex = 0; draw(page); }, 'ghost tiny'),
       opts.done ? button('Take this character to the table', () => opts.done(v), 'tiny') : null,
       button('Download character file', () => Sheet.download(Sheet.fileOf(v, { hunger: +v.Hunger || 0 }), v.Name), 'tiny'),
@@ -302,7 +356,7 @@ window.VtmCreator = (function () {
       if (need.length && m.thirdParty) D.ready(need).then(go); else go();
     };
     if (!st.length) {
-      page.appendChild(el('div', { class: 'empty' }, ['The core’s Character Creation summary was not found in the data.']));
+      page.appendChild(el('div', { class: 'empty' }, [kind ? 'The Companion’s ' + LIVING[kind] + ' was not found in the data.' : 'The core’s Character Creation summary was not found in the data.']));
       return;
     }
     // step 0 is the sources; then the summary's steps, under their own names in title case
@@ -327,12 +381,24 @@ window.VtmCreator = (function () {
     const cs = checks(s, v, meta);
     const said = stepSummary(s, v, meta);
     const side = el('aside', { class: 'creator-book' }, [el('div', { class: 'group-h' }, [s.label])]
-      .concat(s.key === 'SOURCES' ? [E.prose(SOURCES_TEXT)] : [s.entity ? E.render(s.entity, { noKids: true }) : E.prose(smallCaps(s.text))])
+      .concat(s.key === 'SOURCES' ? [E.prose(SOURCES_TEXT)] : [s.entity ? E.render(s.entity, { noKids: !s.kids }) : E.prose(smallCaps(s.text))])
       .concat(adds ? [el('div', { class: 'group-h bh-adds' }, [((D.indexBook(BH_BOOK) || {}).label || 'The Black Hand') + ' adds · ' + adds.name]), E.render(adds, { noKids: true })] : [])
       .concat([el('div', { class: 'group-h side-h' }, ['On your sheet from this step'])], [said.length ? el('ul', { class: 'step-said' }, said.map((x) => el('li', {}, [el('span', { class: 'said-k' }, [x[0]]), ' ', x[1]]))) : el('p', { class: 'small said-none' }, ['Nothing yet.'])])
       .concat(cs.length ? [el('div', { class: 'group-h side-h' }, ['Checks']), el('ul', { class: 'checks' }, cs.map((c) => el('li', { class: c.ok ? 'ok' : 'warn' }, [c.text])))] : []));
     const main = el('div', { class: 'creator-step' });
-    if (s.key === 'SOURCES') main.appendChild(sourcesStep(v, meta, changeSources, setMeta));
+    if (s.key === 'SOURCES') main.appendChild(sourcesStep(v, meta, changeSources, setMeta, (k) => {
+      // another kind: the draft starts again as one, keeping who it is
+      const keep = ['Name', 'Concept', 'Chronicle', 'Ambition', 'Desire'];
+      const had = Object.keys(v).some((f) => keep.indexOf(f) === -1 && v[f] != null && v[f] !== '' && !(Array.isArray(v[f]) && !v[f].length) && !(typeof v[f] === 'number' && v[f] <= 1));
+      if (had && !window.confirm('Make ' + (v.Name || 'this character') + ' a ' + Sheet.KINDS[k].label.toLowerCase() + '? Everything but the name and concept starts again.')) return;
+      const nv = Sheet.blank(k);
+      keep.forEach((f) => { if (v[f] != null) nv[f] = v[f]; });
+      roster.drafts[roster.current] = nv;
+      roster.meta[roster.current] = {};
+      save(roster);
+      stepIndex = 0;
+      draw(page);
+    }));
     else main.appendChild(stepControls(s, v, (nv) => { commit(nv); draw(page); }, meta, setMeta));
     main.appendChild(el('div', { class: 'chiprow' }, [
       stepIndex > 0 ? button('← ' + walk[stepIndex - 1].label, () => { stepIndex--; draw(page); }, 'ghost tiny') : null,
@@ -411,12 +477,13 @@ window.VtmCreator = (function () {
   function sheetView(v, meta, back) {
     const d = Sheet.derived(v);
     const w = Object.assign({}, v, { Health: v.Health || d.Health, Willpower: v.Willpower || d.Willpower });
-    const part = (names) => Sheet.render(w, { readOnly: true, only: names.filter((n) => Sheet.field(n) || (n === 'Path of Enlightenment' && Sheet.isSabbat(w)) || (/^Road/.test(n) && isCainite(w))) });
+    const part = (names) => Sheet.render(w, { readOnly: true, only: names.filter((n) => Sheet.specFor(w).some((x) => x.name === n)) });
     const sec = (title, node) => el('section', { class: 'cs-sec' }, [el('div', { class: 'cs-h' }, [title]), node]);
-    const top = ['Concept', 'Predator', 'Chronicle', 'Ambition', 'Clan', 'Sire', 'Sire Clan', 'Desire', 'Generation'].concat(Sheet.isSabbat(w) ? ['Path of Enlightenment'] : [], isCainite(w) ? ['Road', 'Road Rating'] : []);
+    const top = ['Concept', 'Predator', 'Chronicle', 'Ambition', 'Clan', 'Sire', 'Sire Clan', 'Desire', 'Generation', 'Domitor'].concat(Sheet.isSabbat(w) ? ['Path of Enlightenment'] : [], isCainite(w) ? ['Road', 'Road Rating'] : [])
+      .filter((n) => Sheet.specFor(w).some((x) => x.name === n));
     return el('div', { class: 'creator-sheet' }, [
       el('div', { class: 'sheet-head' }, [
-        el('div', { class: 'sheet-name' }, [w.Name || 'An unnamed Kindred']),
+        el('div', { class: 'sheet-name' }, [w.Name || 'An unnamed ' + Sheet.KINDS[Sheet.kindOf(w)].label]),
         el('dl', { class: 'cs-top' }, top.map((n) => [el('dt', {}, [n]), el('dd', {}, [w[n] == null || w[n] === '' ? '—' : String(w[n])])]).reduce((a, x) => a.concat(x), [])),
       ]),
       sec('Attributes', part(Sheet.attributes().concat(['Health', 'Willpower']))),
@@ -439,10 +506,21 @@ window.VtmCreator = (function () {
   // Hand takes effect (the draft becomes a Sabbat Kindred) only with all three; untaking it clears
   // what it added — the Path, a Sabbat Predator type — after asking.
   // Step 0: the sources. The Core Rulebook always; third-party books by the player's choice.
-  function sourcesStep(v, meta, change, setMeta) {
+  function sourcesStep(v, meta, change, setMeta, setKind) {
+    const k = Sheet.kindOf(v);
+    const cur = k === 'mortal' || k === 'ghoul' ? k : 'kindred';
+    const hasCompanion = D.books().some((b) => b.id === COMPANION);
+    const kinds = el('div', { class: 'third-party on kind-pick' }, [el('div', { class: 'prop-k' }, ['What you are making'])].concat(
+      [['kindred', 'A vampire', 'the Core Rulebook’s Character Creation'], ['ghoul', 'A ghoul', 'The Masquerade Companion’s ' + LIVING.ghoul], ['mortal', 'A mortal', 'The Masquerade Companion’s ' + LIVING.mortal]]
+        .filter((x) => x[0] === 'kindred' || hasCompanion)
+        .map(([id, label, how]) => el('label', { class: 'tp-row tp-source' }, [
+          el('input', { type: 'radio', name: 'creator-kind', checked: id === cur || null, onchange: () => { if (id !== cur) setKind(id === 'kindred' ? null : id); } }),
+          ' ', el('b', {}, [label]), el('span', { class: 'muted small' }, [' — ' + how]),
+        ]))));
     return el('div', {}, [
+      kinds,
       booksBlock(meta, setMeta),
-      thirdParty(v, meta, change),
+      cur === 'kindred' ? thirdParty(v, meta, change) : null,
       loresheetsBlock(v, meta, setMeta),
     ]);
   }
@@ -656,6 +734,23 @@ window.VtmCreator = (function () {
       ])]));
       if (cur) box.appendChild(el('details', { class: 'paper' }, [el('summary', {}, [cur.name + ', as printed']), E.render(cur.entity, { noKids: true })]));
     }
+    if (s.key === 'GHOUL DISCIPLINES') {
+      // "Upon becoming a ghoul, the character gains a level-1 Discipline power in a Discipline possessed
+      // by their domitor ... always count as having a single dot" (the step's own text, beside)
+      const row = (v.Disciplines || [])[0] || {};
+      const discs = ((Sheet.specFor(v).find((x) => x.name === 'Disciplines') || {}).fields || []).find((f) => f.name === 'Discipline');
+      const names = (discs && discs.options) || [];
+      const pw = row.Discipline ? D.powers().filter((r) => r.discipline === row.Discipline && D.levelNumber(r) === 1 && r.kind === 'power') : [];
+      const put = (d, p) => set({ Disciplines: d ? [{ Discipline: d, Dots: 1, Powers: p ? [p] : [] }] : [] });
+      box.appendChild(el('div', { class: 'prop' }, [el('div', { class: 'prop-k' }, ['Discipline']), el('div', { class: 'prop-v' }, [
+        el('select', { class: 'scope', onchange: (ev) => put(ev.target.value, null) }, [el('option', { value: '' }, ['—'])].concat(names.map((n) => el('option', { value: n, selected: n === row.Discipline || null }, [n])))),
+      ])]));
+      if (row.Discipline) box.appendChild(el('div', { class: 'prop' }, [el('div', { class: 'prop-k' }, ['Its level-1 power']), el('div', { class: 'prop-v' }, [
+        el('select', { class: 'scope', onchange: (ev) => put(row.Discipline, ev.target.value || null) }, [el('option', { value: '' }, ['—'])].concat(
+          pw.map((r) => el('option', { value: r.name, selected: (row.Powers || [])[0] === r.name || null }, [r.name + ' (' + ((D.indexBook(r.book) || {}).label || r.book) + ')'])))),
+      ])]));
+      hidden.push('Disciplines');
+    }
     if (s.key === 'PREDATOR' && G()) {
       const need = predatorBooks(v, meta);
       if (need.length) {
@@ -728,6 +823,12 @@ window.VtmCreator = (function () {
       else out.push({ ok: !!ack, text: ack ? 'Third-party options in effect; playable where the Storyteller allows them.' : 'Tick the acknowledgment for the options to take effect.' });
     }
     if (s.key === 'CORE CONCEPT') out.push({ ok: !!v.Name, text: v.Name ? 'Named ' + v.Name : 'A name is required (the sheet declares it so).' });
+    if (s.key === 'GHOUL DISCIPLINES') {
+      const rows = (v.Disciplines || []).filter((d) => d.Discipline);
+      out.push({ ok: !!v.Domitor, text: v.Domitor ? 'Domitor: ' + v.Domitor : 'Name the domitor: the ghoul’s Discipline is one they possess.' });
+      out.push({ ok: rows.length === 1 && +rows[0].Dots === 1 && (rows[0].Powers || []).length === 1,
+        text: rows.length ? rows[0].Discipline + ' · ' + ((rows[0].Powers || [])[0] || 'no power yet') + ' (one level-1 power; a ghoul counts as having a single dot)' : 'Pick a Discipline and its level-1 power.' });
+    }
     if (s.key === 'CLAN AND SIRE') out.push({ ok: !!v.Clan, text: v.Clan ? 'Clan: ' + v.Clan : 'Pick a clan.' });
     if (s.key === 'ATTRIBUTES') {
       const want = attributeSpread(s.text);
@@ -781,7 +882,7 @@ window.VtmCreator = (function () {
       const fl = rows.filter((r) => r.Flaw).reduce((a, r) => a + (+r.Dots || 0), 0);
       // experience spent on an Advantage's dots is not creation's points
       const xpDots = ((meta || {}).xpBuys || []).filter((b) => b.kind === 'advantage').length;
-      if (want) out.push({ ok: adv - xpDots === want.advantages + band.adv && fl >= want.flaws + band.flaws, text: 'The book: ' + want.advantages + ' points of Advantages, ' + want.flaws + ' points of Flaws (besides the Predator’s)' + (band.adv || band.flaws ? '; ' + titleCase(band.name) + ' add ' + band.adv + ' and ' + band.flaws : '') + '. This sheet: ' + (adv - xpDots) + ' and ' + fl + '.' });
+      if (want) out.push({ ok: adv - xpDots === want.advantages + band.adv && fl >= want.flaws + band.flaws, text: 'The book: ' + want.advantages + ' points of Advantages, ' + want.flaws + ' points of Flaws ' + (living(v) ? '' : '(besides the Predator’s)') + '' + (band.adv || band.flaws ? '; ' + titleCase(band.name) + ' add ' + band.adv + ' and ' + band.flaws : '') + '. This sheet: ' + (adv - xpDots) + ' and ' + fl + '.' });
       const tm = /Thin-blood characters must take between (\w+) and (\w+) Thin-Blood Merits and the same number of Thin-Blood Flaws\./i.exec(s.text);
       if (isThin(v) && tm) {
         const tb = D.thinBloodTraits();
