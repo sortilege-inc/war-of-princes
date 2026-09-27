@@ -1,0 +1,79 @@
+{
+  "kind": "sortilege-vtt-character",
+  "v": 2,
+  "system": "vtm5e",
+  "templateId": "#vtm5Mortal0000000001",
+  "name": "Andrzej",
+  "values": {
+    "Name": "Andrzej",
+    "Concept": "Scout · Investigator · Pathfinder",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 2,
+    "Stamina": 1,
+    "Charisma": 1,
+    "Manipulation": 2,
+    "Composure": 1,
+    "Intelligence": 3,
+    "Wits": 3,
+    "Resolve": 2,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 0,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 2,
+    "Stealth": 0,
+    "Survival": 3,
+    "Animal Ken": 2,
+    "Etiquette": 0,
+    "Insight": 2,
+    "Intimidation": 0,
+    "Leadership": 0,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 0,
+    "Subterfuge": 2,
+    "Academics": 0,
+    "Awareness": 3,
+    "Finance": 0,
+    "Investigation": 3,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [
+      {
+        "Name": "Short Bond",
+        "Dots": 2,
+        "Flaw": false
+      },
+      {
+        "Name": "Linguistics (Old Polish)",
+        "Dots": 1,
+        "Flaw": false
+      },
+      {
+        "Name": "Linguistics (English)",
+        "Dots": 1,
+        "Flaw": false
+      },
+      {
+        "Name": "Ugly",
+        "Dots": 1,
+        "Flaw": true
+      },
+      {
+        "Name": "Illiterate",
+        "Dots": 1,
+        "Flaw": true
+      }
+    ],
+    "Notes": "Called \"Tracker\"."
+  },
+  "live": {}
+}

@@ -1,0 +1,74 @@
+{
+  "kind": "sortilege-vtt-character",
+  "v": 2,
+  "system": "vtm5e",
+  "templateId": "#vtm5Mortal0000000001",
+  "name": "Kuncze",
+  "values": {
+    "Name": "Kuncze",
+    "Concept": "Muscle · Close Combat",
+    "Chronicle": "War of Princes",
+    "Strength": 3,
+    "Dexterity": 2,
+    "Stamina": 3,
+    "Charisma": 1,
+    "Manipulation": 1,
+    "Composure": 2,
+    "Intelligence": 1,
+    "Wits": 1,
+    "Resolve": 2,
+    "Athletics": 3,
+    "Brawl": 0,
+    "Craft": 0,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 3,
+    "Larceny": 0,
+    "Stealth": 0,
+    "Survival": 2,
+    "Animal Ken": 0,
+    "Etiquette": 2,
+    "Insight": 0,
+    "Intimidation": 3,
+    "Leadership": 0,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 0,
+    "Subterfuge": 0,
+    "Academics": 0,
+    "Awareness": 0,
+    "Finance": 0,
+    "Investigation": 0,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [
+      {
+        "Name": "Beautiful",
+        "Dots": 2,
+        "Flaw": false
+      },
+      {
+        "Name": "Linguistics (Old Polish)",
+        "Dots": 1,
+        "Flaw": false
+      },
+      {
+        "Name": "Linguistics (Middle High German)",
+        "Dots": 1,
+        "Flaw": false
+      },
+      {
+        "Name": "Weak-willed",
+        "Dots": 2,
+        "Flaw": true
+      }
+    ],
+    "Notes": "Called \"Meathead\"."
+  },
+  "live": {}
+}

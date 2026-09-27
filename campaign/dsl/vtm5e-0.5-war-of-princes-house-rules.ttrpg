@@ -1,0 +1,37 @@
+EXTENSION "vtm5e-war-of-princes-house-rules" EXTENDS "vtm5e" {
+    NAME "War of Princes - house rules"
+    VERSION "0.1.0"
+    SPEC_VERSION "0.5"
+    RELEASE_DATE "2026-09-27"
+    DEPENDS_ON "vtm5e-summoned-stories-chargen"
+
+    # This chronicle's own house rules, the ones its table plays by and no book prints. The
+    # Storyteller's brief (Summoned Stories, Character Creation) is on the VTT's third-party
+    # shelf; its Road system is the ACTOR "Cainite" there, not restated here.
+    #
+    # The Dark Ages skills (owner, 2026-09-27: "relabel in this campaign"). The brief allows it -
+    # its Skills entry, #vpFZRs9uiWlUZS0Y5989MQe - and the table's household sheets write Archery
+    # and Riding where the core's sheet prints Firearms and Drive. Only the label changes (the
+    # VTT's sheet reads ^"Label" from a MODIFY on the trait); the trait, its dots and every pool
+    # that names it are the core's.
+
+    MODIFY #vG1Zfg4zyqhTmmpEoR9xG0h ^"Firearms" {
+        ^"Label" STRING "Archery"
+        GUIDANCE {
+            ENTRY ^"War of Princes: Archery" #vwopArcheryGuidance01 {
+                CONCERNS [ #vpFZRs9uiWlUZS0Y5989MQe ^"Skills" ]
+                TEXT "Some skills may be reworded to fit the setting such as Drive, but their basic functions will remain the same."
+            }
+        }
+    }
+
+    MODIFY #vAZil4UpE6szIJUsDEkYKqt ^"Drive" {
+        ^"Label" STRING "Riding"
+        GUIDANCE {
+            ENTRY ^"War of Princes: Riding" #vwopRidingGuidance001 {
+                CONCERNS [ #vpFZRs9uiWlUZS0Y5989MQe ^"Skills" ]
+                TEXT "Some skills may be reworded to fit the setting such as Drive, but their basic functions will remain the same."
+            }
+        }
+    }
+}
