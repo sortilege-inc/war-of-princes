@@ -1,0 +1,419 @@
+{
+ "files": {
+  "assets/art/clans/banu-haqim.webp": {
+   "from": "Vampire Symbols/Banu Haqim/BanuHaqim_Geometric.png",
+   "sha256": "530d1408dad5bfc22c848f7025345eddbd5f435f5fb0502b8556b82fff42c718",
+   "size": [
+    3000,
+    3000
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/brujah.webp": {
+   "from": "Vampire Symbols/Brujah/VTM_Brujah_icon_black.png",
+   "sha256": "878b66adcc770a8cebf191d9adccf35d96ed71d5d02669186f350cd149cc88a2",
+   "size": [
+    3600,
+    3600
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/caitiff.webp": {
+   "from": "Vampire Symbols/Caitiff/Caitiff_Symbol.png",
+   "sha256": "0d51ae8d7c33bb777910cb719446c8aa5eecb7ce576e9a4f6dc1de01c5d61bb3",
+   "size": [
+    2500,
+    2495
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/cappadocian.webp": {
+   "from": "Vampire Symbols/Cappadocian/Cappadocian_Symbol.png",
+   "sha256": "0691737d31617221ceb39f80fa93d6dae2af8e07c974344fc131a8888fdc5104",
+   "size": [
+    1844,
+    1748
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/gangrel.webp": {
+   "from": "Vampire Symbols/Gangrel/Gangrel_New1.png",
+   "sha256": "74c894ae77e6a49fca21434ecf99bb57e470da855ccd65e40a3a2638ef76b85e",
+   "size": [
+    3000,
+    2556
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/giovanni.webp": {
+   "from": "Vampire Symbols/Giovanni/Giovanni_ModernSymbol_2019.png",
+   "sha256": "e25f864e93f7eec9e8d6d67aaf634bec3c2a9095e8b92b01fb570c694ff55915",
+   "size": [
+    2000,
+    2200
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/harbingers-of-skulls.webp": {
+   "from": "Vampire Symbols/Harbingers of Skulls/Harbingers_of_Skulls_Symbol_1.png",
+   "sha256": "f8b672e0aa3532ba365cefb4d8ffeeb52f733adc47a3497d7fa7985be8b96c59",
+   "size": [
+    1255,
+    2000
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/hecata.webp": {
+   "from": "Vampire Symbols/Hecata/Hecata_Symbol_Modern.png",
+   "sha256": "40a2311cd5404209b3303f9ef7c69dba2df2adce33f7ee566e0d3c8a4ff5e04d",
+   "size": [
+    2192,
+    1764
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/lamia.webp": {
+   "from": "Vampire Symbols/Lamia/Lamia_Symbol_1.png",
+   "sha256": "4eddbc1366da96967e005b9a83ebac18b88ca91ad3d5c0d16e84a70c51d22d39",
+   "size": [
+    2000,
+    1809
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/lasombra.webp": {
+   "from": "Vampire Symbols/Lasombra/Lasombra_symbol.png",
+   "sha256": "4fb4cab6fe54ebbac17763068017c5e5742a9250dbc4315d0fa0f403a08cdd26",
+   "size": [
+    1788,
+    1553
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/malkavian.webp": {
+   "from": "Vampire Symbols/Malkavian/VTM_Malkavian_icon_black.png",
+   "sha256": "20a2f7e8231b88254a9b879a607b59d20be75b7c1fd53391cf3d2b89259573b5",
+   "size": [
+    1800,
+    3600
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/nagaraja.webp": {
+   "from": "Vampire Symbols/Nagaraja/Nagaraja_Symbol_1.png",
+   "sha256": "8f22eaf0403b9f7d8195b2beadf7c5e27637afcdb0b5968b19b8965cf4a12309",
+   "size": [
+    880,
+    922
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/nosferatu.webp": {
+   "from": "Vampire Symbols/Nosferatu/Nosferatu.png",
+   "sha256": "fd22132a3d60a1bcd3b05690989b67bf2151110e9eb50e005e07c7cde00691c1",
+   "size": [
+    1133,
+    1719
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/ravnos.webp": {
+   "from": "Vampire Symbols/Ravnos/Ravnos-new_symbol.png",
+   "sha256": "0cb1a3717b086c97e9daf75766479481c83bf187d24279d5f0b19be7fd6b0706",
+   "size": [
+    2100,
+    1795
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/salubri.webp": {
+   "from": "Vampire Symbols/Salubri/Salubri_Symbol.png",
+   "sha256": "3651102ef5d105b98df65900d355844ea820f4b7019a179567a7c4ac0e19eabf",
+   "size": [
+    626,
+    499
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/the-ministry.webp": {
+   "from": "Vampire Symbols/The Ministry/MinistrySymbol.png",
+   "sha256": "ee01ff3f4ffbaf86aa6333b66f00c9296a987742eb6094ff6a73be3849bfe40f",
+   "size": [
+    1515,
+    784
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/thin-blood.webp": {
+   "from": "Vampire Symbols/Thinblood/Thinblood1.png",
+   "sha256": "165ff616cee6c5c822302d70a098338bdc82b08c55574ad62b9a6a2b71c8d1db",
+   "size": [
+    1003,
+    1002
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/toreador.webp": {
+   "from": "Vampire Symbols/Toreador/Toreador_New1.png",
+   "sha256": "99d62bfed765d36efb948c1a979b5e8c888d4fbc5d1e5a90998d340d6655c8a7",
+   "size": [
+    2480,
+    2503
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/tremere.webp": {
+   "from": "Vampire Symbols/Tremere/VTM_Tremere_icon_black.jpg",
+   "sha256": "ff07b9549b367e9a2aa1d997846da35dfb961a161cecee747540f4aa3118d265",
+   "size": [
+    3600,
+    3600
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/tzimisce.webp": {
+   "from": "Vampire Symbols/Tzimisce/Tzimisce_Symbol.png",
+   "sha256": "0f774bd0149e0463fb06b6400af766b695169f86fb570265fad77968d0a2c0d2",
+   "size": [
+    3000,
+    3177
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/clans/ventrue.webp": {
+   "from": "Vampire Symbols/Ventrue/Ventrue.png",
+   "sha256": "176bb0f64944d2f4bbc2c5692481b0d3a9720c70375e421ebaf5e2459c528e6f",
+   "size": [
+    1748,
+    1748
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/dice/bestial-failure.webp": {
+   "from": "Vampire Symbols/Vampire Dice Symbols/BestialFail.png",
+   "sha256": "4b0fcd674d2433a2b1eb69beb37cdc535acfdc23ea8db98ae01050ed760a1e7e",
+   "size": [
+    1000,
+    1240
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/dice/critical.webp": {
+   "from": "Vampire Symbols/Vampire Dice Symbols/Crit.png",
+   "sha256": "84ef1cc04b7b3342f64a0fc45b92d21fb15f3614ad3a8f292d250a85bf03b35b",
+   "size": [
+    1000,
+    1423
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/dice/messy-critical.webp": {
+   "from": "Vampire Symbols/Vampire Dice Symbols/MessyCrit.png",
+   "sha256": "c74257d7123d67526f3b8252952444c5f72dbef56cfb61ed7143ffb748a182d2",
+   "size": [
+    1000,
+    1759
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/dice/skull-teeth.webp": {
+   "from": "Vampire Symbols/Vampire Dice Symbols/SkullTeeth.png",
+   "sha256": "ca2900f9ba0579ae775151d6a8c5d74c9e4a244720ce64759a1d8ee8d5ce4076",
+   "size": [
+    1000,
+    1410
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/dice/success.webp": {
+   "from": "Vampire Symbols/Vampire Dice Symbols/Success.png",
+   "sha256": "b6c0e210babbb2d65e7f3987f8e3014cbdbfb4afe5bff39d12cbbd35b0137e37",
+   "size": [
+    1000,
+    2013
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/dice/teeth.webp": {
+   "from": "Vampire Symbols/Vampire Dice Symbols/Teeth.png",
+   "sha256": "bcd4464abfc8f90bf1aae489b5a85174e08a81e5339300dcee5dc41a7b3ecf69",
+   "size": [
+    1000,
+    1410
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/disciplines/animalism.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Animalism-rombo.png",
+   "sha256": "e4fbfac45397a582da8868c1adbb06cb27c62f9271502ec8995e0d7d69cf8c5f",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/auspex.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Auspex-rombo.png",
+   "sha256": "486f77084961c551149f30e53fec6a7a504dc379a051c72bb756e462865ff52b",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/blood-sorcery.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Thaumaturgy-rombo.png",
+   "sha256": "48d1d5b2b086f5d35b19e17a7475f935727a33427b4572b62bc09d0d95d8d038",
+   "size": [
+    1047,
+    1047
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/celerity.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Celerity-rombo.png",
+   "sha256": "8261f5f03d2155da0cb3f16e65e27d3eae49aae3c35048faa18113657200c0ce",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/dominate.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Dominate-rombo.png",
+   "sha256": "e54317a44d23d5f12daab23273567491be07bbb2f766063bd944a32e0dc41b3a",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/fortitude.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Fortitude-rombo.png",
+   "sha256": "cf80d17328dedc9bd9b63d1beaea95396c134c38e21713c52f709b385aaea54f",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/obfuscate.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Obfuscate-rombo.png",
+   "sha256": "f6a73dfcf16fbbc85447778356d6b16fea55358506f3efbccca15cdc360f136e",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/oblivion.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Oblivion-rombo.png",
+   "sha256": "1c62eee6824632b527532564f7b1fe9b75dcfb9e6e810cf78820ea37deef396b",
+   "size": [
+    1047,
+    1047
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/potence.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Potence-rombo.png",
+   "sha256": "5e41b8ee7d9b114a175e5889c3e2d4a8ec8660882ca30a29bdb600251806a753",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/presence.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Presence-rombo.png",
+   "sha256": "0aa60bfa29faedce4896677aa2f50803093dc4706658e0071e7d7b28455395c1",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/protean.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Protean-rombo.png",
+   "sha256": "3d1496055a8493470007821e16b2ac9010fcc442210b20fd23c4b61e23ff5977",
+   "size": [
+    1047,
+    1048
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/disciplines/thin-blood-alchemy.webp": {
+   "from": "Vampire Symbols/Vampire Discipline Symbols/Thinblood_alchemy.png",
+   "sha256": "78f2626c9d767d475c313020e326b41ec7d91ad61208705eab76f8c1a5debd4d",
+   "size": [
+    1047,
+    1047
+   ],
+   "treatment": "colour"
+  },
+  "assets/art/logos/ankh.webp": {
+   "from": "Vampire Symbols/Vampire Ankh/VtM_ankh.png",
+   "sha256": "13259b642824d636cf3e701a097b67cba2c2cb9a521079b84cd34680a7490ff5",
+   "size": [
+    288,
+    576
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/logos/vampire-long.webp": {
+   "from": "Vampire Logos/VampireLongLogo.png",
+   "sha256": "6ab18ce8305cd61b935e142cfa4c13d4555ee7371a760159b914a1aaf2b8216e",
+   "size": [
+    3295,
+    307
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/logos/vampire.webp": {
+   "from": "Vampire Logos/VampireLogoNoAnkh2.png",
+   "sha256": "0b522168c37f90471db1c710c9d1ace857850d2cd252aa8d4112863ff89ad8e7",
+   "size": [
+    5001,
+    1487
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/sects/anarch.webp": {
+   "from": "Vampire Symbols/Anarch/AnachAnkh1.png",
+   "sha256": "63de8873a3badd59be0f1e7cf44cfd845f6210b109751245147bc185773c66f3",
+   "size": [
+    2773,
+    5214
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/sects/camarilla.webp": {
+   "from": "Vampire Symbols/Camarilla/VTM_Camarilla_ankh_black.png",
+   "sha256": "ae1a78f0fa40f2206d176459cedb6ccd6ca8de9a23f629e17b2e820212658cd2",
+   "size": [
+    1750,
+    3875
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/sects/sabbat.webp": {
+   "from": "Vampire Symbols/Sabbat/Sabbat.png",
+   "sha256": "42f49e8318c332c53ad5010b13240b37b3847e704f5ee4bdc03016ae0d40b376",
+   "size": [
+    2744,
+    5348
+   ],
+   "treatment": "alpha mask (white ink)"
+  },
+  "assets/art/sects/society-of-st-leopold.webp": {
+   "from": "Vampire Symbols/Society of St. Leopold/Leopold Sword.png",
+   "sha256": "e682b3a34d416d9a9aed24060044f967a988af2e355305d2de46821e70808996",
+   "size": [
+    1600,
+    3434
+   ],
+   "treatment": "alpha mask (white ink)"
+  }
+ },
+ "pack": "owner-supplied Vampire: The Masquerade art pack, ~/Downloads, 2026-09-23"
+}

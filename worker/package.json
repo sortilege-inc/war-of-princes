@@ -1,0 +1,12 @@
+{
+  "name": "sortilege-vtt-vtm5e-worker",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --port 8789",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}

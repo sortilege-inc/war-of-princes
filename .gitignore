@@ -1,0 +1,9 @@
+# Local Claude Code state
+.claude/*
+!.claude/launch.json
+__pycache__/
+build/__pycache__/
+# a campaign is an instance, not part of the engine (see PLAN.md); keep any local one out
+campaigns/
+node_modules/
+.wrangler/

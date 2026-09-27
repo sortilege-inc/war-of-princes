@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vtt-vtm5e",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8738"],
+      "port": 8738
+    },
+    {
+      "name": "vtt-vtm5e-worker",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "dev", "--port", "8789"],
+      "port": 8789,
+      "cwd": "worker"
+    }
+  ]
+}
