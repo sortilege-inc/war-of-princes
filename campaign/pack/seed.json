@@ -1,0 +1,1066 @@
+{
+ "kind": "sortilege-vtt-campaign",
+ "version": 1,
+ "party": [
+  {
+   "id": "wop-tomislawa",
+   "templateId": "#vssCainite0000000001",
+   "name": "Tomisława z Białowieży",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/tomislawa.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Tomisława z Białowieży",
+    "Chronicle": "War of Princes",
+    "Clan": "Tzimisce",
+    "Sire": "Pękosław z Białowieży",
+    "Generation": 10,
+    "Blood Potency": 2,
+    "Hunger": 1,
+    "Strength": 2,
+    "Dexterity": 2,
+    "Stamina": 2,
+    "Charisma": 2,
+    "Manipulation": 4,
+    "Composure": 3,
+    "Intelligence": 3,
+    "Wits": 1,
+    "Resolve": 2,
+    "Health": 5,
+    "Willpower": 5,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 2,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 0,
+    "Stealth": 0,
+    "Survival": 2,
+    "Animal Ken": 0,
+    "Etiquette": 3,
+    "Insight": 0,
+    "Intimidation": 3,
+    "Leadership": 3,
+    "Performance": 0,
+    "Persuasion": 2,
+    "Streetwise": 0,
+    "Subterfuge": 2,
+    "Academics": 1,
+    "Awareness": 0,
+    "Finance": 0,
+    "Investigation": 0,
+    "Medicine": 1,
+    "Occult": 4,
+    "Politics": 3,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [
+     {
+      "Skill": "Etiquette",
+      "Specialty": "Feigned Deference"
+     },
+     {
+      "Skill": "Leadership",
+      "Specialty": "Hunting Pack"
+     },
+     {
+      "Skill": "Craft",
+      "Specialty": "Flesh"
+     },
+     {
+      "Skill": "Academics",
+      "Specialty": "Feudal Law"
+     }
+    ],
+    "Disciplines": [
+     {
+      "Discipline": "Dominate",
+      "Dots": 2,
+      "Powers": [
+       "Compel",
+       "Domitor’s Favor"
+      ]
+     },
+     {
+      "Discipline": "Protean",
+      "Dots": 2,
+      "Powers": [
+       "Eyes of the Beast",
+       "Vicissitude"
+      ]
+     },
+     {
+      "Discipline": "Blood Sorcery",
+      "Dots": 3,
+      "Powers": [
+       "Koldunic Sorcery (Earth)",
+       "Koldunic Sorcery (Water)",
+       "Koldunic Sorcery (Air)",
+       "Ward Against Ghouls",
+       "Elemental Grasp",
+       "Seeking Tiamat",
+       "Elemental Shelter"
+      ]
+     }
+    ],
+    "Road": "Road of Kings (Scions)",
+    "Road Rating": 7,
+    "Advantages & Flaws": [
+     {
+      "Name": "Untouchable",
+      "Dots": 5,
+      "Flaw": false
+     },
+     {
+      "Name": "Retainers (Światosław)",
+      "Dots": 3,
+      "Flaw": false
+     },
+     {
+      "Name": "Herd",
+      "Dots": 3,
+      "Flaw": false
+     },
+     {
+      "Name": "Eat food",
+      "Dots": 2,
+      "Flaw": false
+     },
+     {
+      "Name": "Status (Known)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Mawla",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Seeking a Vein",
+      "Dots": 1,
+      "Flaw": false,
+      "Advantage": "#vsvtjqmwfyTxr191Q284Lb8"
+     },
+     {
+      "Name": "Linguistics (Old Polish)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Linguistics (English)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Twice-cursed",
+      "Dots": 2,
+      "Flaw": true
+     },
+     {
+      "Name": "Stake Bait",
+      "Dots": 2,
+      "Flaw": true
+     },
+     {
+      "Name": "Bondslave (to sire Pękosław)",
+      "Dots": 2,
+      "Flaw": true
+     },
+     {
+      "Name": "Enemies",
+      "Dots": 2,
+      "Flaw": true
+     },
+     {
+      "Name": "Folkloric Block (Holy Symbol)",
+      "Dots": 1,
+      "Flaw": true
+     },
+     {
+      "Name": "Secret Master",
+      "Dots": 1,
+      "Flaw": true
+     }
+    ],
+    "Clan Bane": "The Tzimisce are grounded: Each Tzimisce must choose a specific charge — a physical domain, a group of people, an organization, or even something more esoteric — but clearly defined and limited. The Kindred must spend their daysleep surrounded by their chosen charge. Historically this has often meant slumbering in the soil of their land, but it can also mean being surrounded by that which they tonight rule: a certain kind of people, a building deeply tied to their obsession, a local counterculture faction, or other, more outlandish elements. If they do not, they sustain aggravated Willpower damage equal to their Bane Severity upon waking the following night.\n\nJust as many Tzimisce are deadly serious about their own haven and property, so are they compelled to treat that of others. A Tzimisce vampire entering someone else’s home uninvited suffers severe distress and an almost physical desire to leave.\n\nA Tzimisce vampire wishing to enter a place of residence (homes and havens alike) uninvited must spend Willpower equal to their Bane Severity and also suffers a similar dice penalty to their Discipline pools during their stay. The invitation must be made by someone who lives (or unlives) there, and thus only actual inhabited homes or havens fulfill this condition. The Tzimisce can freely enter public or abandoned buildings; and flats or apartments count as separate homes for this purpose. Edge cases are left to the Storyteller’s discretion.\n\nTzimisce using this Bane cannot take the corresponding Folkloric Block as a Flaw.\n\n*If the chronicle is set in an established domain with few, if any, changes of haven, this variant Bane shines another spotlight on Tzimisce characteristics.*",
+    "True age": "30",
+    "Apparent age": "18",
+    "Date of birth": "1212",
+    "Date of death": "1230",
+    "Predator": "Montero",
+    "Notes": "Predator type on her sheet: Łowy (Montero)."
+   },
+   "live": {
+    "hunger": 1
+   },
+   "notes": ""
+  },
+  {
+   "id": "wop-graf",
+   "templateId": "#vtm5Ghoul00000000001",
+   "name": "Graf Światosław Odrowąż",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/graf.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Graf Światosław Odrowąż",
+    "Concept": "Landless Nobleman of Silesia · Head of Household (Nominally)",
+    "Chronicle": "War of Princes",
+    "Domitor": "Tomisława z Białowieży",
+    "Strength": 3,
+    "Dexterity": 2,
+    "Stamina": 3,
+    "Charisma": 3,
+    "Manipulation": 1,
+    "Composure": 4,
+    "Intelligence": 2,
+    "Wits": 2,
+    "Resolve": 2,
+    "Health": 5,
+    "Willpower": 5,
+    "Athletics": 3,
+    "Brawl": 2,
+    "Craft": 0,
+    "Drive": 2,
+    "Firearms": 3,
+    "Melee": 2,
+    "Larceny": 0,
+    "Stealth": 0,
+    "Survival": 0,
+    "Animal Ken": 3,
+    "Etiquette": 1,
+    "Insight": 0,
+    "Intimidation": 2,
+    "Leadership": 1,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 0,
+    "Subterfuge": 0,
+    "Academics": 1,
+    "Awareness": 2,
+    "Finance": 1,
+    "Investigation": 0,
+    "Medicine": 1,
+    "Occult": 0,
+    "Politics": 1,
+    "Science": 1,
+    "Technology": 0,
+    "Specialties": [],
+    "Disciplines": [
+     {
+      "Discipline": "Dominate",
+      "Dots": 1,
+      "Powers": [
+       "Cloud Memory"
+      ]
+     }
+    ],
+    "Humanity": 7,
+    "Advantages & Flaws": [
+     {
+      "Name": "Allies (Effectiveness: the four)",
+      "Dots": 3,
+      "Flaw": false
+     },
+     {
+      "Name": "Resources (Rich)",
+      "Dots": 3,
+      "Flaw": false
+     },
+     {
+      "Name": "Status (Known)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Linguistics (Old Polish)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Long Bond",
+      "Dots": 1,
+      "Flaw": true
+     },
+     {
+      "Name": "No Haven",
+      "Dots": 1,
+      "Flaw": true
+     }
+    ],
+    "Date of birth": "1208"
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-kuncze",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Kuncze",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/kuncze.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Kuncze",
+    "Concept": "Muscle · Close Combat",
+    "Chronicle": "War of Princes",
+    "Strength": 3,
+    "Dexterity": 2,
+    "Stamina": 3,
+    "Charisma": 1,
+    "Manipulation": 1,
+    "Composure": 2,
+    "Intelligence": 1,
+    "Wits": 1,
+    "Resolve": 2,
+    "Athletics": 3,
+    "Brawl": 0,
+    "Craft": 0,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 3,
+    "Larceny": 0,
+    "Stealth": 0,
+    "Survival": 2,
+    "Animal Ken": 0,
+    "Etiquette": 2,
+    "Insight": 0,
+    "Intimidation": 3,
+    "Leadership": 0,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 0,
+    "Subterfuge": 0,
+    "Academics": 0,
+    "Awareness": 0,
+    "Finance": 0,
+    "Investigation": 0,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [
+     {
+      "Name": "Beautiful",
+      "Dots": 2,
+      "Flaw": false
+     },
+     {
+      "Name": "Linguistics (Old Polish)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Linguistics (Middle High German)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Weak-willed",
+      "Dots": 2,
+      "Flaw": true
+     }
+    ],
+    "Notes": "Called \"Meathead\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-bartusz",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Bartusz",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/bartusz.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Bartusz",
+    "Concept": "Logistics · Horses · Hospitality",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 1,
+    "Stamina": 1,
+    "Charisma": 3,
+    "Manipulation": 2,
+    "Composure": 3,
+    "Intelligence": 1,
+    "Wits": 2,
+    "Resolve": 2,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 2,
+    "Drive": 3,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 0,
+    "Stealth": 0,
+    "Survival": 0,
+    "Animal Ken": 3,
+    "Etiquette": 3,
+    "Insight": 0,
+    "Intimidation": 0,
+    "Leadership": 0,
+    "Performance": 0,
+    "Persuasion": 2,
+    "Streetwise": 0,
+    "Subterfuge": 0,
+    "Academics": 0,
+    "Awareness": 0,
+    "Finance": 0,
+    "Investigation": 0,
+    "Medicine": 2,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [
+     {
+      "Name": "Side Hustler",
+      "Dots": 2,
+      "Flaw": false
+     },
+     {
+      "Name": "Check the Trunk",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Linguistics (Old Polish)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Addiction (Alcohol)",
+      "Dots": 1,
+      "Flaw": true
+     },
+     {
+      "Name": "Risk-taker",
+      "Dots": 1,
+      "Flaw": true
+     }
+    ],
+    "Notes": "Called \"Groom\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-andrzej",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Andrzej",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/andrzej.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Andrzej",
+    "Concept": "Scout · Investigator · Pathfinder",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 2,
+    "Stamina": 1,
+    "Charisma": 1,
+    "Manipulation": 2,
+    "Composure": 1,
+    "Intelligence": 3,
+    "Wits": 3,
+    "Resolve": 2,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 0,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 2,
+    "Stealth": 0,
+    "Survival": 3,
+    "Animal Ken": 2,
+    "Etiquette": 0,
+    "Insight": 2,
+    "Intimidation": 0,
+    "Leadership": 0,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 0,
+    "Subterfuge": 2,
+    "Academics": 0,
+    "Awareness": 3,
+    "Finance": 0,
+    "Investigation": 3,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [
+     {
+      "Name": "Short Bond",
+      "Dots": 2,
+      "Flaw": false
+     },
+     {
+      "Name": "Linguistics (Old Polish)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Linguistics (English)",
+      "Dots": 1,
+      "Flaw": false
+     },
+     {
+      "Name": "Ugly",
+      "Dots": 1,
+      "Flaw": true
+     },
+     {
+      "Name": "Illiterate",
+      "Dots": 1,
+      "Flaw": true
+     }
+    ],
+    "Notes": "Called \"Tracker\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-przeclaw",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Przecław",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/przeclaw.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Przecław",
+    "Concept": "Steward · Household Administration",
+    "Chronicle": "War of Princes",
+    "Strength": 2,
+    "Dexterity": 1,
+    "Stamina": 1,
+    "Charisma": 1,
+    "Manipulation": 3,
+    "Composure": 2,
+    "Intelligence": 3,
+    "Wits": 2,
+    "Resolve": 1,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 0,
+    "Drive": 1,
+    "Firearms": 1,
+    "Melee": 1,
+    "Larceny": 2,
+    "Stealth": 0,
+    "Survival": 0,
+    "Animal Ken": 0,
+    "Etiquette": 3,
+    "Insight": 1,
+    "Intimidation": 1,
+    "Leadership": 2,
+    "Performance": 0,
+    "Persuasion": 2,
+    "Streetwise": 0,
+    "Subterfuge": 2,
+    "Academics": 0,
+    "Awareness": 0,
+    "Finance": 3,
+    "Investigation": 0,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 3,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [],
+    "Notes": "Called \"Svafarz\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-tomasz",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Tomasz",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/tomasz.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Tomasz",
+    "Concept": "The Graf's Body-Servant",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 2,
+    "Stamina": 1,
+    "Charisma": 1,
+    "Manipulation": 1,
+    "Composure": 1,
+    "Intelligence": 1,
+    "Wits": 1,
+    "Resolve": 2,
+    "Athletics": 1,
+    "Brawl": 2,
+    "Craft": 0,
+    "Drive": 1,
+    "Firearms": 1,
+    "Melee": 0,
+    "Larceny": 1,
+    "Stealth": 0,
+    "Survival": 0,
+    "Animal Ken": 0,
+    "Etiquette": 2,
+    "Insight": 0,
+    "Intimidation": 0,
+    "Leadership": 0,
+    "Performance": 2,
+    "Persuasion": 0,
+    "Streetwise": 0,
+    "Subterfuge": 0,
+    "Academics": 0,
+    "Awareness": 1,
+    "Finance": 0,
+    "Investigation": 0,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [],
+    "Notes": "Called \"Body-Servant\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-milosz",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Miłosz",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/milosz.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Miłosz",
+    "Concept": "Herald · Outrider · Messenger",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 2,
+    "Stamina": 3,
+    "Charisma": 2,
+    "Manipulation": 2,
+    "Composure": 1,
+    "Intelligence": 1,
+    "Wits": 1,
+    "Resolve": 3,
+    "Athletics": 3,
+    "Brawl": 1,
+    "Craft": 0,
+    "Drive": 3,
+    "Firearms": 1,
+    "Melee": 0,
+    "Larceny": 0,
+    "Stealth": 0,
+    "Survival": 3,
+    "Animal Ken": 1,
+    "Etiquette": 2,
+    "Insight": 1,
+    "Intimidation": 0,
+    "Leadership": 0,
+    "Performance": 2,
+    "Persuasion": 2,
+    "Streetwise": 0,
+    "Subterfuge": 0,
+    "Academics": 0,
+    "Awareness": 0,
+    "Finance": 0,
+    "Investigation": 0,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 2,
+    "Science": 0,
+    "Technology": 1,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [],
+    "Notes": "Called \"Herald\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-elzbieta",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Elżbieta",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/elzbieta.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Elżbieta",
+    "Concept": "Junior Zofia · Lady's Maid",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 1,
+    "Stamina": 1,
+    "Charisma": 2,
+    "Manipulation": 3,
+    "Composure": 2,
+    "Intelligence": 1,
+    "Wits": 3,
+    "Resolve": 2,
+    "Athletics": 1,
+    "Brawl": 1,
+    "Craft": 0,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 2,
+    "Stealth": 0,
+    "Survival": 0,
+    "Animal Ken": 0,
+    "Etiquette": 3,
+    "Insight": 3,
+    "Intimidation": 0,
+    "Leadership": 0,
+    "Performance": 1,
+    "Persuasion": 1,
+    "Streetwise": 1,
+    "Subterfuge": 2,
+    "Academics": 0,
+    "Awareness": 0,
+    "Finance": 0,
+    "Investigation": 2,
+    "Medicine": 0,
+    "Occult": 3,
+    "Politics": 2,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [
+     {
+      "Name": "Beautiful",
+      "Dots": 2,
+      "Flaw": false
+     }
+    ],
+    "Notes": "Called \"Junior Zofia\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-bronislawa",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Bronisława",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/bronislawa.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Bronisława",
+    "Concept": "Senior Zofia · Lady's Maid",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 2,
+    "Stamina": 1,
+    "Charisma": 1,
+    "Manipulation": 2,
+    "Composure": 3,
+    "Intelligence": 3,
+    "Wits": 2,
+    "Resolve": 1,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 3,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 0,
+    "Stealth": 1,
+    "Survival": 0,
+    "Animal Ken": 0,
+    "Etiquette": 3,
+    "Insight": 2,
+    "Intimidation": 0,
+    "Leadership": 2,
+    "Performance": 3,
+    "Persuasion": 2,
+    "Streetwise": 0,
+    "Subterfuge": 1,
+    "Academics": 0,
+    "Awareness": 2,
+    "Finance": 0,
+    "Investigation": 1,
+    "Medicine": 1,
+    "Occult": 1,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [],
+    "Notes": "Called \"Senior Zofia\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-bogdan",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Bogdan",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/bogdan.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Bogdan",
+    "Concept": "Wagoner · Transport",
+    "Chronicle": "War of Princes",
+    "Strength": 2,
+    "Dexterity": 1,
+    "Stamina": 3,
+    "Charisma": 1,
+    "Manipulation": 2,
+    "Composure": 3,
+    "Intelligence": 1,
+    "Wits": 2,
+    "Resolve": 1,
+    "Athletics": 0,
+    "Brawl": 1,
+    "Craft": 0,
+    "Drive": 3,
+    "Firearms": 0,
+    "Melee": 1,
+    "Larceny": 1,
+    "Stealth": 0,
+    "Survival": 2,
+    "Animal Ken": 3,
+    "Etiquette": 1,
+    "Insight": 0,
+    "Intimidation": 1,
+    "Leadership": 0,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 2,
+    "Subterfuge": 2,
+    "Academics": 0,
+    "Awareness": 3,
+    "Finance": 0,
+    "Investigation": 0,
+    "Medicine": 0,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 2,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [],
+    "Notes": "Called \"Wagoner\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-dobrawa",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Dobrawa",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/dobrawa.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Dobrawa",
+    "Concept": "Cook",
+    "Chronicle": "War of Princes",
+    "Strength": 3,
+    "Dexterity": 2,
+    "Stamina": 3,
+    "Charisma": 2,
+    "Manipulation": 1,
+    "Composure": 1,
+    "Intelligence": 1,
+    "Wits": 1,
+    "Resolve": 2,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 3,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 2,
+    "Stealth": 2,
+    "Survival": 0,
+    "Animal Ken": 2,
+    "Etiquette": 0,
+    "Insight": 0,
+    "Intimidation": 2,
+    "Leadership": 1,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 0,
+    "Subterfuge": 3,
+    "Academics": 0,
+    "Awareness": 1,
+    "Finance": 1,
+    "Investigation": 3,
+    "Medicine": 1,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 1,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [],
+    "Notes": "Called \"Cook\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-wojtek",
+   "templateId": "#vtm5Mortal0000000001",
+   "name": "Wojtek",
+   "source": {
+    "kind": "file",
+    "name": "campaign/characters/wojtek.vtm5e-character.json"
+   },
+   "character": {
+    "Name": "Wojtek",
+    "Concept": "Cook's Boy",
+    "Chronicle": "War of Princes",
+    "Strength": 1,
+    "Dexterity": 2,
+    "Stamina": 1,
+    "Charisma": 1,
+    "Manipulation": 1,
+    "Composure": 1,
+    "Intelligence": 1,
+    "Wits": 2,
+    "Resolve": 1,
+    "Athletics": 0,
+    "Brawl": 0,
+    "Craft": 2,
+    "Drive": 0,
+    "Firearms": 0,
+    "Melee": 0,
+    "Larceny": 1,
+    "Stealth": 1,
+    "Survival": 0,
+    "Animal Ken": 2,
+    "Etiquette": 0,
+    "Insight": 0,
+    "Intimidation": 0,
+    "Leadership": 0,
+    "Performance": 0,
+    "Persuasion": 0,
+    "Streetwise": 2,
+    "Subterfuge": 0,
+    "Academics": 0,
+    "Awareness": 1,
+    "Finance": 1,
+    "Investigation": 0,
+    "Medicine": 1,
+    "Occult": 0,
+    "Politics": 0,
+    "Science": 0,
+    "Technology": 0,
+    "Specialties": [],
+    "Humanity": 7,
+    "Advantages & Flaws": [],
+    "Notes": "Called \"Cook's Boy\"."
+   },
+   "live": {},
+   "notes": "",
+   "retinueOf": "wop-tomislawa"
+  },
+  {
+   "id": "wop-meabh",
+   "templateId": "#vssCainite0000000001",
+   "name": "Méabh",
+   "source": {
+    "kind": "table"
+   },
+   "character": {
+    "Name": "Méabh",
+    "Chronicle": "War of Princes",
+    "Road": "",
+    "Road Rating": 0,
+    "Notes": "Sheet not yet recorded."
+   },
+   "live": {},
+   "notes": ""
+  },
+  {
+   "id": "wop-eustace",
+   "templateId": "#vssCainite0000000001",
+   "name": "Eustace",
+   "source": {
+    "kind": "table"
+   },
+   "character": {
+    "Name": "Eustace",
+    "Chronicle": "War of Princes",
+    "Road": "",
+    "Road Rating": 0,
+    "Notes": "Sheet not yet recorded."
+   },
+   "live": {},
+   "notes": ""
+  },
+  {
+   "id": "wop-oscar",
+   "templateId": "#vssCainite0000000001",
+   "name": "Oscar",
+   "source": {
+    "kind": "table"
+   },
+   "character": {
+    "Name": "Oscar",
+    "Chronicle": "War of Princes",
+    "Road": "",
+    "Road Rating": 0,
+    "Notes": "Sheet not yet recorded."
+   },
+   "live": {},
+   "notes": ""
+  }
+ ],
+ "loresheets": [
+  "#vcv4aUgMxiEpOxPpvS90JC0"
+ ],
+ "creation": {
+  "blackHand": false,
+  "roads": true
+ }
+}

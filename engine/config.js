@@ -15,7 +15,7 @@ window.VttConfig = {
   //   notes: { src: 'campaign/docs/state.html', title: '…', class: '…',
   //            gate: { title: '…', text: '…', enter: 'Enter' } }
   // a .html src is the instance's own fragment, inserted as it is; anything else reads as Markdown.
-  defaultCampaign: { name: 'War of Princes', modules: ['chronicle'], books: [] },
+  defaultCampaign: { name: 'War of Princes', modules: ['chronicle'], books: [], seed: 'campaign/pack/seed.json' },
   // the three panels the GM page opens on (engine/app.js)
   defaultSlots: ['chronicle', 'party', 'inspector'],
   // What an instance adds to these pages (engine/instance.js). Upstream declares none, so
@@ -36,7 +36,8 @@ window.VttConfig = {
     stages: {
       data: ['campaign/data/index.js'],                         // the campaign layer: the Archery/Riding house rule
       site: ['campaign/data/docs.js', 'campaign/site/household.js', 'campaign/site/site.js'],  // the old site's pages as tabs, ahead of the books
-      gm: [], table: [], play: [], maps: [],
+      gm: [], table: [], maps: [],
+      play: ['campaign/site/play-import.js'],                      // the old household page's trackers, carried over once
     },
   },
   // The Worker that holds player sessions. Served from localhost the app talks to

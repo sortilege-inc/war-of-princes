@@ -12,4 +12,6 @@ python3 campaign/source/convert_household.py
 python3 campaign/source/check_household.py
 echo "--- the site's pages → campaign/data/docs.js, docs.css"
 python3 campaign/build/build_docs.py
+echo "--- the first pack → campaign/pack/seed.json"
+python3 campaign/build/build_seed.py
 echo "campaign build: OK"
