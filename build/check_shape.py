@@ -226,6 +226,10 @@ def main():
           kinds.get("Cainite"), ("summoned-stories", "Kindred", ["Road", "Road Rating"]))
     roads = sorted(e["name"] for e in ents.values() if e["book"] == "summoned-stories" and re.match(r"Road of .+: Rating \d+$", e["name"]))
     check("every Road prints ratings 10-1 (sheet.js roadAt reads '<Road>: Rating N')", len(roads), 40)
+    # the price a ghoul pays for a level-1 power (advance.js ghoulPowerCost reads it from this sentence)
+    gp = [re.search(r"purchase additional level-1 powers at the cost of (\d+) experience points each", e.get("desc") or "").group(1)
+          for e in ents.values() if e["book"] == "companion" and re.search(r"purchase additional level-1 powers at the cost of \d+ experience points each", e.get("desc") or "")]
+    check("the Companion prints a ghoul's price for a level-1 power once (advance.js ghoulPowerCost)", gp, ["10"])
     qcc = [e for e in ents.values() if e["book"] == "black-hand" and e["name"] == "Quick Character Creation"]
     # what the creator shows beside the core's step when The Black Hand is used (creator.js BH_ADDS)
     check("The Black Hand's Quick Character Creation prints what the creator adds (Predator Type, Path of Enlightenment)",

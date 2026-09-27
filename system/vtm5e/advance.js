@@ -16,6 +16,15 @@
 // own heading (VtmData.clanDisciplines); Caitiff "can learn any Discipline at the same price"
 // (core, Caitiff); "Any thin-blood vampire can learn Thin-Blood Alchemy at the in-clan experience
 // rate" (Players Guide).
+//
+// A ghoul or a mortal (the BASE's ACTORs, from the Companion) buys what the book lets them. Neither
+// has Blood Potency, rituals or formulae. A mortal has no Disciplines ("Mortals are not able to use
+// Disciplines"). A ghoul "can never purchase actual dots in Disciplines, but always count as having a
+// single dot"; instead "Ghouls can purchase additional level-1 powers at the cost of 10 experience
+// points each, but they must all belong to Disciplines possessed by their domitor" — the price read
+// from that sentence (ghoulPowerCost), the Disciplines from the domitor's sheet where the domitor is
+// at the table. Attributes, Skills, Specialties and Advantages are priced from the core's table:
+// the Companion prints no other costs for them.
 window.VtmAdvance = (function () {
   const { el, button } = window.VttRender;
   const D = window.VtmData;
@@ -55,6 +64,22 @@ window.VtmAdvance = (function () {
   }
   const price = (c, n) => (!c ? null : c.times ? c.times * n : c.perDot ? c.perDot * n : c.fixed);
 
+  // "Ghouls can purchase additional level-1 powers at the cost of 10 experience points each" — the
+  // Companion's Creating a Ghoul Character, its Disciplines step; null where the book is not loaded
+  const GHOUL_COST = /purchase additional level-1 powers at the cost of (\d+) experience points each/;
+  function ghoulPowerCost() {
+    if (!D.loaded('companion')) return null;
+    const e = D.all(['companion']).find((x) => GHOUL_COST.test(x.desc || ''));
+    return e ? { cost: +GHOUL_COST.exec(e.desc)[1], sentence: GHOUL_COST.exec(e.desc)[0], id: e.id } : null;
+  }
+  // the Disciplines a ghoul may take powers in: its domitor's, where the domitor is at the table
+  function domitorDisciplines(v) {
+    const name = String(v.Domitor || '').trim().toLowerCase();
+    const d = name && (State().state.party || []).find((m) => String(m.name || '').trim().toLowerCase() === name);
+    if (!d) return null;
+    return (Sheet().values(d).Disciplines || []).filter((r) => r.Discipline && +r.Dots > 0).map((r) => r.Discipline);
+  }
+
   // which Discipline row prices a Discipline for this character, and why
   function disciplineRate(v, name) {
     const clan = String(v.Clan || '').trim();
@@ -80,6 +105,7 @@ window.VtmAdvance = (function () {
       else if (b.kind === 'potency') v['Blood Potency'] = b.to;
       else if (b.kind === 'discipline') { const r = discRow(b.key); r.Dots = b.to; if (b.extra && b.extra.power) r.Powers.push(b.extra.power); }
       else if (b.kind === 'ritual' || b.kind === 'formula') discRow(b.extra.discipline).Powers.push(b.key);
+      else if (b.kind === 'ghoul power') { const r = discRow(b.extra.discipline); r.Dots = 1; r.Powers.push(b.key); }
       else if (b.kind === 'specialty') (v.Specialties = v.Specialties || []).push({ Skill: b.extra.skill, Specialty: b.key });
       else if (b.kind === 'advantage') {
         v['Advantages & Flaws'] = v['Advantages & Flaws'] || [];
@@ -101,7 +127,8 @@ window.VtmAdvance = (function () {
     const holder = el('div', { class: 'advance-page', role: 'dialog', 'aria-label': 'Advancement' }, [el('div', { class: 'adv-body' }, [el('p', { class: 'muted' }, ['Reading the core’s Trait Costs…'])])]);
     document.body.appendChild(holder);
     document.body.classList.add('advancing');
-    D.ready(['core', 'players-guide']).then(() => page(m, holder)).catch((e) => { holder.innerHTML = ''; holder.appendChild(el('p', {}, [e.message, ' ', button('Close', () => { holder.remove(); document.body.classList.remove('advancing'); }, 'ghost')])); });
+    const kind = Sheet().kindOf(Sheet().values(m));
+    D.ready(['core', 'players-guide'].concat(kind === 'ghoul' ? ['companion'] : [])).then(() => page(m, holder)).catch((e) => { holder.innerHTML = ''; holder.appendChild(el('p', {}, [e.message, ' ', button('Close', () => { holder.remove(); document.body.classList.remove('advancing'); }, 'ghost')])); });
   }
 
   function page(m, box) {
@@ -109,6 +136,8 @@ window.VtmAdvance = (function () {
     const memberNow = () => (State().state.party || []).find((x) => x.id === m.id) || m;
     const start = memberNow();
     const base = S.values(start);
+    const kind = S.kindOf(base);
+    const vampire = S.isVampire(base);
     const x0 = S.xp(start);
     const C = costs();
     let earned = x0.earned;
@@ -214,8 +243,30 @@ window.VtmAdvance = (function () {
       ];
       body.appendChild(keepOpen(section('Specialties · ' + C.specialty.text, spec), 'specialties'));
 
+      // A ghoul: level-1 powers at the Companion's price, in the domitor's Disciplines
+      if (kind === 'ghoul') {
+        const g = ghoulPowerCost();
+        const kids = [];
+        if (!g) kids.push(el('p', { class: 'muted small' }, ['The Companion’s price for a ghoul’s powers is not in the data.']));
+        else {
+          const have = new Set([].concat.apply([], (v.Disciplines || []).map((r) => r.Powers || [])));
+          (v.Disciplines || []).filter((r) => r.Discipline).forEach((r) => kids.push(el('div', { class: 'adv-row' }, [el('span', { class: 'adv-k' }, [r.Discipline + ' ●']), el('span', { class: 'muted small' }, [(r.Powers || []).join(', ') || '—'])])));
+          const dom = domitorDisciplines(v);
+          const discs = dom || D.disciplines();
+          const opts = [];
+          discs.forEach((d) => S.powersFor(d, 1).filter((p) => p.kind === 'power' && D.levelNumber(p) === 1 && !have.has(p.name)).forEach((p) => opts.push(p)));
+          const pick = el('select', { class: 'scope' }, [el('option', { value: '' }, ['A level-1 power…'])].concat(opts.map((p) => el('option', { value: p.id }, [p.discipline + ' · ' + p.name + ' · ' + g.cost + ' XP (' + ((D.indexBook(p.book) || {}).label || p.book) + ')']))));
+          pick.addEventListener('change', () => { const p = opts.find((x) => x.id === pick.value); if (p) buy({ kind: 'ghoul power', key: p.name, to: 1, cost: g.cost, what: 'Level-1 power: ' + p.name + ' (' + p.discipline + ')', extra: { discipline: p.discipline } }); });
+          kids.push(el('div', { class: 'adv-add' }, [pick]));
+          kids.push(el('p', { class: 'muted small' }, [dom ? 'In the Disciplines of ' + v.Domitor + ', the domitor: ' + (dom.join(', ') || 'none') + '.'
+            : 'The domitor is not at this table, so every Discipline is offered; the book: “they must all belong to Disciplines possessed by their domitor”.']));
+          (buys.filter((b) => b.kind === 'ghoul power')).forEach((b) => { if (lastOf('ghoul power', b.key) === buys.length - 1) kids.push(el('div', { class: 'chiprow tight' }, [button('take back ' + b.key, () => take('ghoul power', b.key), 'ghost tiny')])); });
+        }
+        body.appendChild(keepOpen(section('Discipline powers · ' + (g ? g.sentence.replace(/^purchase /, '') : 'the Companion'), kids, true), 'ghoul-powers'));
+      }
+
       // Disciplines: in-clan / other / Caitiff, a power for each dot bought
-      const held = (v.Disciplines || []).filter((r) => r.Discipline);
+      const held = vampire ? (v.Disciplines || []).filter((r) => r.Discipline) : [];
       const disc = held.map((r) => {
         const rate = disciplineRate(v, r.Discipline);
         const n = +r.Dots || 0;
@@ -235,13 +286,13 @@ window.VtmAdvance = (function () {
       const unheld = D.disciplines().filter((n) => !held.some((r) => r.Discipline === n));
       const newDisc = el('select', { class: 'scope' }, [el('option', { value: '' }, ['A new Discipline…'])].concat(unheld.map((n) => { const r = disciplineRate(v, n); return el('option', { value: n }, [n + ' · ' + price(C[r.key], 1) + ' XP (' + r.why + ')']); })));
       newDisc.addEventListener('change', () => { const n = newDisc.value; if (!n) return; const r = disciplineRate(v, n); buy({ kind: 'discipline', key: n, to: 1, cost: price(C[r.key], 1), what: n + ' 0 → 1', extra: { power: null } }); });
-      body.appendChild(keepOpen(section('Disciplines · in-clan ' + C.clan.text + ', other ' + C.other.text + ', Caitiff ' + C.caitiff.text, disc.concat([el('div', { class: 'adv-add' }, [newDisc])])), 'disciplines'));
+      if (vampire) body.appendChild(keepOpen(section('Disciplines · in-clan ' + C.clan.text + ', other ' + C.other.text + ', Caitiff ' + C.caitiff.text, disc.concat([el('div', { class: 'adv-add' }, [newDisc])])), 'disciplines'));
 
       // Rituals and formulae: "Ritual level x 3", "Formula level x 3" — at or below the Discipline's dots
       const rit = [];
       [['Blood Sorcery', 'ritual', 'Ritual'], ['Thin-Blood Alchemy', 'formula', 'Formula']].forEach(([dname, kind, word]) => {
         const r = (v.Disciplines || []).find((x) => x.Discipline === dname);
-        if (!r || !(+r.Dots)) return;
+        if (!vampire || !r || !(+r.Dots)) return;
         const have = new Set(r.Powers || []);
         const opts = S.powersFor(dname, +r.Dots).filter((p) => p.kind === 'ritual' && D.levelNumber(p) != null && !have.has(p.name));
         const pick = el('select', { class: 'scope' }, [el('option', { value: '' }, [word === 'Ritual' ? 'A ritual…' : 'A formula…'])].concat(opts.map((p) => el('option', { value: p.id }, [p.name + ' · ' + p.level + ' · ' + price(C[kind], D.levelNumber(p)) + ' XP']))));
@@ -271,11 +322,11 @@ window.VtmAdvance = (function () {
 
       // Blood Potency: "New level x 10"
       const bp = +v['Blood Potency'] || 0;
-      body.appendChild(keepOpen(section('Blood Potency · ' + C.potency.text, [stepRow('Blood Potency', bp, 10, 'potency', 'Blood Potency', price(C.potency, bp + 1), (k) => 'Blood Potency ' + k + ' → ' + (k + 1))]), 'potency'));
+      if (vampire) body.appendChild(keepOpen(section('Blood Potency · ' + C.potency.text, [stepRow('Blood Potency', bp, 10, 'potency', 'Blood Potency', price(C.potency, bp + 1), (k) => 'Blood Potency ' + k + ' → ' + (k + 1))]), 'potency'));
     }
     draw();
     window.scrollTo(0, 0);
   }
 
-  return { open, costs, apply, disciplineRate, RULES };
+  return { open, costs, apply, disciplineRate, ghoulPowerCost, domitorDisciplines, RULES };
 })();
