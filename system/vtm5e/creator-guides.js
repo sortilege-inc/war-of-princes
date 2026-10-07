@@ -31,7 +31,8 @@ window.VtmCreatorGuides = (function () {
   // A level's button is spent when as many traits hold it as the book allows; clicking the level a
   // trait already holds returns it to the base.
   // bonus { trait: dots a later step legally added } — shown beside the trait, never counted here
-  function allocator(names, v, spread, base, set, label, bonus) {
+  // (why { trait: [what added them] }, for the label)
+  function allocator(names, v, spread, base, set, label, bonus, why) {
     const plus = bonus || {};
     const levels = Object.keys(spread).map(Number).sort((a, b) => b - a);
     const counted = levels.filter((l) => l !== base);
@@ -55,7 +56,7 @@ window.VtmCreatorGuides = (function () {
     const row = (n) => {
       const cur = own(n);
       return el('div', { class: 'alloc-row' + (cur !== base ? ' placed' : '') }, [
-        el('span', { class: 'alloc-name' }, [Sheet.label ? Sheet.label(n) : n, plus[n] ? el('span', { class: 'alloc-plus' }, [' +' + plus[n] + ' from the Predator type']) : null]),
+        el('span', { class: 'alloc-name' }, [Sheet.label ? Sheet.label(n) : n, plus[n] ? el('span', { class: 'alloc-plus' }, [fromWhat(plus[n], (why || {})[n])]) : null]),
         el('span', { class: 'alloc-levels' }, counted.map((l) => {
           const on = cur === l;
           const b = button(String(l), () => set({ [n]: (on ? base : l) + (plus[n] || 0) }), 'tiny' + (on ? '' : ' ghost'));
@@ -81,7 +82,8 @@ window.VtmCreatorGuides = (function () {
       box.appendChild(el('p', { class: 'muted' }, ['Choose one, and the Skills below are placed against it.']));
       return box;
     }
-    box.appendChild(allocator(Sheet.skills(), v, chosen.spread, 0, set, 'Skills', predatorDots(meta).traits));
+    const later = laterDots(meta);
+    box.appendChild(allocator(Sheet.skills(), v, chosen.spread, 0, set, 'Skills', later.traits, later.by.traits));
     box.appendChild(specialties(ctx, free));
     return box;
   }
@@ -90,8 +92,9 @@ window.VtmCreatorGuides = (function () {
   function specialties(ctx, free) {
     const { v, meta, set } = ctx;
     const rows = (v.Specialties || []).slice();
-    // a specialty a Predator grant added is not a free one
-    const fromPredator = new Set(Object.values((meta.pred || {}).applied || {}).reduce((a, rec) => a.concat((rec.rows || []).filter(([f]) => f === 'Specialties').map(([, r]) => r.Skill + '|' + r.Specialty)), []));
+    // a specialty a Predator grant added, or one bought with experience, is not a free one
+    const fromPredator = new Set(Object.values((meta.pred || {}).applied || {}).reduce((a, rec) => a.concat((rec.rows || []).filter(([f]) => f === 'Specialties').map(([, r]) => r.Skill + '|' + r.Specialty)), [])
+      .concat(laterDots(meta).specialties));
     const own = rows.filter((r) => !fromPredator.has(r.Skill + '|' + r.Specialty));
     const box = el('div', { class: 'spec-guide' }, [el('div', { class: 'prop-k' }, ['Free specialties'])]);
     const write = (skill, text, i) => {
@@ -165,7 +168,8 @@ window.VtmCreatorGuides = (function () {
     const { v, set } = ctx;
     const rows = (v.Disciplines || []).map((r) => Object.assign({}, r, { Powers: (r.Powers || []).slice() }));
     const write = (next) => set({ Disciplines: next });
-    const plus = predatorDots(ctx.meta).disciplines;
+    const later = laterDots(ctx.meta);
+    const plus = later.disciplines;
     const box = el('div', { class: 'disc-guide' });
     const known = D.disciplines();
     const ordered = (o.clan || []).concat(known.filter((n) => (o.clan || []).indexOf(n) === -1));
@@ -176,12 +180,20 @@ window.VtmCreatorGuides = (function () {
       card.appendChild(el('div', { class: 'disc-head' }, [
         el('select', { class: 'scope', onchange: (ev) => { const n = rows.slice(); n[i] = { Discipline: ev.target.value, Dots: r.Dots || 1, Powers: [] }; write(n); } },
           [el('option', { value: '' }, ['a Discipline…'])].concat(ordered.map((n) => el('option', { value: n, selected: n === r.Discipline || null }, [n + ((o.clan || []).indexOf(n) !== -1 ? ' (in-clan)' : '')])))),
+        // the buttons are the Discipline's whole rating: the dots another step gave are lit and fixed
+        // (taken back only there), and a level above them is this step's ("one dot" is the second
+        // button when the Predator gave the first)
         el('span', { class: 'alloc-levels' }, [1, 2, 3, 4, 5].map((l) => {
-          const on = own === l;
-          return button(String(l), () => { const n = rows.slice(); n[i] = Object.assign({}, r, { Dots: (on ? 0 : l) + (plus[r.Discipline] || 0) }); write(n); }, 'tiny' + (on ? '' : ' ghost'));
+          const given = plus[r.Discipline] || 0;
+          const total = +r.Dots || 0;
+          if (l <= given) { const x = button(String(l), () => {}, 'tiny fixed'); x.disabled = true; x.title = 'From ' + (later.by.disciplines[r.Discipline] || ['the Predator type']).join(' and '); return x; }
+          const on = total === l && own > 0;
+          const x = button(String(l), () => { const n = rows.slice(); n[i] = Object.assign({}, r, { Dots: on ? given : l }); write(n); }, 'tiny' + (on ? '' : ' ghost'));
+          x.title = on ? 'Take back this step’s ' + (l - given === 1 ? 'dot' : (l - given) + ' dots') : given ? 'Raise to ' + l + ': ' + (l - given) + ' of this step’s dots' : 'Put ' + (r.Discipline || 'it') + ' at ' + l;
+          return x;
         })),
-        plus[r.Discipline] ? el('span', { class: 'alloc-plus' }, ['+' + plus[r.Discipline] + ' from the Predator type']) : null,
-        button('remove', () => { const n = rows.slice(); n.splice(i, 1); write(n); }, 'ghost tiny'),
+        plus[r.Discipline] ? el('span', { class: 'alloc-plus' }, [fromWhat(plus[r.Discipline], later.by.disciplines[r.Discipline])]) : null,
+        plus[r.Discipline] ? null : button('remove', () => { const n = rows.slice(); n.splice(i, 1); write(n); }, 'ghost tiny'),
       ]));
       if (ent) card.appendChild(detailsOf(['About ' + r.Discipline], ent.id, ent.book));
       if (r.Discipline && (+r.Dots || 0) > 0) {
@@ -211,6 +223,13 @@ window.VtmCreatorGuides = (function () {
   // printed range ("• to •••", "(• or ••)"). The core's full entries come first; the Players
   // Guide's summary sheet adds the rest of the line's, each citing its book and page.
   let advQuery = '', advKind = 'all', advBook = 'all';
+  // the dots a record prints as choices: its rating, a range ("• to •••"), or alternatives ("• or ••")
+  function choicesOf(r) {
+    const dots = r.dots || '';
+    const groups = String(dots).split(/\s+(?:to|or)\s+/).map((g) => (g.match(/[•●]/g) || []).length).filter(Boolean);
+    // five dots at most (owner, 2026-09-25): the Players Guide's master list prints Allies "• to ••••••"
+    return (r.rating ? [+r.rating] : groups.length === 2 && /\bto\b/.test(dots) ? Array.from({ length: groups[1] - groups[0] + 1 }, (_, n) => groups[0] + n) : groups).filter((n) => n <= 5);
+  }
   function advantageCatalogue() {
     // every book's, from the records index (data/records.js): no book is loaded to list them
     const order = D.books().map((b) => b.id);
@@ -219,9 +238,7 @@ window.VtmCreatorGuides = (function () {
       const dots = r.dots || '';
       const flaw = r.type === 'Flaw' || /\bFlaw\b/i.test(dots) || /\bFlaws?$/i.test(r.under || '');
       const k = r.name.toLowerCase() + '|' + flaw;
-      const groups = String(dots).split(/\s+(?:to|or)\s+/).map((g) => (g.match(/[•●]/g) || []).length).filter(Boolean);
-      // five dots at most (owner, 2026-09-25): the Players Guide's master list prints Allies "• to ••••••"
-      const choices = (r.rating ? [+r.rating] : groups.length === 2 && /\bto\b/.test(dots) ? Array.from({ length: groups[1] - groups[0] + 1 }, (_, n) => groups[0] + n) : groups).filter((n) => n <= 5);
+      const choices = choicesOf(r);
       const x = { r, name: r.name, flaw, kind: flaw ? 'Flaw' : r.type === 'Background' ? 'Background' : 'Merit', choices, dots, parent: r.under || '', books: [r.book] };
       // a name printed in several books is one entry, citing each (the core's text first)
       // (the dots from whichever book prints them: the core's "Allies" heading has none, the Players
@@ -395,8 +412,21 @@ window.VtmCreatorGuides = (function () {
     })));
     nd.addEventListener('change', () => { const n = nd.value; if (!n) return; const rate = A.disciplineRate(v, n); buy({ kind: 'discipline', key: n, from: 0, to: 1, cost: price(C[rate.key], 1), what: n + ' 0 → 1' }); });
     sec('Disciplines · in-clan ' + C.clan.text + ', other ' + C.other.text + ', Caitiff ' + C.caitiff.text, [el('div', { class: 'chiprow tight' }, dBtns.concat([nd])), el('p', { class: 'muted small' }, ['Take a power for each new dot on the Disciplines step.'])]);
-    // Advantages: a dot more on one held
-    const advs = (v['Advantages & Flaws'] || []).filter((r) => !r.Flaw && r.Name && !r.Advantage && (+r.Dots || 0) < 5);
+    // Advantages: a dot more on one held -- one taken from the finder too (its record an Advantage,
+    // not a loresheet's level), up to the dots the books print for it, every book's together (the
+    // core prints Bond Resistance "•", a level at a time, the Players Guide "• to •••"; "•+" is open;
+    // a fixed rating -- Beautiful's ••, Bloodhound's • -- takes none)
+    const room = (r) => {
+      const rec = r.Advantage ? D.records().find((q) => q.id === r.Advantage) : null;
+      if (r.Advantage && (!rec || rec.kind !== 'advantage')) return false;
+      const name = rec ? rec.name : r.Name;
+      const recs = D.records().filter((q) => q.kind === 'advantage' && q.name === name && q.type !== 'Flaw');
+      const next = (+r.Dots || 0) + 1;
+      if (next > 5) return false;
+      const ch = recs.reduce((a, q) => a.concat(choicesOf(q)), []);
+      return !ch.length || recs.some((q) => /\+\s*$/.test(q.dots || '')) || ch.indexOf(next) !== -1;
+    };
+    const advs = (v['Advantages & Flaws'] || []).filter((r) => !r.Flaw && r.Name && room(r));
     sec('Advantages · ' + C.advantage.text, [el('div', { class: 'chiprow tight' }, advs.map((r) => btn(r.Name + ' ' + (+r.Dots || 0) + '→' + ((+r.Dots || 0) + 1), { kind: 'advantage', key: r.Name, from: +r.Dots || 0, to: (+r.Dots || 0) + 1, cost: price(C.advantage, 1), what: r.Name + ' ' + (+r.Dots || 0) + ' → ' + ((+r.Dots || 0) + 1) })))]);
     if (!o.thin) sec('Blood Potency · ' + C.potency.text, [el('div', { class: 'chiprow tight' }, [(+v['Blood Potency'] || 0) < 10 ? btn('Blood Potency ' + (+v['Blood Potency'] || 0) + '→' + ((+v['Blood Potency'] || 0) + 1), { kind: 'potency', key: 'Blood Potency', from: +v['Blood Potency'] || 0, to: (+v['Blood Potency'] || 0) + 1, cost: price(C.potency, (+v['Blood Potency'] || 0) + 1), what: 'Blood Potency ' + (+v['Blood Potency'] || 0) + ' → ' + ((+v['Blood Potency'] || 0) + 1) }) : null])]);
     // what has been bought, each undone on its own
@@ -563,6 +593,25 @@ window.VtmCreatorGuides = (function () {
     });
     return { traits, disciplines };
   }
+  // Every dot a step placed on a trait whose own step comes earlier in the walk: the Predator's
+  // grants, and experience spent at the Sea of Time. An earlier step counts only its own
+  // placements, shows these beside them ("+1 from the Predator type"), and never takes them back.
+  // by: { traits|disciplines: { name: ['the Predator type', 'experience'] } }
+  function laterDots(meta) {
+    const p = predatorDots(meta || {});
+    const out = { traits: Object.assign({}, p.traits), disciplines: Object.assign({}, p.disciplines), by: { traits: {}, disciplines: {} }, specialties: [] };
+    const why = (g, n, w) => { const a = out.by[g][n] = out.by[g][n] || []; if (a.indexOf(w) === -1) a.push(w); };
+    Object.keys(p.traits).forEach((n) => why('traits', n, 'the Predator type'));
+    Object.keys(p.disciplines).forEach((n) => why('disciplines', n, 'the Predator type'));
+    ((meta || {}).xpBuys || []).forEach((b) => {
+      const d = (+b.to || 0) - (+b.from || 0);
+      if (b.kind === 'attribute' || b.kind === 'skill') { out.traits[b.key] = (out.traits[b.key] || 0) + d; why('traits', b.key, 'experience'); }
+      if (b.kind === 'discipline') { out.disciplines[b.key] = (out.disciplines[b.key] || 0) + d; why('disciplines', b.key, 'experience'); }
+      if (b.kind === 'specialty') out.specialties.push((b.extra || {}).skill + '|' + b.key);
+    });
+    return out;
+  }
+  const fromWhat = (n, by) => ' +' + n + ' from ' + (by || ['the Predator type']).join(' and ');
   // the Predator's applied grants: what they add that the other steps must count or expect
   function fromPredator(meta) {
     const applied = Object.values((meta.pred || {}).applied || {});
@@ -658,5 +707,5 @@ window.VtmCreatorGuides = (function () {
     return 'in the Notes';
   }
 
-  return { bookOn, ALWAYS, seaOfTime, seaBands, detailsOf, allocator, skills, predator, disciplines, advantages, grantsOf, parseGrant, fromPredator, predatorDots, describe, titleCase };
+  return { bookOn, ALWAYS, seaOfTime, seaBands, detailsOf, allocator, skills, predator, disciplines, advantages, grantsOf, parseGrant, fromPredator, predatorDots, laterDots, describe, titleCase };
 })();

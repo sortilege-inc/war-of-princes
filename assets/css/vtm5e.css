@@ -405,6 +405,17 @@ ul.step-said li { padding: 3px 0; border-bottom: 1px solid rgba(0, 0, 0, .08); }
 .creator-sheet .sheet-head { border-bottom: 1px solid var(--blood); padding-bottom: 8px; margin-bottom: 12px; }
 .creator-sheet .sheet-name { font-family: var(--font-display, inherit); font-size: 26px; color: var(--bone); }
 .alloc-plus { font-family: var(--font-ui); font-size: 11px; color: #9fc49a; margin-left: 4px; }
+/* a dot another step gave (the Predator type, experience): lit, fixed, taken back only there */
+.alloc-levels button.fixed, .alloc-levels button.fixed:disabled { background: #3b5a3a; border-color: #9fc49a; color: var(--bone); opacity: 1; cursor: default; }
+/* a choice a later step opened at an earlier one: its flag in the step list, its check, its note */
+.creator ol.steps li.pending .ref { color: #e0a83a; }
+.creator ol.steps .step-flag.pending { display: inline-block; min-width: 1.2em; margin-left: 3px; padding: 0 4px; border-radius: 8px; background: #e0a83a; color: var(--night); font-weight: 700; text-align: center; }
+.creator-book ul.checks li.warn.pending { background: rgba(224, 168, 58, .16); }
+.creator-book ul.checks li.warn.pending::before { content: '!'; color: #a86e00; }
+.pending-note { margin: 0 0 14px; padding: 8px 12px; border: 1px solid #e0a83a; border-left-width: 4px; background: rgba(224, 168, 58, .08); }
+.pending-note .prop-k { color: #e0a83a; }
+.pending-note .small { margin-top: 4px; }
+.tp-row.tp-sub { margin-left: 22px; }
 
 dl.power-head { color: var(--ink); }   /* its panel is paper: its values read in ink wherever it is shown */
 .creator-sheet .cs-top { display: grid; grid-template-columns: repeat(3, max-content minmax(0, 1fr)); gap: 6px 14px; margin: 10px 0 0; }

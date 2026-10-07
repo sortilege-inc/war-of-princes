@@ -16,10 +16,12 @@
 // Third-party options (owner, 2026-09-25): a draft may use the third-party shelf's books — ticked
 // by the player, with an acknowledgment that the character is playable only where the Storyteller
 // allows those sources (the campaign's creation.blackHand says whether a table does). The Black
-// Hand ADDS to the core's walk, never replaces it: its Sabbat Predator types join the Predator
-// pick, and a Path of Enlightenment (with Touchstone Ritae) joins Convictions and Touchstones; its
-// own Quick Character Creation text for those two steps is shown beside the core's. A draft using
-// it is The Black Hand's ACTOR "Sabbat Kindred" (the Kindred and its Path; Sheet.isSabbat).
+// Hand ADDS to the core's walk, never replaces it. Taking the book is not taking the sect (owner,
+// 2026-10-07): with it on, its Discipline powers are offered to any character, and the player
+// MAY then make the character Sabbat -- only a Sabbat character takes its Sabbat Predator types
+// and a Path of Enlightenment (with Touchstone Ritae) beside Convictions and Touchstones, its own
+// Quick Character Creation text for those two steps shown beside the core's, and is The Black
+// Hand's ACTOR "Sabbat Kindred" (the Kindred and its Path; Sheet.isSabbat).
 // Summoned Stories (owner, 2026-09-27) is the other kind of option: its brief REPLACES a step's
 // fields - "Humanity: This is replaced by the Road system", "We will not be using Touchstones or
 // Convictions" - so a draft using it is Summoned Stories' ACTOR "Cainite", which takes a Road and
@@ -33,6 +35,15 @@
 // from the Companion's sentences; a ghoul's Skills follow the core's Quick Skills Assignment, as
 // the Companion directs; a ghoul's Disciplines step takes a domitor and one level-1 power. The
 // character is the BASE's ACTOR "Mortal" or "Ghoul" (Sheet.kindOf).
+//
+// The walk's order (owner, 2026-10-07): the summary's, except that Disciplines comes after
+// Predator, so the Predator's Discipline dot is on the card before the clan's dots are placed.
+// A step that opens a choice at an earlier one -- the Sea of Time's experience (a Discipline dot
+// wants its power; a Skill a free specialty), its band (2 more points of Advantages and of Flaws,
+// a point less Humanity) -- marks that earlier step as pending: its flag in the step list, its
+// checks, and a note at the top of both steps saying which opened what. Every earlier step counts
+// only its own placements; the dots a later step gave are shown beside them, fixed
+// (VtmCreatorGuides.laterDots).
 window.VtmCreator = (function () {
   const { el, button, debounce } = window.VttRender;
   const D = window.VtmData;
@@ -108,6 +119,9 @@ window.VtmCreator = (function () {
       if (m && STEP_FIELDS[m[1].trim()] !== undefined) out.push({ key: m[1].trim(), paras: [m[2] || ''] });
       else if (out.length) out[out.length - 1].paras.push(p);
     });
+    // Disciplines after Predator (owner): the Predator's Discipline dot is placed before the clan's
+    const d = out.findIndex((x) => x.key === 'DISCIPLINES'), p = out.findIndex((x) => x.key === 'PREDATOR');
+    if (d !== -1 && p > d) out.splice(p, 0, out.splice(d, 1)[0]);
     return out.map((s) => Object.assign(s, { text: s.paras.filter(Boolean).join('\n\n') }));
   }
   // ── the Companion's walk for a mortal or a ghoul ──
@@ -329,6 +343,14 @@ window.VtmCreator = (function () {
     // grants), kept beside it in the roster, never in the character
     roster.meta = roster.meta || {};
     const meta = roster.meta[roster.current] || {};
+    // a third-party book the draft draws on without being Sabbat (The Black Hand's powers only)
+    const tpNeed = G() ? [BH_BOOK, SUN_BOOK].filter((b) => D.books().some((x) => x.id === b) && G().bookOn(meta, b) && !D.loaded(b)) : [];
+    if (tpNeed.length) {
+      page.innerHTML = '';
+      page.appendChild(el('div', { class: 'loading' }, ['Opening ' + tpNeed.map((b) => (D.indexBook(b) || {}).label || b).join(', ') + '…']));
+      D.ready(tpNeed).then(() => draw(page));
+      return;
+    }
     const setMeta = (patch, values) => {
       roster.meta[roster.current] = Object.assign({}, meta, patch);
       if (values) {
@@ -369,23 +391,39 @@ window.VtmCreator = (function () {
       page.appendChild(sheetView(v, meta, () => { view = 'steps'; draw(page); }));
       return;
     }
-    // the step list
-    page.appendChild(el('ol', { class: 'steps' }, walk.map((x, i) => el('li', { class: i === stepIndex ? 'active' : '' }, [
-      el('span', { class: 'step-n' }, [x.n + '.']),
-      el('button', { type: 'button', class: 'ref', onclick: () => { stepIndex = i; draw(page); } }, [x.label]),
-      el('span', { class: 'step-flag' }, [checks(x, v, meta).some((c) => !c.ok) ? '•' : '✓']),
-    ]))));
+    // the step list: ✓ done, • still to do, ! a later step opened a choice here
+    const all = walk.map((x) => checks(x, v, meta));
+    const pendingOf = (i) => all[i].filter((c) => !c.ok && c.pending);
+    const stepOf = (key) => walk.findIndex((x) => x.key === key);
+    page.appendChild(el('ol', { class: 'steps' }, walk.map((x, i) => {
+      const pend = pendingOf(i);
+      const flag = el('span', { class: 'step-flag' + (pend.length ? ' pending' : '') }, [pend.length ? '!' : all[i].some((c) => !c.ok) ? '•' : '✓']);
+      if (pend.length) flag.title = 'A later step opened a choice here: ' + pend.map((c) => c.text).join(' ');
+      return el('li', { class: (i === stepIndex ? 'active' : '') + (pend.length ? ' pending' : '') }, [
+        el('span', { class: 'step-n' }, [x.n + '.']),
+        el('button', { type: 'button', class: 'ref', onclick: () => { stepIndex = i; draw(page); } }, [x.label]),
+        flag,
+      ]);
+    })));
     const s = walk[stepIndex];
     // the right pane: what the book says, what this step has put on the sheet, and the checks
     const adds = Sheet.isSabbat(v) ? bhAdds(s.key) : null;
-    const cs = checks(s, v, meta);
+    const cs = all[stepIndex];
     const said = stepSummary(s, v, meta);
     const side = el('aside', { class: 'creator-book' }, [el('div', { class: 'group-h' }, [s.label])]
       .concat(s.key === 'SOURCES' ? [E.prose(SOURCES_TEXT)] : [s.entity ? E.render(s.entity, { noKids: !s.kids }) : E.prose(smallCaps(s.text))])
       .concat(adds ? [el('div', { class: 'group-h bh-adds' }, [((D.indexBook(BH_BOOK) || {}).label || 'The Black Hand') + ' adds · ' + adds.name]), E.render(adds, { noKids: true })] : [])
       .concat([el('div', { class: 'group-h side-h' }, ['On your sheet from this step'])], [said.length ? el('ul', { class: 'step-said' }, said.map((x) => el('li', {}, [el('span', { class: 'said-k' }, [x[0]]), ' ', x[1]]))) : el('p', { class: 'small said-none' }, ['Nothing yet.'])])
-      .concat(cs.length ? [el('div', { class: 'group-h side-h' }, ['Checks']), el('ul', { class: 'checks' }, cs.map((c) => el('li', { class: c.ok ? 'ok' : 'warn' }, [c.text])))] : []));
+      .concat(cs.length ? [el('div', { class: 'group-h side-h' }, ['Checks']), el('ul', { class: 'checks' }, cs.map((c) => el('li', { class: c.ok ? 'ok' : c.pending ? 'warn pending' : 'warn' }, [c.text])))] : []));
     const main = el('div', { class: 'creator-step' });
+    // a choice a later step opened here, and -- on that later step -- where it opened one
+    const go = (i) => button(walk[i].label + ' →', () => { stepIndex = i; draw(page); }, 'ghost tiny');
+    const mine = pendingOf(stepIndex);
+    if (mine.length) main.appendChild(el('div', { class: 'pending-note' }, [el('div', { class: 'prop-k' }, ['A later step opened a choice here'])]
+      .concat(mine.map((c) => el('div', { class: 'small' }, [c.text, ' ', el('span', { class: 'muted' }, ['(opened by ']), go(stepOf(c.pending)), el('span', { class: 'muted' }, [')'])])))));
+    const opened = walk.map((x, i) => ({ i, cs: pendingOf(i).filter((c) => c.pending === s.key) })).filter((x) => x.i !== stepIndex && x.cs.length);
+    if (opened.length) main.appendChild(el('div', { class: 'pending-note' }, [el('div', { class: 'prop-k' }, ['This step opened a choice at an earlier one'])]
+      .concat(opened.map((x) => el('div', { class: 'small' }, [go(x.i), ' ', x.cs.map((c) => c.text).join(' ')])))));
     if (s.key === 'SOURCES') main.appendChild(sourcesStep(v, meta, changeSources, setMeta, (k) => {
       // another kind: the draft starts again as one, keeping who it is
       const keep = ['Name', 'Concept', 'Chronicle', 'Ambition', 'Desire'];
@@ -425,7 +463,7 @@ window.VtmCreator = (function () {
     const out = [];
     const put = (k, x) => { if (x != null && x !== '' && !(Array.isArray(x) && !x.length)) out.push([k, x]); };
     if (s.key === 'SOURCES') {
-      const tp = Sheet.isSabbat(v) ? [((D.indexBook(BH_BOOK) || {}).label || 'The Black Hand')].concat(((meta || {}).sources || []).indexOf(SUN_BOOK) !== -1 ? [((D.indexBook(SUN_BOOK) || {}).label || 'Path of the Sun')] : []) : [];
+      const tp = D.books().filter((b) => b.shelf === 'third-party' && G() && G().bookOn(meta || {}, b.id)).map((b) => b.label + (b.id === BH_BOOK ? (Sheet.isSabbat(v) ? ' (Sabbat)' : ' (powers only)') : ''));
       put('Rules', ['Core Rulebook', 'Players Guide'].concat(tp).join(' · '));
       if ((meta || {}).books) put('Books', ['Core Rulebook', 'Players Guide'].concat(meta.books.map((id) => (D.indexBook(id) || {}).label || id)).join(' · '));
       return out;
@@ -503,8 +541,9 @@ window.VtmCreator = (function () {
 
 
   // Third-party options: a checkbox, the shelf's books to use, and the acknowledgment. The Black
-  // Hand takes effect (the draft becomes a Sabbat Kindred) only with all three; untaking it clears
-  // what it added — the Path, a Sabbat Predator type — after asking.
+  // Hand's book takes effect with all three; the draft becomes a Sabbat Kindred only when the player
+  // also makes the character Sabbat (meta.sabbat), and untaking either clears what being Sabbat
+  // added -- the Path, a Sabbat Predator type -- after asking.
   // Step 0: the sources. The Core Rulebook always; third-party books by the player's choice.
   function sourcesStep(v, meta, change, setMeta, setKind) {
     const k = Sheet.kindOf(v);
@@ -576,15 +615,17 @@ window.VtmCreator = (function () {
     if (!shelf.length) return el('span', {});
     const sabbat = Sheet.isSabbat(v);
     const cainite = isCainite(v);
-    const cur = { thirdParty: meta.thirdParty != null ? meta.thirdParty : sabbat || cainite, sources: meta.sources || (sabbat ? [BH_BOOK] : cainite ? [SS_BOOK] : []), ack: meta.ack != null ? meta.ack : sabbat || cainite };
+    const cur = { thirdParty: meta.thirdParty != null ? meta.thirdParty : sabbat || cainite, sources: meta.sources || (sabbat ? [BH_BOOK] : cainite ? [SS_BOOK] : []), ack: meta.ack != null ? meta.ack : sabbat || cainite,
+      sabbat: meta.sabbat != null ? meta.sabbat : sabbat };
     const apply = (patch) => {
       const m = Object.assign({}, cur, patch);
       // a Road and a Path answer one question: the book just ticked wins
       const ticked = (patch.sources || []).filter((x) => cur.sources.indexOf(x) === -1);
       if (ticked.indexOf(SS_BOOK) !== -1) m.sources = m.sources.filter((x) => x !== BH_BOOK && x !== SUN_BOOK);
       if (ticked.indexOf(BH_BOOK) !== -1) m.sources = m.sources.filter((x) => x !== SS_BOOK);
-      if (m.sources.indexOf(BH_BOOK) === -1) m.sources = m.sources.filter((x) => x !== SUN_BOOK);   // the Sunburners' Path is written on The Black Hand's
-      const want = !!(m.thirdParty && m.ack && m.sources.indexOf(BH_BOOK) !== -1);
+      if (m.sources.indexOf(BH_BOOK) === -1) m.sabbat = false;   // no book, no Sabbat character
+      if (!m.sabbat) m.sources = m.sources.filter((x) => x !== SUN_BOOK);   // the Sunburners' Path is written on The Black Hand's, for a Sabbat character
+      const want = !!(m.thirdParty && m.ack && m.sources.indexOf(BH_BOOK) !== -1 && m.sabbat);
       const wantRoad = !!(m.thirdParty && m.ack && m.sources.indexOf(SS_BOOK) !== -1);
       const values = {};
       if (wantRoad && !cainite) {
@@ -601,7 +642,7 @@ window.VtmCreator = (function () {
       const sunPath = v['Path of Enlightenment'] && m.sources.indexOf(SUN_BOOK) === -1 && paths([SUN_BOOK]).some((p) => p.book === SUN_BOOK && p.name === v['Path of Enlightenment']);
       if (!want && sabbat) {
         const lose = [v['Path of Enlightenment'] ? 'the Path (' + v['Path of Enlightenment'] + ')' : null, sabbatPred ? 'the Predator type (' + v.Predator + ')' : null].filter(Boolean);
-        if (lose.length && !window.confirm('Without The Black Hand, ' + (v.Name || 'this character') + ' loses ' + lose.join(' and ') + '. Go on?')) return;
+        if (lose.length && !window.confirm((m.sources.indexOf(BH_BOOK) !== -1 && m.thirdParty && m.ack ? 'Not Sabbat' : 'Without The Black Hand') + ', ' + (v.Name || 'this character') + ' loses ' + lose.join(' and ') + '. Go on?')) return;
         values['Path of Enlightenment'] = undefined;
         if (sabbatPred) { values.Predator = ''; m.pred = null; }
       } else if (sunPath) values['Path of Enlightenment'] = '';
@@ -612,12 +653,17 @@ window.VtmCreator = (function () {
     if (!cur.thirdParty) return box;
     shelf.forEach((b) => {
       const on = cur.sources.indexOf(b.id) !== -1;
-      const needsBH = b.id === SUN_BOOK && cur.sources.indexOf(BH_BOOK) === -1;
-      const what = b.id === BH_BOOK ? 'Sabbat Predator types, and a Path of Enlightenment with Touchstone Ritae' : b.id === SUN_BOOK ? 'homebrew: the Path of the Sun, for The Black Hand’s Paths'
+      const needsBH = b.id === SUN_BOOK && !(cur.sources.indexOf(BH_BOOK) !== -1 && cur.sabbat);
+      const what = b.id === BH_BOOK ? 'its Discipline powers; and, for a Sabbat character, Sabbat Predator types and a Path of Enlightenment with Touchstone Ritae' : b.id === SUN_BOOK ? 'homebrew: the Path of the Sun, for The Black Hand’s Paths (a Sabbat character)'
         : b.id === SS_BOOK ? 'a chronicle’s house rules: a Road and its rating in place of Humanity, and no Touchstones or Convictions' : '';
       box.appendChild(el('label', { class: 'tp-row tp-source' + (needsBH ? ' muted' : '') }, [
         el('input', { type: 'checkbox', checked: on || null, disabled: needsBH ? 'disabled' : null, onchange: (ev) => apply({ sources: ev.target.checked ? cur.sources.concat([b.id]) : cur.sources.filter((x) => x !== b.id) }) }),
         ' ', el('b', {}, [b.label]), what ? el('span', { class: 'muted small' }, [' — ' + what]) : null,
+      ]));
+      // the book is an option; the sect is the player's further choice
+      if (b.id === BH_BOOK && on) box.appendChild(el('label', { class: 'tp-row tp-source tp-sub' }, [
+        el('input', { type: 'checkbox', checked: cur.sabbat || null, onchange: (ev) => apply({ sabbat: ev.target.checked }) }),
+        ' Make this character Sabbat', el('span', { class: 'muted small' }, [' — The Black Hand’s Sabbat Kindred: its Predator types and a Path of Enlightenment. Unticked, the character takes only the book’s Discipline powers.']),
       ]));
     });
     box.appendChild(el('label', { class: 'tp-row tp-ack' }, [el('input', { type: 'checkbox', checked: cur.ack || null, onchange: (ev) => apply({ ack: ev.target.checked }) }),
@@ -678,7 +724,8 @@ window.VtmCreator = (function () {
     const ctx = { v, meta: meta || {}, set, setMeta: (m, values) => setMeta(m, values ? Object.assign({}, values, derivedFor(s, Object.assign({}, v, values))) : null) };
     const hidden = [];   // the step's fields a guide draws instead of the sheet
     if (s.key === 'ATTRIBUTES' && G()) {
-      box.appendChild(G().allocator(Sheet.attributes(), v, attributeSpread(s.text), 1, set, 'Attributes'));
+      const later = G().laterDots(meta);
+      box.appendChild(G().allocator(Sheet.attributes(), v, attributeSpread(s.text), 1, set, 'Attributes', later.traits, later.by.traits));
       hidden.push.apply(hidden, Sheet.attributes());
     }
     if (s.key === 'DISCIPLINES' && G() && !isThin(v)) {
@@ -799,9 +846,11 @@ window.VtmCreator = (function () {
   // what the step's sentences ask, against the draft
   function checks(s, v, meta) {
     const out = [];
-    // a later step may legally add dots (the Predator's Skill dot, its Discipline dot): the earlier
-    // step's check counts only its own placements
-    const later = G() ? G().predatorDots(meta || {}) : { traits: {}, disciplines: {} };
+    // a later step may legally add dots (the Predator's Skill dot, its Discipline dot, the Sea of
+    // Time's experience): the earlier step's check counts only its own placements. A check that
+    // fails only because a later step opened a choice here carries pending: that step's key.
+    const later = G() ? G().laterDots(meta || {}) : { traits: {}, disciplines: {}, by: { traits: {}, disciplines: {} }, specialties: [] };
+    const SEA = 'SEA OF TIME';
     const pv = G() ? G().fromPredator(meta || {}) : { humanity: 0, potency: 0, advantages: [] };
     const band = bandOf(meta);
     const count = (fields, min) => {
@@ -821,6 +870,7 @@ window.VtmCreator = (function () {
       if (!tp) out.push({ ok: true, text: 'No third-party options.' });
       else if (!src.length) out.push({ ok: false, text: 'Choose the third-party books to use, or untick third-party options.' });
       else out.push({ ok: !!ack, text: ack ? 'Third-party options in effect; playable where the Storyteller allows them.' : 'Tick the acknowledgment for the options to take effect.' });
+      if (tp && ack && src.indexOf(BH_BOOK) !== -1) out.push({ ok: true, text: Sheet.isSabbat(v) ? 'A Sabbat character (The Black Hand’s Sabbat Kindred).' : 'The Black Hand’s powers only; not a Sabbat character.' });
     }
     if (s.key === 'CORE CONCEPT') out.push({ ok: !!v.Name, text: v.Name ? 'Named ' + v.Name : 'A name is required (the sheet declares it so).' });
     if (s.key === 'GHOUL DISCIPLINES') {
@@ -849,7 +899,10 @@ window.VtmCreator = (function () {
       const fs = freeSpecialties(s.text);
       const specs = (v.Specialties || []).filter((x) => x.Specialty).map((x) => x.Skill);
       const missing = fs.named.filter((n) => (+v[n] || 0) > 0 && specs.indexOf(n) === -1);
-      out.push({ ok: !missing.length, text: 'Free specialties for ' + fs.named.join(', ') + (fs.more ? ', and ' + fs.more + ' more' : '') + (missing.length ? ' — still to add: ' + missing.join(', ') : '') + '.' });
+      // a Skill whose every dot the Sea of Time bought: the experience opened its free specialty
+      const opened = missing.filter((n) => (+v[n] || 0) - (later.traits[n] || 0) <= 0);
+      out.push({ ok: !missing.length, pending: missing.length && opened.length === missing.length ? SEA : null,
+        text: 'Free specialties for ' + fs.named.join(', ') + (fs.more ? ', and ' + fs.more + ' more' : '') + (missing.length ? ' — still to add: ' + missing.join(', ') + (opened.length ? ' (bought at the Sea of Time)' : '') : '') + '.' });
     }
     if (s.key === 'DISCIPLINES' && isThin(v)) {
       const none = /Thin-blood(?: character)?s have no (?:intrinsic )?Disciplines\./.exec(s.text);
@@ -859,10 +912,16 @@ window.VtmCreator = (function () {
       const want = disciplineDots(s.text);
       const have = (v.Disciplines || []).map((d) => (+d.Dots || 0) - (later.disciplines[d.Discipline] || 0)).filter((n) => n > 0).sort().reverse();
       if (want) out.push({ ok: JSON.stringify(have) === JSON.stringify(want.slice().sort().reverse()), text: 'The book: ' + want.join(' and ') + ' dots. This sheet: ' + (have.join(' and ') || 'none') + '.' });
-      const unpowered = (v.Disciplines || []).filter((d) => d.Discipline && (d.Powers || []).length < (+d.Dots || 0)).map((d) => d.Discipline + ' (' + (d.Powers || []).length + ' of ' + (+d.Dots || 0) + ')');
-      if ((v.Disciplines || []).some((d) => d.Discipline)) out.push({ ok: !unpowered.length, text: (powerPerDot() || 'A power for each dot.') + (unpowered.length ? ' Still to take: ' + unpowered.join(', ') + '.' : '') });
+      const short = (v.Disciplines || []).filter((d) => d.Discipline && (d.Powers || []).length < (+d.Dots || 0));
+      const unpowered = short.map((d) => d.Discipline + ' (' + (d.Powers || []).length + ' of ' + (+d.Dots || 0) + ')');
+      // powered up to the dots bought with experience: the Sea of Time opened the rest
+      const xpOf = (d) => ((meta || {}).xpBuys || []).filter((b) => b.kind === 'discipline' && b.key === d.Discipline).reduce((a, b) => a + (+b.to - +b.from), 0);
+      const opened = short.filter((d) => xpOf(d) && (d.Powers || []).length >= (+d.Dots || 0) - xpOf(d));
+      if ((v.Disciplines || []).some((d) => d.Discipline)) out.push({ ok: !unpowered.length, pending: short.length && opened.length === short.length ? SEA : null,
+        text: (powerPerDot() || 'A power for each dot.') + (unpowered.length ? ' Still to take: ' + unpowered.join(', ') + (opened.length ? ' — ' + opened.map((d) => d.Discipline + ' ' + (+d.Dots)).join(', ') + ' bought at the Sea of Time' : '') + '.' : '') });
       if (v.Clan && clanDisciplines(v.Clan).length) {
-        const off = (v.Disciplines || []).filter((d) => d.Discipline && clanDisciplines(v.Clan).indexOf(d.Discipline) === -1).map((d) => d.Discipline);
+        // a Discipline only another step gave (the Predator's, experience's) is not this step's choice
+        const off = (v.Disciplines || []).filter((d) => d.Discipline && clanDisciplines(v.Clan).indexOf(d.Discipline) === -1 && (+d.Dots || 0) - (later.disciplines[d.Discipline] || 0) > 0).map((d) => d.Discipline);
         out.push({ ok: !off.length || /Caitiff/.test(v.Clan), text: off.length ? off.join(', ') + ' is not among ' + v.Clan + '’s ' + clanDisciplines(v.Clan).join(', ') + '.' : 'Clan Disciplines: ' + clanDisciplines(v.Clan).join(', ') + '.' });
       }
     }
@@ -882,7 +941,9 @@ window.VtmCreator = (function () {
       const fl = rows.filter((r) => r.Flaw).reduce((a, r) => a + (+r.Dots || 0), 0);
       // experience spent on an Advantage's dots is not creation's points
       const xpDots = ((meta || {}).xpBuys || []).filter((b) => b.kind === 'advantage').length;
-      if (want) out.push({ ok: adv - xpDots === want.advantages + band.adv && fl >= want.flaws + band.flaws, text: 'The book: ' + want.advantages + ' points of Advantages, ' + want.flaws + ' points of Flaws ' + (living(v) ? '' : '(besides the Predator’s)') + '' + (band.adv || band.flaws ? '; ' + titleCase(band.name) + ' add ' + band.adv + ' and ' + band.flaws : '') + '. This sheet: ' + (adv - xpDots) + ' and ' + fl + '.' });
+      // right but for the band's extra points: the Sea of Time opened them
+      const bandOpened = want && (band.adv || band.flaws) && adv - xpDots >= want.advantages && adv - xpDots <= want.advantages + band.adv && fl >= want.flaws;
+      if (want) out.push({ ok: adv - xpDots === want.advantages + band.adv && fl >= want.flaws + band.flaws, pending: bandOpened ? SEA : null, text: 'The book: ' + want.advantages + ' points of Advantages, ' + want.flaws + ' points of Flaws ' + (living(v) ? '' : '(besides the Predator’s)') + '' + (band.adv || band.flaws ? '; ' + titleCase(band.name) + ' add ' + band.adv + ' and ' + band.flaws : '') + '. This sheet: ' + (adv - xpDots) + ' and ' + fl + '.' });
       const tm = /Thin-blood characters must take between (\w+) and (\w+) Thin-Blood Merits and the same number of Thin-Blood Flaws\./i.exec(s.text);
       if (isThin(v) && tm) {
         const tb = D.thinBloodTraits();
@@ -930,7 +991,7 @@ window.VtmCreator = (function () {
       const n = (v['Touchstones & Convictions'] || []).filter(Boolean).length;
       if (c.min != null) out.push({ ok: n >= c.min && n <= c.max, text: c.min + ' to ' + c.max + ' Convictions, each with a ' + (v['Path of Enlightenment'] ? 'Touchstone Ritae or a Touchstone' : 'Touchstone') + '. This sheet: ' + n + '.' });
       const hum = (c.humanity || 0) + pv.humanity + band.humanity;
-      if (c.humanity != null) out.push({ ok: +v.Humanity === hum, text: 'Humanity ' + c.humanity + ' (the book)' + (pv.humanity || band.humanity ? ', ' + hum + ' with ' + [pv.humanity ? 'your Predator type' : '', band.humanity ? 'the Sea of Time (' + titleCase(band.name) + ')' : ''].filter(Boolean).join(' and ') : '') + '. This sheet: ' + (v.Humanity || 0) + '.' });
+      if (c.humanity != null) out.push({ ok: +v.Humanity === hum, pending: band.humanity && +v.Humanity === (c.humanity || 0) + pv.humanity ? SEA : null, text: 'Humanity ' + c.humanity + ' (the book)' + (pv.humanity || band.humanity ? ', ' + hum + ' with ' + [pv.humanity ? 'your Predator type' : '', band.humanity ? 'the Sea of Time (' + titleCase(band.name) + ')' : ''].filter(Boolean).join(' and ') : '') + '. This sheet: ' + (v.Humanity || 0) + '.' });
     }
     return out;
   }
