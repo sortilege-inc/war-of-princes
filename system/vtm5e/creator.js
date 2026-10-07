@@ -945,6 +945,24 @@ window.VtmCreator = (function () {
       // right but for the band's extra points: the Sea of Time opened them
       const bandOpened = want && (band.adv || band.flaws) && adv - xpDots >= want.advantages && adv - xpDots <= want.advantages + band.adv && fl >= want.flaws;
       if (want) out.push({ ok: adv - xpDots === want.advantages + band.adv && fl >= want.flaws + band.flaws, pending: bandOpened ? SEA : null, text: 'The book: ' + want.advantages + ' points of Advantages, ' + want.flaws + ' points of Flaws ' + (living(v) ? '' : '(besides the Predator’s)') + '' + (band.adv || band.flaws ? '; ' + titleCase(band.name) + ' add ' + band.adv + ' and ' + band.flaws : '') + '. This sheet: ' + (adv - xpDots) + ' and ' + fl + '.' });
+      // what the books forbid this character, read from their own sentences: the clan's Bane ("Ravnos
+      // characters cannot take the No Haven Flaw at character creation"), an Advantage's text
+      // ("Ventrue may not take this Merit"; "You cannot take Lifelike if you take this Flaw")
+      const held = (v['Advantages & Flaws'] || []).filter((r) => r.Name);
+      const has = (n) => held.some((r) => r.Name.toLowerCase() === String(n).trim().toLowerCase());
+      const barred = [];
+      const bane = String(v['Clan Bane'] || '');
+      let bm; const bre = /([A-Z][\w ]*?) characters cannot take the ([A-Z][\w’' -]*?) (Flaw|Merit|Background|Advantage) at character creation\./g;
+      while ((bm = bre.exec(bane))) if (v.Clan && bm[1].trim() === v.Clan && has(bm[2])) barred.push(bm[0]);
+      held.forEach((r) => {
+        const e = r.Advantage && D.loaded((D.records().find((q) => q.id === r.Advantage) || {}).book) ? D.entity(r.Advantage) : null;
+        const t = String((e && e.desc) || '');
+        const cm = /([A-Z][\w ]*?) may not take this (Merit|Flaw|Background)\./.exec(t);
+        if (cm && v.Clan && cm[1].trim() === v.Clan) barred.push(r.Name + ': “' + cm[0] + '”');
+        let xm; const xre = /You cannot take ([A-Z][\w’' -]*?) if you take this (Flaw|Merit)\./g;
+        while ((xm = xre.exec(t))) if (has(xm[1])) barred.push(r.Name + ': “' + xm[0] + '”');
+      });
+      if (barred.length) out.push({ ok: false, text: 'The books forbid: ' + barred.join(' · ') });
       const tm = /Thin-blood characters must take between (\w+) and (\w+) Thin-Blood Merits and the same number of Thin-Blood Flaws\./i.exec(s.text);
       if (isThin(v) && tm) {
         const tb = D.thinBloodTraits();
@@ -963,6 +981,13 @@ window.VtmCreator = (function () {
     if (s.key === 'SEA OF TIME') {
       out.push({ ok: !!(meta || {}).band, text: (meta || {}).band ? 'The coterie are ' + titleCase(meta.band) + '.' : 'Decide with the Storyteller how old the coterie are.' });
       if (band.xp) { const sp = ((meta || {}).xpBuys || []).reduce((a, b) => a + b.cost, 0); out.push({ ok: sp === band.xp, text: 'Spend ' + band.xp + ' experience points. Spent: ' + sp + '.' }); }
+      // the band's Generation and Blood Potency (a thin-blood's are checked below, from its own line)
+      const gl = !isThin(v) && G() ? (band.gens || []).filter((g) => !g.thin) : [];
+      if (gl.length) {
+        const gen = parseInt(v.Generation, 10), bp = +v['Blood Potency'] || 0;
+        const fits = gl.some((g) => g.gens.indexOf(gen) !== -1 && bp === g.bp + pv.potency);
+        out.push({ ok: fits, text: gl.map((g) => g.text).join(' · ') + '. This sheet: Generation ' + (v.Generation || '—') + ', Blood Potency ' + bp + '.' });
+      }
     }
     if (s.key === 'SEA OF TIME' && isThin(v)) {
       const g = /((?:\d+th,?\s*(?:or\s+)?)+)Generation \(thin-bloods\): Blood Potency (\d+)/.exec(s.text);
