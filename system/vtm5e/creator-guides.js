@@ -239,11 +239,24 @@ window.VtmCreatorGuides = (function () {
       const flaw = r.type === 'Flaw' || /\bFlaw\b/i.test(dots) || /\bFlaws?$/i.test(r.under || '');
       const k = r.name.toLowerCase() + '|' + flaw;
       const choices = choicesOf(r);
-      const x = { r, name: r.name, flaw, kind: flaw ? 'Flaw' : r.type === 'Background' ? 'Background' : 'Merit', choices, dots, parent: r.under || '', books: [r.book] };
+      const kind = flaw ? 'Flaw' : r.type === 'Background' ? 'Background' : 'Merit';
+      // "•+" (the Players Guide's Cobbler, Linguistics): a dot at a time, five at most
+      const open = (cs) => (/\+\s*$/.test(dots) && cs.length ? Array.from({ length: 6 - Math.min.apply(null, cs) }, (_, n) => Math.min.apply(null, cs) + n) : cs);
+      const x = { r, name: r.name, flaw, kind, kinds: [kind], choices: open(choices), dots, parent: r.under || '', books: [r.book] };
       // a name printed in several books is one entry, citing each (the core's text first)
       // (the dots from whichever book prints them: the core's "Allies" heading has none, the Players
-      // Guide's summary line "• to •••••")
-      if (seen[k]) { const s = seen[k]; if (s.books.indexOf(r.book) === -1) s.books.push(r.book); if (!s.choices.length && choices.length) Object.assign(s, { choices, dots }); return; }
+      // Guide's summary line "• to •••••"; a wider range or "•+" in another book widens it), found
+      // under every kind a book files it as (the core prints Cobbler and Zeroed under the Mask
+      // Background, the Players Guide lists them as Merits)
+      if (seen[k]) {
+        const s = seen[k];
+        if (s.books.indexOf(r.book) === -1) s.books.push(r.book);
+        if (s.kinds.indexOf(kind) === -1) s.kinds.push(kind);
+        const wide = open(choices);
+        if (wide.some((n) => s.choices.indexOf(n) === -1)) s.choices = s.choices.concat(wide.filter((n) => s.choices.indexOf(n) === -1)).sort((a, b) => a - b);
+        if (!s.dots && dots) s.dots = dots;
+        return;
+      }
       seen[k] = x;
       out.push(x);
     });
@@ -288,7 +301,7 @@ window.VtmCreatorGuides = (function () {
       el('select', { class: 'scope', onchange: (ev) => { advBook = ev.target.value; o.redraw(); } }, [el('option', { value: 'all' }, ['every book'])]
         .concat(bookIds.map((id) => el('option', { value: id, selected: advBook === id || null }, [(D.indexBook(id) || {}).label || id]))))]));
     const ql = advQuery.trim().toLowerCase();
-    const hits = cat.filter((x) => (advKind === 'all' || x.kind === advKind) && (advBook === 'all' || x.books.indexOf(advBook) !== -1)
+    const hits = cat.filter((x) => (advKind === 'all' || (x.kinds || [x.kind]).indexOf(advKind) !== -1) && (advBook === 'all' || x.books.indexOf(advBook) !== -1)
       && (!ql || x.name.toLowerCase().indexOf(ql) !== -1 || x.parent.toLowerCase().indexOf(ql) !== -1
         || ((x.r && x.r.aliases) || []).some((a) => a.toLowerCase().indexOf(ql) !== -1)));   // either name finds it
     const shown = hits.slice(0, 40);
@@ -313,7 +326,7 @@ window.VtmCreatorGuides = (function () {
       const add = (dots) => set({ 'Advantages & Flaws': rows.concat([{ Name: x.name, Dots: dots, Flaw: x.flaw, Advantage: x.r.id }]) });
       const adds = x.choices.length ? x.choices.map((d) => button('+ ' + DOT.repeat(d), () => add(d), 'ghost tiny')) : [button('+ add', () => add(0), 'ghost tiny')];
       list.appendChild(el('div', { class: 'adv-hit' }, [
-        detailsOf([el('b', {}, [x.name]), el('span', { class: 'muted small' }, [' · ' + x.kind + (x.parent && !/^(Merits|Flaws|Backgrounds)$/.test(x.parent) ? ' · ' + x.parent : '') + (x.dots ? ' · ' + x.dots : '') + ' · ' + bookLabel(x)])], x.r.id, x.r.book),
+        detailsOf([el('b', {}, [x.name]), el('span', { class: 'muted small' }, [' · ' + (x.kinds || [x.kind]).join(' / ') + (x.parent && !/^(Merits|Flaws|Backgrounds)$/.test(x.parent) ? ' · ' + x.parent : '') + (x.dots ? ' · ' + x.dots : '') + ' · ' + bookLabel(x)])], x.r.id, x.r.book),
         el('span', { class: 'chiprow tight' }, adds),
       ]));
     });
