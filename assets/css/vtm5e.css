@@ -340,6 +340,8 @@ ul.checks li.warn::before { content: '!'; color: var(--blood-2); font-weight: 70
 .power-card .btn.tiny, .power-card button.tiny { margin-left: 6px; }
 /* loresheet levels on the sheet: [Name] [Dots] [Loresheet] [Text]; the GM's Loresheets panel */
 .lore-level { border-left: 3px solid var(--blood-2); padding: 3px 0 3px 8px; margin: 4px 0; }
+.lore-more > summary { cursor: pointer; font-family: var(--font-ui); letter-spacing: .06em; color: var(--muted); }
+.lore-more[open] > summary { margin-bottom: 4px; }
 .lore-dots { color: var(--blood-2); letter-spacing: .1em; }
 .lore-text p { margin: 2px 0 4px; }
 .lore-pick { margin-top: 6px; max-width: 100%; }

@@ -331,11 +331,18 @@ window.VtmSheet = (function () {
   // `loresheets`; none by default, and none where there is no campaign — the public creator).
   const available = () => new Set(((window.VttState && window.VttState.state) || {}).loresheets || []);
   const loresheetLevels = () => { const on = available(); return D.records().filter((r) => r.kind === 'loresheet level' && on.has(r.loresheet)); };
-  // [Name] [Dots] [Loresheet] [Text] — the text from the level's own entity, its book loaded on demand
+  // [Name] [Dots] [Loresheet] [Text] — the text from the level's own entity, folded (owner,
+  // 2026-10-07: "collapsed by default, click to expand"), its book loaded when first opened
   function levelLine(row, onremove) {
     const r = D.records().find((x) => x.id === row.Advantage) || {};
-    const text = el('div', { class: 'lore-text small' }, [el('span', { class: 'muted' }, ['…'])]);
-    D.fetch(row.Advantage).then((e) => { text.innerHTML = ''; text.appendChild(e && e.desc ? window.VtmEntity.prose(e.desc) : el('span', { class: 'muted' }, ['(its text is not in the books loaded)'])); });
+    const body = el('div', { class: 'lore-text small' }, [el('span', { class: 'muted' }, ['…'])]);
+    const text = el('details', { class: 'lore-more' }, [el('summary', { class: 'small' }, ['Description']), body]);
+    let filled = false;
+    text.addEventListener('toggle', () => {
+      if (!text.open || filled) return;
+      filled = true;
+      D.fetch(row.Advantage).then((e) => { body.innerHTML = ''; body.appendChild(e && e.desc ? window.VtmEntity.prose(e.desc) : el('span', { class: 'muted' }, ['(its text is not in the books loaded)'])); });
+    });
     return el('div', { class: 'lore-level' }, [
       el('div', { class: 'chiprow tight' }, [
         el('b', {}, [row.Name || r.name || '']),
