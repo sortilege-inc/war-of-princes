@@ -318,8 +318,11 @@ window.VtmSheet = (function () {
     if (s.kind === 'number') return el('input', { type: 'number', class: 'text num', value: value == null ? '' : value, min: s.min != null ? s.min : null, max: s.max != null ? s.max : null, onchange: (ev) => onchange(ev.target.value === '' ? null : +ev.target.value) });
     if (s.kind === 'enum') return el('select', { class: 'scope', onchange: (ev) => onchange(ev.target.value || null) }, [el('option', { value: '' }, ['—'])].concat(s.options.map((o) => el('option', { value: o, selected: o === value || null }, [o]))));
     if (s.kind === 'flag') return el('input', { type: 'checkbox', checked: value ? 'checked' : null, onchange: (ev) => onchange(ev.target.checked) });
+    // the free-text fields take a paragraph, not a line
+    if (LONG_TEXT.indexOf(s.name) !== -1) return el('textarea', { class: 'text', rows: 4, oninput: debounce((ev) => onchange(ev.target.value), 250) }, [value || '']);
     return el('input', { type: 'text', class: 'text', value: value || '', oninput: debounce((ev) => onchange(ev.target.value), 250) });
   }
+  const LONG_TEXT = ['Notes', 'History', 'Appearance', 'Distinguishing features'];
 
   // A Discipline row's powers: the power records of that Discipline at or below its dots.
   function powersFor(discipline, dotsN) {

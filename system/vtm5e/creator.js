@@ -60,7 +60,7 @@ window.VtmCreator = (function () {
   // A step's fields on the sheet (the tool's mapping from the summary's headings to the
   // ACTOR's labels); a step with a group key takes a whole kind of field.
   const STEP_FIELDS = {
-    'CORE CONCEPT': ['Name', 'Concept', 'Chronicle', 'Ambition', 'Desire'],
+    'CORE CONCEPT': ['Name', 'Concept', 'Chronicle', 'Ambition', 'Desire', 'Notes'],   // Notes (owner, 2026-10-07): the walk's one free-text place
     'CLAN AND SIRE': ['Clan', 'Sire', 'Sire Clan', 'Clan Bane'],
     ATTRIBUTES: ['@attributes'],
     SKILLS: ['@skills', 'Specialties'],
