@@ -497,7 +497,8 @@ window.VtmCreator = (function () {
     }
     names.forEach((n) => {
       const x = v[n];
-      if (n === 'Disciplines') put(n, (x || []).filter((d) => d.Discipline).map((d) => d.Discipline + ' ' + DOT.repeat(+d.Dots || 0)).join(', '));
+      // each Discipline on its own line, its dots and the powers taken for them
+      if (n === 'Disciplines') (x || []).filter((d) => d.Discipline).forEach((d) => put(d.Discipline, DOT.repeat(+d.Dots || 0) + ((d.Powers || []).length ? ' — ' + d.Powers.join(', ') : ' — no power yet')));
       else if (n === 'Advantages & Flaws') {
         const theirs = (G() ? G().fromPredator(meta || {}).advantages : []).map((r) => JSON.stringify(r));
         (x || []).filter((r) => r.Name).forEach((r) => {
