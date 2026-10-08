@@ -499,3 +499,35 @@ body.sheet-window .play-main { max-width: 900px; }
 .vtt-clocks .box[disabled] { cursor: default; }
 .ruler { stroke: #fbf6ea; stroke-width: 3; stroke-dasharray: 10 6; pointer-events: none; }
 .ruler-label { font-family: var(--sc); font-size: 22px; fill: #fbf6ea; paint-order: stroke; stroke: #1a1613; stroke-width: 4px; pointer-events: none; }
+/* ported from sortilege-vtt-teeth (2026-10-08): the player page views, the player's own token */
+body.player .token.mine { cursor: grab; }
+/* the player's three views: the sheet full-page (the page as it was), the table full-page, the table beside a compact sheet */
+.play-table-wrap { display: none; background: #2a2622; min-height: 0; }
+.play-table { display: block; width: 100%; height: 100%; border: 0; }
+.play-banner:empty { display: none; }
+.play-banner .banner { margin: 0.6rem 1rem 0; }
+.mode-bar { display: inline-flex; gap: 0.2rem; }
+.mode-bar.in-head .btn { border-color: var(--ink-3); color: var(--paper-3); }
+.mode-bar.in-head .btn.active { background: var(--blood); border-color: var(--blood); color: #fff; }
+body.play.mode-map, body.play.mode-split { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; overflow: hidden; }
+body.play.mode-map .play-head, body.play.mode-split .play-head, body.play.mode-map .play-banner, body.play.mode-split .play-banner { grid-column: 1 / -1; }
+body.play.mode-map .play-main { display: none; }
+body.play.mode-map .play-table-wrap { display: block; grid-row: 3; }
+body.play.mode-split { grid-template-columns: minmax(300px, 380px) 1fr; }
+body.play.mode-split .play-main { grid-row: 3; grid-column: 1; max-width: none; margin: 0; padding: 0.6rem; overflow: auto; border-right: 1px solid var(--ink); }
+body.play.mode-split .play-table-wrap { display: block; grid-row: 3; grid-column: 2; }
+.play-card.compact .play-bar { margin-bottom: 0.4rem; }
+.sheet.compact .sheet-head h2 { font-size: 1.3rem; }
+.sheet.compact .sheet-head.with-portrait { grid-template-columns: 56px 1fr; }
+.sheet.compact .sheet-head.with-portrait .portrait { width: 56px; height: 70px; }
+.sheet-body.compact { display: block; }
+.sheet-body.compact section { margin: 0.4rem 0; }
+@media (max-width: 760px) {
+  body.play.mode-split { grid-template-columns: 1fr; grid-template-rows: auto auto 45vh 1fr; }
+  body.play.mode-split .play-table-wrap { grid-row: 3; grid-column: 1; }
+  body.play.mode-split .play-main { grid-row: 4; grid-column: 1; border-right: 0; border-top: 1px solid var(--ink); }
+}
+
+@media (max-width: 600px) {
+  .play-status { flex-wrap: wrap; justify-content: flex-end; row-gap: 0.2rem; }
+}

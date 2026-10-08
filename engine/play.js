@@ -18,12 +18,54 @@
   const statusEl = document.getElementById('play-status');
   const params = new URLSearchParams(location.search);
 
+  // ── views ──────────────────────────────────────────────────────────
+  // Seated, the page is one of three: the sheet full-page (where it starts), the table
+  // full-page, or the table with a compact sheet beside it. The table is this site's table
+  // page in a frame (the player's view: no controls, fog opaque, their own token theirs to
+  // move); the frame is made once and kept, so the view the player set survives switching.
+  const MODE_KEY = (CFG.storagePrefix || 'sortilege-vtt') + ':play:mode';
+  const MODES = [['sheet', 'Sheet'], ['map', 'Map'], ['split', 'Map + sheet']];
+  let mode = (() => {
+    try {
+      return sessionStorage.getItem(MODE_KEY) || 'sheet';
+    } catch (e) {
+      return 'sheet';
+    }
+  })();
+  const frame = el('iframe', { class: 'play-table', title: 'The table' });
+  const tableWrap = el('div', { class: 'play-table-wrap' }, [frame]);
+  const bannerEl = el('div', { class: 'play-banner' });
+  main.parentNode.insertBefore(bannerEl, main);
+  main.parentNode.insertBefore(tableWrap, main.nextSibling);
+  function setMode(m) {
+    mode = m;
+    try {
+      sessionStorage.setItem(MODE_KEY, m);
+    } catch (e) {
+      /* no storage */
+    }
+    render();
+  }
+  function applyMode(seated) {
+    const m = seated ? mode : 'sheet';
+    MODES.forEach(([k]) => document.body.classList.toggle('mode-' + k, m === k));
+    if (m !== 'sheet' && !frame.getAttribute('src')) frame.setAttribute('src', CFG.pages.table + '?view=player');
+  }
+  function modeBar(cls) {
+    return el('div', { class: 'mode-bar ' + (cls || '') }, MODES.map(([k, label]) => {
+      const b = button(label, () => setMode(k), 'tiny' + (mode === k ? ' active' : ' ghost'));
+      b.title = { sheet: 'The character sheet, full page', map: 'The table, full page', split: 'The table, with a compact sheet beside it' }[k];
+      return b;
+    }));
+  }
+
   function status(s) {
     statusEl.innerHTML = '';
     if (!s.active) {
       statusEl.appendChild(el('span', { class: 'muted' }, ['not in a session']));
       return;
     }
+    if (s.info.memberId) statusEl.appendChild(modeBar('in-head'));
     statusEl.appendChild(el('span', { class: 'chip' + (s.connected ? ' on' : '') }, [s.connected ? 'connected' : s.status]));
     statusEl.appendChild(el('span', { class: 'muted' }, [el('span', { class: 'room-k' }, [' room ']), el('b', {}, [s.info.code])]));
     statusEl.appendChild(button('Leave', () => { Session.leave(); render(); }, 'ghost tiny'));
@@ -146,15 +188,23 @@
     playing = m.id;
     const who = mine.length > 1 ? el('div', { class: 'chiprow tight play-who', role: 'tablist', 'aria-label': 'Your characters' }, mine.map((x) =>
       el('button', { type: 'button', class: 'btn tiny' + (x.id === m.id ? '' : ' ghost'), 'aria-selected': String(x.id === m.id), onclick: () => { playing = x.id; render(); window.scrollTo(0, 0); } }, [x.name]))) : null;
-    const bar = el('div', { class: 'chiprow play-bar' }, [
-      el('a', { class: 'btn ghost', href: CFG.pages.table + '?view=player', target: (CFG.channel || 'vtt') + '-player' }, ['Open the table']),
+    const split = mode === 'split';
+    const bar = split
+      ? el('div', { class: 'chiprow play-bar' }, [
+        button('Expand the sheet', () => setMode('sheet'), 'ghost tiny'),
+        button('Map only', () => setMode('map'), 'ghost tiny'),
+      ])
+      : el('div', { class: 'chiprow play-bar' }, [
+      button('Map', () => setMode('map'), ''),
+      button('Map + sheet', () => setMode('split'), ''),
+      el('a', { class: 'btn ghost', href: CFG.pages.table + '?view=player', target: (CFG.channel || 'vtt') + '-player' }, ['Table in its own tab']),
       // relationship and scene maps (system/vtm5e/maps.js), where the system has them
       CFG.pages.maps ? el('a', { class: 'btn ghost', href: CFG.pages.maps + '?view=player', target: (CFG.channel || 'vtt') + '-maps' }, ['Open the maps']) : null,
       button('Download my character', () => Sys.downloadCharacter(m), 'ghost'),   // as played, right now — the file the join screen takes back
       button('Release character', () => Session.unclaim(head.id), 'ghost'),
     ]);
     // everyone's rolls and named actions, newest first — the GM's log as the room shares it
-    const feedItems = (State.state.log || []).slice(-10).reverse();
+    const feedItems = (State.state.log || []).slice(split ? -5 : -10).reverse();
     const feed = el('section', { class: 'table-feed' }, [
       el('h4', {}, ['At the table', el('span', { class: 'muted' }, [feedItems.length ? '' : ' · nothing rolled yet'])]),
       el('div', { class: 'roll-log' }, feedItems.map((x) => x.kind === 'roll' && Sys.rollLine ? Sys.rollLine(x) : el('div', { class: 'roll-line' + (x.kind === 'roll' ? '' : ' action') }, [x.text || `${x.who || ''} · ${x.axis || ''} ${x.band || ''}`.trim()]))),
@@ -164,21 +214,23 @@
     // on a phone the three fold into one line (assets/css/vtm5e-gm.css); wider, they stand open as before
     const menu = el('details', { class: 'play-menu', open: (menuOpen != null ? menuOpen : !PHONE.matches) || null }, [el('summary', {}, ['Table · file · release']), bar]);
     menu.addEventListener('toggle', () => { menuOpen = menu.open; });
-    return el('div', { class: 'play-card wide' }, [who, menu, strip, feed, Sys.liveSheet(m, { player: true })]);
+    return el('div', { class: 'play-card wide' + (split ? ' compact' : '') }, [who, (split ? bar : menu), strip, split ? null : feed, Sys.liveSheet(m, { player: true, compact: split }), split ? feed : null]);
   }
 
   function render() {
     const s = Session.current();
     status(s);
-    if (document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName) && main.contains(document.activeElement)) return;
-    main.innerHTML = '';
+    applyMode(s.active && !!s.info.memberId);
+    bannerEl.innerHTML = '';
     if (s.active && !s.connected) {
-      main.appendChild(el('div', { class: 'banner warn' }, [
+      bannerEl.appendChild(el('div', { class: 'banner warn' }, [
         el('b', {}, [s.status === 'connecting' ? 'Connecting to the table…' : 'Lost the table — reconnecting…']),
         ' What you change now reaches the GM when the connection is back. ',
         button('Retry now', () => Session.reconnect(), 'ghost tiny'),
       ]));
     }
+    if (document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName) && main.contains(document.activeElement)) return;
+    main.innerHTML = '';
     if (!s.active) main.appendChild(joinScreen());
     else if (!s.info.memberId) main.appendChild(claimScreen(s));
     else main.appendChild(sheetScreen(s));
