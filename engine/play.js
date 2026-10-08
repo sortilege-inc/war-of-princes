@@ -153,12 +153,18 @@
       button('Download my character', () => Sys.downloadCharacter(m), 'ghost'),   // as played, right now — the file the join screen takes back
       button('Release character', () => Session.unclaim(head.id), 'ghost'),
     ]);
+    // everyone's rolls and named actions, newest first — the GM's log as the room shares it
+    const feedItems = (State.state.log || []).slice(-10).reverse();
+    const feed = el('section', { class: 'table-feed' }, [
+      el('h4', {}, ['At the table', el('span', { class: 'muted' }, [feedItems.length ? '' : ' · nothing rolled yet'])]),
+      el('div', { class: 'roll-log' }, feedItems.map((x) => x.kind === 'roll' && Sys.rollLine ? Sys.rollLine(x) : el('div', { class: 'roll-line' + (x.kind === 'roll' ? '' : ' action') }, [x.text || `${x.who || ''} · ${x.axis || ''} ${x.band || ''}`.trim()]))),
+    ]);
     const clocks = (State.state.clocks || []).filter((c) => c.visible !== false);
     const strip = clocks.length ? el('div', { class: 'clock-strip' }, clocks.map((c) => el('div', { class: 'clock-row' }, [el('div', { class: 'track-head' }, [el('span', { class: 'track-name' }, [c.name]), el('span', { class: 'muted' }, [`${c.filled} / ${c.segments}`])]), el('div', { class: 'boxes clock' }, Array.from({ length: c.segments }, (_, i) => el('span', { class: 'box' + (i < c.filled ? ' on' : '') })))]))) : null;
     // on a phone the three fold into one line (assets/css/vtm5e-gm.css); wider, they stand open as before
     const menu = el('details', { class: 'play-menu', open: (menuOpen != null ? menuOpen : !PHONE.matches) || null }, [el('summary', {}, ['Table · file · release']), bar]);
     menu.addEventListener('toggle', () => { menuOpen = menu.open; });
-    return el('div', { class: 'play-card wide' }, [who, menu, strip, Sys.liveSheet(m, { player: true })]);
+    return el('div', { class: 'play-card wide' }, [who, menu, strip, feed, Sys.liveSheet(m, { player: true })]);
   }
 
   function render() {
@@ -166,6 +172,13 @@
     status(s);
     if (document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName) && main.contains(document.activeElement)) return;
     main.innerHTML = '';
+    if (s.active && !s.connected) {
+      main.appendChild(el('div', { class: 'banner warn' }, [
+        el('b', {}, [s.status === 'connecting' ? 'Connecting to the table…' : 'Lost the table — reconnecting…']),
+        ' What you change now reaches the GM when the connection is back. ',
+        button('Retry now', () => Session.reconnect(), 'ghost tiny'),
+      ]));
+    }
     if (!s.active) main.appendChild(joinScreen());
     else if (!s.info.memberId) main.appendChild(claimScreen(s));
     else main.appendChild(sheetScreen(s));
@@ -181,6 +194,13 @@
     const note = el('div', { class: 'muted session-error' }, [p.message]);
     main.prepend(note);
     setTimeout(() => note.remove(), 4000);
+  });
+
+  document.addEventListener('keydown', (ev) => {
+    if (!(ev.ctrlKey || ev.metaKey) || ev.key.toLowerCase() !== 'z' || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    ev.preventDefault();
+    if (ev.shiftKey) State.redo();
+    else State.undo();
   });
 
   render();

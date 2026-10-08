@@ -121,8 +121,11 @@
     return { image: null, w: 2400, h: 1600, grid: { size: 80, ox: 0, oy: 0, show: true, snap: true }, tokens: [], effects: [], fog: { enabled: false, revealed: [] } };
   }
 
+  // The table works on its own copy of the map and commits copies back: the state's object
+  // is never mutated in place, so an op's inverse (undo) sees the state as it was.
   function loadMap() {
     let m = (State.state.maps || {})[mapId];
+    if (m) m = JSON.parse(JSON.stringify(m));
     if (!m) {
       m = blankMap();
       const d = Sys.mapDef(mapId);
@@ -132,7 +135,7 @@
         m.h = d.h;
         Object.assign(m.grid, d.grid || {});
       }
-      if (!PLAYER && mapId) State.commit('setMapState', [mapId, m]);
+      if (!PLAYER && mapId) State.commit('setMapState', [mapId, JSON.parse(JSON.stringify(m))]);
     }
     m.tokens = m.tokens || [];
     m.effects = m.effects || [];
@@ -141,13 +144,27 @@
   }
 
   function persist() {
-    if (!PLAYER && mapId) State.commit('setMapState', [mapId, map]);
+    if (!PLAYER && mapId) State.commit('setMapState', [mapId, JSON.parse(JSON.stringify(map))]);
   }
 
   // ── geometry ───────────────────────────────────────────────────────
+  // Square grid: a cell is `size` px on a side. Isometric grid (grid.iso): a cell is a diamond
+  // `size` wide and `size × ratio` tall, cell x running down-right and cell y down-left, so
+  // cell space stays a plain square lattice and tokens, fog and effects need no other change.
   const cell = () => map.grid.size;
-  const toPx = (cx, cy) => ({ x: map.grid.ox + cx * cell(), y: map.grid.oy + cy * cell() });
-  const toCell = (px, py) => ({ x: (px - map.grid.ox) / cell(), y: (py - map.grid.oy) / cell() });
+  const iso = () => !!map.grid.iso;
+  const ratio = () => map.grid.ratio || 0.5;
+  const toPx = (cx, cy) => iso()
+    ? { x: map.grid.ox + (cx - cy) * cell() / 2, y: map.grid.oy + (cx + cy) * cell() * ratio() / 2 }
+    : { x: map.grid.ox + cx * cell(), y: map.grid.oy + cy * cell() };
+  const toCell = (px, py) => {
+    if (!iso()) return { x: (px - map.grid.ox) / cell(), y: (py - map.grid.oy) / cell() };
+    const u = (px - map.grid.ox) / (cell() / 2);
+    const v = (py - map.grid.oy) / (cell() * ratio() / 2);
+    return { x: (u + v) / 2, y: (v - u) / 2 };
+  };
+  // a cell-space rectangle as a pixel polygon (a rectangle on a square grid, a rhombus on an isometric one)
+  const cellPoly = (x, y, w, h) => [toPx(x, y), toPx(x + w, y), toPx(x + w, y + h), toPx(x, y + h)].map((p) => `${p.x},${p.y}`).join(' ');
 
   function svgPoint(clientX, clientY) {
     const pt = svg.createSVGPoint();
@@ -178,8 +195,10 @@
     if (!map.fog.enabled) return true;
     const cx = t.x + t.size / 2;
     const cy = t.y + t.size / 2;
-    return map.fog.revealed.some((r) => cx >= r.x && cx <= r.x + r.w && cy >= r.y && cy <= r.y + r.h);
+    return map.fog.revealed.some((r) => (r.r != null ? Math.hypot(cx - r.x, cy - r.y) <= r.r : cx >= r.x && cx <= r.x + r.w && cy >= r.y && cy <= r.y + r.h));
   }
+  // a cell-space circle as a pixel polygon (an ellipse on an iso grid)
+  const cellCircle = (x, y, r) => Array.from({ length: 28 }, (_, i) => { const a = (i / 28) * Math.PI * 2; const p = toPx(x + Math.cos(a) * r, y + Math.sin(a) * r); return `${p.x},${p.y}`; }).join(' ');
 
   // ── SVG ────────────────────────────────────────────────────────────
   function s(tag, attrs, children) {
@@ -223,18 +242,27 @@
       layers[k].setAttribute('height', map.h);
     });
     const c = cell();
-    layers.pattern.setAttribute('width', c);
-    layers.pattern.setAttribute('height', c);
-    layers.pattern.setAttribute('x', map.grid.ox);
-    layers.pattern.setAttribute('y', map.grid.oy);
-    layers.pattern.firstChild.setAttribute('d', `M ${c} 0 L 0 0 0 ${c}`);
+    if (iso()) {
+      const h = c * ratio();
+      layers.pattern.setAttribute('width', c);
+      layers.pattern.setAttribute('height', h);
+      layers.pattern.setAttribute('x', map.grid.ox - c / 2);
+      layers.pattern.setAttribute('y', map.grid.oy);
+      layers.pattern.firstChild.setAttribute('d', `M 0 ${h / 2} L ${c / 2} 0 L ${c} ${h / 2} M 0 ${h / 2} L ${c / 2} ${h} L ${c} ${h / 2}`);
+    } else {
+      layers.pattern.setAttribute('width', c);
+      layers.pattern.setAttribute('height', c);
+      layers.pattern.setAttribute('x', map.grid.ox);
+      layers.pattern.setAttribute('y', map.grid.oy);
+      layers.pattern.firstChild.setAttribute('d', `M ${c} 0 L 0 0 0 ${c}`);
+    }
     layers.grid.style.display = map.grid.show === false ? 'none' : '';
     layers.fog.style.display = map.fog.enabled ? '' : 'none';
     layers.fogHoles.innerHTML = '';
     map.fog.revealed.forEach((r) => {
-      const p = toPx(r.x, r.y);
-      layers.fogHoles.appendChild(s('rect', { x: p.x, y: p.y, width: r.w * c, height: r.h * c, fill: 'black' }));
+      layers.fogHoles.appendChild(s('polygon', { points: r.r != null ? cellCircle(r.x, r.y, r.r) : cellPoly(r.x, r.y, r.w, r.h), fill: 'black' }));
     });
+    renderClocks();
   }
 
   function initials(name) {
@@ -250,10 +278,11 @@
     const c = cell();
     map.tokens.forEach((t) => {
       if (PLAYER && (t.hidden || !isRevealed(t))) return;
-      const d = t.size * c;
-      const p = toPx(t.x, t.y);
-      const cx = p.x + d / 2;
-      const cy = p.y + d / 2;
+      // a token sits on the centre of its cell(s); on an iso grid it is sized to the diamond's height
+      const d = t.size * (iso() ? c * ratio() : c);
+      const ctr = toPx(t.x + t.size / 2, t.y + t.size / 2);
+      const cx = ctr.x;
+      const cy = ctr.y;
       const r = d / 2 - Math.max(2, c * 0.06);
       const color = t.color || Sys.tokenColor(t);
       const status = Sys.tokenStatus(t);           // { text, cls } or null — the system's word for the token's state
@@ -283,8 +312,7 @@
       return s('circle', { class: cls, cx: p.x, cy: p.y, r: e.r * c });
     }
     if (e.kind === 'square') {
-      const p = toPx(e.x, e.y);
-      return s('rect', { class: cls, x: p.x, y: p.y, width: e.w * c, height: e.h * c });
+      return s('polygon', { class: cls, points: cellPoly(e.x, e.y, e.w, e.h) });
     }
     if (e.kind === 'line') {
       const a = toPx(e.x1, e.y1);
@@ -331,6 +359,7 @@
     renderAll();
     if (refit) fit();
     document.title = (window.VttConfig.title || 'Table') + ' — ' + mapName();
+    preloadNext();
     // the table's map is shared: whatever the GM shows, the player view follows
     if (!PLAYER && mapId && (State.state.table || {}).map !== mapId) State.commit('setTableMap', [mapId]);
     buildToolbar();
@@ -393,8 +422,11 @@
       selectedId = t.id;
       renderTokens();
     }
-    if (!PLAYER && tool !== 'select') {
+    const onEffect = e.target.closest && e.target.closest('.effect');
+    const shapeTool = tool === 'circle' || tool === 'line' || tool === 'square';
+    if (!PLAYER && tool !== 'select' && !(shapeTool && onEffect)) {     // with a shape tool, a click on an existing shape selects it instead of drawing
       drag = { kind: 'tool', start: toCell(p.x, p.y), cur: toCell(p.x, p.y) };
+      if (tool === 'brush') brushAt(drag.cur);
       svg.setPointerCapture(e.pointerId);
       return;
     }
@@ -409,6 +441,15 @@
       selectedId = null;
       renderEffects();
       renderTokens();
+      buildToolbar();
+      syncHint();
+      return;                                   // a click on an effect selects it; it does not start a pan
+    }
+    if (!PLAYER && selectedEffect) {           // a click elsewhere clears the selection
+      selectedEffect = null;
+      renderEffects();
+      buildToolbar();
+      syncHint();
     }
     drag = { kind: 'pan', sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y };
     svg.setPointerCapture(e.pointerId);
@@ -432,15 +473,26 @@
       drag.moved = true;
       const g = layers.tokens.querySelector(`[data-id="${drag.token.id}"]`);
       if (g) {
-        const d = drag.token.size * cell();
-        const px = toPx(drag.token.x, drag.token.y);
-        g.setAttribute('transform', `translate(${px.x + d / 2},${px.y + d / 2})`);
+        const ctr = toPx(drag.token.x + drag.token.size / 2, drag.token.y + drag.token.size / 2);
+        g.setAttribute('transform', `translate(${ctr.x},${ctr.y})`);
       }
       return;
     }
     if (drag.kind === 'tool') {
       drag.cur = toCell(p.x, p.y);
       layers.preview.innerHTML = '';
+      if (tool === 'brush') {
+        brushAt(drag.cur);
+        return;
+      }
+      if (tool === 'ruler') {
+        const a = toPx(drag.start.x, drag.start.y);
+        const b = toPx(drag.cur.x, drag.cur.y);
+        const cells = Math.hypot(drag.cur.x - drag.start.x, drag.cur.y - drag.start.y);
+        layers.preview.appendChild(s('line', { class: 'ruler', x1: a.x, y1: a.y, x2: b.x, y2: b.y }));
+        layers.preview.appendChild(s('text', { class: 'ruler-label', x: b.x + 8, y: b.y - 8 }, [`${cells.toFixed(1)} cells`]));
+        return;
+      }
       const e2 = toolEffect(drag);
       if (e2) {
         const node = effectShape(e2, 'effect preview');
@@ -472,6 +524,10 @@
           persist();
           renderBase();
         }
+      } else if (tool === 'brush') {
+        persist();              // the circles were painted as the pointer moved
+      } else if (tool === 'ruler') {
+        /* a measure leaves nothing behind */
       } else if (moved) {
         const fx = toolEffect(drag);
         if (fx) {
@@ -479,6 +535,8 @@
           map.effects.push(fx);
           persist();
           renderEffects();
+          buildToolbar();
+          syncHint();
         }
       }
     }
@@ -504,6 +562,13 @@
   }
 
   window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !(e.target instanceof HTMLInputElement)) {
+      e.preventDefault();
+      if (e.shiftKey) State.redo(); else State.undo();
+      refresh();
+      buildToolbar();
+      return;
+    }
     if (PLAYER) return;
     if (e.key === 'Escape') {
       tool = 'select';
@@ -513,17 +578,85 @@
       renderEffects();
       buildToolbar();
     }
+    if (selectedId && !(e.target instanceof HTMLInputElement)) {
+      const t = map.tokens.find((x) => x.id === selectedId);
+      const sizes = { 1: 0.5, 2: 1, 3: 2, 4: 3 };
+      if (t && sizes[e.key]) {
+        t.size = sizes[e.key];
+        persist();
+        renderTokens();
+        return;
+      }
+      if (t && e.key.toLowerCase() === 'h' && !e.ctrlKey && !e.metaKey) {
+        t.hidden = !t.hidden;
+        persist();
+        renderTokens();
+        return;
+      }
+      if (t && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+        e.preventDefault();
+        const copy = Object.assign({}, JSON.parse(JSON.stringify(t)), { id: State.genId('tk'), x: t.x + 1, y: t.y });
+        map.tokens.push(copy);
+        selectedId = copy.id;
+        persist();
+        renderTokens();
+        return;
+      }
+    }
     if ((e.key === 'Delete' || e.key === 'Backspace') && !(e.target instanceof HTMLInputElement)) {
       if (selectedEffect) {
-        map.effects = map.effects.filter((x) => x.id !== selectedEffect);
-        selectedEffect = null;
-        persist();
-        renderEffects();
+        removeEffect(selectedEffect);
       } else if (selectedId) {
         removeToken(selectedId);
       }
     }
   });
+
+  // the fog brush: a circle of reveal under the pointer, one per cell moved
+  let brushRadius = 2;
+  let lastBrush = null;
+  function brushAt(c) {
+    const at = { x: Math.round(c.x * 2) / 2, y: Math.round(c.y * 2) / 2 };
+    if (lastBrush && Math.hypot(at.x - lastBrush.x, at.y - lastBrush.y) < 0.5) return;
+    lastBrush = at;
+    map.fog.revealed.push({ x: at.x, y: at.y, r: brushRadius });
+    renderBase();
+  }
+
+  // clocks over the map: every clock for the GM, the visible ones for players; the GM ticks them here
+  let clocksShown = true;
+  let clocksEl = null;
+  function renderClocks() {
+    if (clocksEl) clocksEl.remove();
+    clocksEl = null;
+    if (!clocksShown) return;
+    const all = (State.state.clocks || []).filter((c) => !PLAYER || c.visible !== false);
+    if (!all.length) return;
+    clocksEl = el('div', { class: 'vtt-clocks' }, all.map((c) => {
+      const row = el('div', { class: 'boxes clock' });
+      for (let i = 1; i <= c.segments; i++) {
+        const b = el('button', { class: 'box' + (i <= c.filled ? ' on' : ''), type: 'button', disabled: PLAYER || null, onclick: () => { if (!PLAYER) State.commit('setClock', [Object.assign({}, c, { filled: i <= c.filled && i === c.filled ? i - 1 : i })]); renderClocks(); } });
+        row.appendChild(b);
+      }
+      return el('div', { class: 'clock-row' }, [el('div', { class: 'track-head' }, [el('span', { class: 'track-name' }, [c.name, c.visible === false ? el('span', { class: 'muted' }, [' · GM']) : null]), el('span', { class: 'muted' }, [`${c.filled} / ${c.segments}`])]), row]);
+    }));
+    stage.appendChild(clocksEl);
+  }
+
+  // the next scene's map, fetched now so the switch is instant
+  function preloadNext() {
+    const list = scenes();
+    const i = list.findIndex((sc) => sc.id === sceneId);
+    const next = list[i + 1];
+    if (!next) return;
+    const d = Sys.mapDef(Sys.defaultMapId(next.id));
+    if (d && d.image) {
+      const img = new Image();
+      img.src = d.image;
+      preloaded = d.image;
+    }
+  }
+  let preloaded = null;
 
   function removeToken(id) {
     map.tokens = map.tokens.filter((t) => t.id !== id);
@@ -546,9 +679,18 @@
     const t = tokenAt(e.target);
     const fx = e.target.closest && e.target.closest('.effect');
     if (fx) {
-      map.effects = map.effects.filter((x) => x.id !== fx.dataset.id);
-      persist();
+      const effect = map.effects.find((x) => x.id === fx.dataset.id);
+      if (!effect) return;
+      selectedEffect = effect.id;
+      selectedId = null;
       renderEffects();
+      renderTokens();
+      buildToolbar();
+      menu = buildEffectMenu(effect);
+      const rect = stage.getBoundingClientRect();
+      menu.style.left = Math.min(e.clientX - rect.left, rect.width - 260) + 'px';
+      menu.style.top = Math.min(e.clientY - rect.top, rect.height - 160) + 'px';
+      stage.appendChild(menu);
       return;
     }
     if (!t) return;
@@ -564,6 +706,22 @@
   document.addEventListener('pointerdown', (e) => {
     if (menu && !menu.contains(e.target)) closeMenu();
   });
+
+  function removeEffect(id) {
+    map.effects = map.effects.filter((x) => x.id !== id);
+    if (selectedEffect === id) selectedEffect = null;
+    persist();
+    renderEffects();
+    buildToolbar();
+    syncHint();
+  }
+
+  function buildEffectMenu(fx) {
+    const kind = fx.kind === 'circle' ? 'Circle' : fx.kind === 'line' ? 'Line' : 'Square';
+    const label = el('button', { class: 'btn ghost', onclick: () => { const n = prompt('Label (shown on hover)', fx.label || ''); if (n != null) { fx.label = n; persist(); renderEffects(); } closeMenu(); } }, [fx.label ? 'Relabel' : 'Label']);
+    const remove = el('button', { class: 'btn danger', onclick: () => { removeEffect(fx.id); closeMenu(); } }, ['Remove ' + kind.toLowerCase()]);
+    return el('div', { class: 'vtt-menu' }, [el('h4', {}, [fx.label || kind]), el('div', { class: 'row' }, [label, remove])]);
+  }
 
   function buildMenu(t) {
     const hide = el('button', { class: 'btn ghost', onclick: () => { t.hidden = !t.hidden; persist(); renderTokens(); closeMenu(); } }, [t.hidden ? 'Reveal to players' : 'Hide from players']);
@@ -608,29 +766,35 @@
       set(inp.checked);
       persist();
       renderAll();
+      if (label === 'iso') buildToolbar();
     });
     return el('label', {}, [inp, label]);
   }
 
   function addTokenAt(t) {
-    // stage new tokens along the top-left in a row so the GM can drag them out
+    // stage new tokens in a row across the top-centre of the map (in pixels, so it holds on an
+    // iso grid too), snapped to cells, so the GM can drag them out
     const taken = map.tokens.length;
-    map.tokens.push(Object.assign({ x: 1 + (taken % 10) * 1.2, y: 1 + Math.floor(taken / 10) * 1.2, size: 1, hidden: false }, t, { id: t.id || State.genId('tk') }));
+    const rowH = cell() * (iso() ? ratio() : 1);
+    const at = toCell(map.w / 2 + ((taken % 10) - 4.5) * cell(), rowH * (1 + Math.floor(taken / 10) * 1.2));   // a cell apart, so each snaps to its own
+    map.tokens.push(Object.assign({ x: snap(at.x - 0.5), y: snap(at.y - 0.5), size: 1, hidden: false }, t, { id: t.id || State.genId('tk') }));
     persist();
     renderTokens();
+    syncHint();
   }
 
   function buildToolbar() {
     toolbar.innerHTML = '';
     if (PLAYER) {
-      toolbar.appendChild(el('div', { class: 'group' }, [el('b', {}, [mapName()]), el('button', { class: 'btn ghost', onclick: fit }, ['Fit']), toolButton('ping', 'Ping')]));
+      const clocksBtn = el('button', { class: 'btn ghost' + (clocksShown ? ' active' : ''), onclick: () => { clocksShown = !clocksShown; renderClocks(); buildToolbar(); } }, ['Clocks']);
+      toolbar.appendChild(el('div', { class: 'group' }, [el('b', {}, [mapName()]), el('button', { class: 'btn ghost', onclick: fit }, ['Fit']), toolButton('ping', 'Ping'), clocksBtn]));
       return;
     }
     // one entry per map, in scene order: a scene's floors, or the scene itself when it has no map
     const mapSel = el('select', { class: 'vtt-select' });
     const shipped = Sys.maps();
     scenes().forEach((sc) => {
-      const ms = shipped.filter((m) => m.sceneId === sc.id);
+      const ms = shipped.filter((m) => m.sceneId === sc.id);          // listed once, under the first scene it serves
       if (!ms.length) mapSel.appendChild(el('option', { value: sc.id, selected: sc.id === mapId || null }, [sc.name]));
       ms.forEach((m) => mapSel.appendChild(el('option', { value: m.id, selected: m.id === mapId || null }, [`${sc.name} · ${m.name}`])));
     });
@@ -685,13 +849,15 @@
       check('show', () => map.grid.show !== false, (v) => { map.grid.show = v; }),
       check('snap', () => map.grid.snap !== false, (v) => { map.grid.snap = v; }),
       numField('cell px', () => map.grid.size, (v) => { map.grid.size = Math.max(8, v); }),
+      check('iso', () => !!map.grid.iso, (v) => { map.grid.iso = v; if (v && !map.grid.ratio) map.grid.ratio = 0.5; }),
+      map.grid.iso ? numField('ratio', () => map.grid.ratio || 0.5, (v) => { map.grid.ratio = Math.min(1, Math.max(0.2, v)); }, 0.01) : null,
       numField('x', () => map.grid.ox, (v) => { map.grid.ox = v; }),
       numField('y', () => map.grid.oy, (v) => { map.grid.oy = v; }),
     ]));
 
     // tokens: the system lists what can stand on the table
     const addSel = el('select', { class: 'vtt-select' }, [el('option', { value: '' }, ['add token…'])]);
-    Sys.tokenSources().forEach((group) => {
+    Sys.tokenSources(sceneId).forEach((group) => {
       addSel.appendChild(el('option', { disabled: true }, ['— ' + group.label]));
       group.items.forEach((it) => addSel.appendChild(el('option', { value: JSON.stringify(it) }, [it.label])));
     });
@@ -702,16 +868,31 @@
       if (addSel.value === '__marker') {
         const n = prompt('Marker label');
         if (n) addTokenAt({ label: n, kind: 'marker' });
-      } else addTokenAt(JSON.parse(addSel.value));
+      } else {
+        const it = JSON.parse(addSel.value);
+        if (it.named) {
+          const n = prompt('Who is this?');
+          if (!n) { addSel.value = ''; return; }
+          it.label = n;
+          delete it.named;
+        }
+        addTokenAt(it);
+      }
       addSel.value = '';
     });
     toolbar.appendChild(el('div', { class: 'group' }, [addSel]));
 
+    const selectedFx = selectedEffect ? map.effects.find((x) => x.id === selectedEffect) : null;
+    const removeFx = selectedFx ? el('button', { class: 'btn danger', title: 'Remove the selected shape (Delete does the same)', onclick: () => removeEffect(selectedFx.id) }, ['Remove ' + selectedFx.kind]) : null;
+    const clearFx = map.effects.length ? el('button', { class: 'btn ghost', title: 'Remove every circle, line and square on this map', onclick: () => { if (confirm(`Remove all ${map.effects.length} shapes on this map?`)) { map.effects = []; selectedEffect = null; persist(); renderEffects(); buildToolbar(); syncHint(); } } }, ['Clear']) : null;
     toolbar.appendChild(el('div', { class: 'group' }, [
       toolButton('ping', 'Ping', 'Click the map to ping it in every window'),
       toolButton('circle', 'Circle', 'Drag from centre'),
       toolButton('line', 'Line', 'Drag start to end'),
       toolButton('square', 'Square', 'Drag corner to corner'),
+      toolButton('ruler', 'Ruler', 'Drag to measure, in cells'),
+      removeFx,
+      clearFx,
     ]));
 
     const resetFog = el('button', { class: 'btn ghost', onclick: () => { map.fog.revealed = []; persist(); renderBase(); } }, ['Reset']);
@@ -719,8 +900,12 @@
       el('span', { class: 'muted' }, ['Fog']),
       check('on', () => map.fog.enabled, (v) => { map.fog.enabled = v; }),
       toolButton('reveal', 'Reveal', 'Drag a rectangle to reveal'),
+      toolButton('brush', 'Brush', 'Paint a circle of reveal as you drag'),
+      numField('r', () => brushRadius, (v) => { brushRadius = Math.max(0.5, v); }, 0.5),
       resetFog,
     ]));
+    const clocksBtn = el('button', { class: 'btn ghost' + (clocksShown ? ' active' : ''), title: 'The campaign\'s clocks over the map', onclick: () => { clocksShown = !clocksShown; renderClocks(); buildToolbar(); } }, ['Clocks']);
+    toolbar.appendChild(el('div', { class: 'group' }, [clocksBtn]));
 
     const playerBtn = el('button', { class: 'btn', onclick: () => window.open(location.pathname + '?view=player' + (follow ? '' : '&map=' + encodeURIComponent(mapId)), (window.VttConfig.channel || 'vtt') + '-player') }, ['Open player view']);
     const legendBtn = el('button', { class: 'btn ghost' + (legendOpen ? ' active' : ''), title: 'The map’s key, from the book — for you, not the players' }, ['Legend']);
@@ -730,7 +915,10 @@
       buildToolbar();
       renderLegend();
     });
-    toolbar.appendChild(el('div', { class: 'group last' }, [legendBtn, el('button', { class: 'btn ghost', onclick: fit }, ['Fit']), playerBtn]));
+    const h = State.history ? State.history() : { undo: 0 };
+    const undoBtn = el('button', { class: 'btn ghost', title: 'Undo the last change made in this window (Ctrl+Z)', onclick: () => { State.undo(); refresh(); buildToolbar(); } }, [h.undo ? `Undo (${h.undo})` : 'Undo']);
+    undoBtn.disabled = !h.undo;
+    toolbar.appendChild(el('div', { class: 'group last' }, [undoBtn, legendBtn, el('button', { class: 'btn ghost', onclick: fit }, ['Fit']), playerBtn]));
   }
 
   function syncHint() {
@@ -740,7 +928,13 @@
       hint.textContent = myMemberId() ? 'Drag your own token · wheel zooms · drag the map to pan' : 'Wheel zooms · drag the map to pan';
       return;
     }
-    hint.textContent = note + (n ? `${n} token${n === 1 ? '' : 's'} · drag to move · right-click for hide, size, rename · Delete removes · wheel zooms · Esc clears the tool` : 'No tokens yet — add the party and the cast from the toolbar.');
+    if (selectedEffect) {
+      const fx = map.effects.find((x) => x.id === selectedEffect);
+      hint.textContent = `${fx && fx.label ? fx.label : (fx ? fx.kind : 'shape')} selected · Delete or the toolbar's Remove takes it away · right-click to label it · click elsewhere to deselect`;
+      return;
+    }
+    const shapes = map.effects.length ? ` · ${map.effects.length} shape${map.effects.length === 1 ? '' : 's'}: click one to select it` : '';
+    hint.textContent = note + (n ? `${n} token${n === 1 ? '' : 's'} · drag to move · right-click for hide, size, rename · selected: 1–4 size, H hide, Ctrl+D duplicate, Delete removes · wheel zooms · Esc clears the tool` : 'No tokens yet — add the party and the cast from the toolbar.') + shapes;
   }
 
   // ── bus ────────────────────────────────────────────────────────────
@@ -757,6 +951,7 @@
   Bus.on('ping', (p) => {
     if (p && p.mapId === mapId) showPing(p.x, p.y);
   });
+  Bus.on('history', () => buildToolbar());     // the Undo button follows this window's stack
 
   // ── boot ───────────────────────────────────────────────────────────
   buildLayers();
@@ -764,5 +959,5 @@
   switchMap(pinned || followedMap(), true);
   window.addEventListener('resize', applyView);
 
-  window.VttTable = { refresh, fit, map: () => map, mapId: () => mapId, scene: () => sceneId, tool: () => tool, addToken: addTokenAt, legend: () => legendOpen };
+  window.VttTable = { refresh, fit, map: () => map, mapId: () => mapId, scene: () => sceneId, tool: () => tool, addToken: addTokenAt, legend: () => legendOpen, preloaded: () => preloaded, clocksShown: () => clocksShown };
 })();

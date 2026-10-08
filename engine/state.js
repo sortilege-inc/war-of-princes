@@ -132,6 +132,58 @@ window.VttState = (function () {
     }
     register(state.campaign);
     if (Bus) Bus.emit('state:changed', Object.assign({ at: Date.now(), campaign: id }, change || { doc: snapshot() }));
+    autosave(false);
+  }
+
+  // Rolling autosaves: a minute apart while anything changes, the last three per campaign,
+  // in IndexedDB (localStorage holds only the live copy). Restorable from the Campaign panel.
+  const AUTO_EVERY = 60000;
+  const AUTO_KEEP = 3;
+  let lastAuto = 0;
+  function openDb() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) return reject(new Error('no IndexedDB'));
+      const req = indexedDB.open(PREFIX + 'autosaves', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('packs', { keyPath: 'key' });
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  function autosave(force) {
+    if (!force && Date.now() - lastAuto < AUTO_EVERY) return Promise.resolve(false);
+    lastAuto = Date.now();
+    const at = Date.now();
+    const row = { key: id + ':' + at, campaign: id, at, pack: exportPack() };
+    return openDb().then((db) => new Promise((resolve) => {
+      const tx = db.transaction('packs', 'readwrite');
+      const store = tx.objectStore('packs');
+      store.put(row);
+      const all = store.getAll();
+      all.onsuccess = () => {
+        const mine = all.result.filter((r) => r.campaign === id).sort((a, b) => b.at - a.at);
+        mine.slice(AUTO_KEEP).forEach((r) => store.delete(r.key));
+      };
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    })).catch(() => false);
+  }
+  function listAutosaves() {
+    return openDb().then((db) => new Promise((resolve, reject) => {
+      const req = db.transaction('packs').objectStore('packs').getAll();
+      req.onsuccess = () => resolve(req.result.filter((r) => r.campaign === id).sort((a, b) => b.at - a.at));
+      req.onerror = () => reject(req.error);
+    }));
+  }
+  function restoreAutosave(key) {
+    return openDb().then((db) => new Promise((resolve, reject) => {
+      const req = db.transaction('packs').objectStore('packs').get(key);
+      req.onsuccess = () => {
+        if (!req.result) return reject(new Error('no such autosave'));
+        importPack(req.result.pack);
+        resolve(true);
+      };
+      req.onerror = () => reject(req.error);
+    }));
   }
 
   function snapshot() {
@@ -180,10 +232,47 @@ window.VttState = (function () {
   }
 
   // ── ops ────────────────────────────────────────────────────────────
-  function commit(name, args) {
+  // Undo is per window and covers this window's own commits (what came in from elsewhere is
+  // someone else's to undo): the inverse op is computed before the op is applied and kept on
+  // a stack; undoing commits the inverse like any other op, so every window and the room follow.
+  const undoStack = [];
+  const redoStack = [];
+  const HISTORY = 30;
+
+  function commit(name, args, opts) {
+    const inv = Ops.inverse ? Ops.inverse(state, name, args) : null;
     Ops.apply(state, name, args);
     save({ op: { name, args } });
     if (Bus) Bus.emit('op', { name, args, at: Date.now() });
+    if (inv && !(opts && opts.noHistory)) {
+      undoStack.push({ name, args: JSON.parse(JSON.stringify(args || [])), inv });
+      if (undoStack.length > HISTORY) undoStack.shift();
+      redoStack.length = 0;
+      if (Bus) Bus.emit('history', { undo: undoStack.length, redo: redoStack.length }, { local: true });
+    }
+  }
+
+  function undo() {
+    const e = undoStack.pop();
+    if (!e) return false;
+    commit(e.inv.name, e.inv.args, { noHistory: true });
+    redoStack.push({ name: e.name, args: e.args });
+    if (Bus) Bus.emit('history', { undo: undoStack.length, redo: redoStack.length }, { local: true });
+    return true;
+  }
+
+  function redo() {
+    const r = redoStack.pop();
+    if (!r) return false;
+    const inv = Ops.inverse ? Ops.inverse(state, r.name, r.args) : null;
+    commit(r.name, r.args, { noHistory: true });
+    if (inv) undoStack.push({ name: r.name, args: r.args, inv });
+    if (Bus) Bus.emit('history', { undo: undoStack.length, redo: redoStack.length }, { local: true });
+    return true;
+  }
+
+  function history() {
+    return { undo: undoStack.length, redo: redoStack.length, last: undoStack.length ? undoStack[undoStack.length - 1].name : null };
   }
 
   function applyRemote(name, args) {
@@ -337,5 +426,6 @@ window.VttState = (function () {
     commit, applyRemote, replaceShared, save, reload, ui, genId, renameIds, seed,
     listCampaigns, switchTo, create, remove,
     exportPack, importPack, downloadPack, PACK_KIND, PACK_VERSION,
+    undo, redo, history, autosave, listAutosaves, restoreAutosave,
   };
 })();

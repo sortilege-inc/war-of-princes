@@ -149,6 +149,34 @@
     sc.appendChild(el('div', { class: 'session-code' }, [el('span', { class: 'chip' + (s.connected ? ' on' : '') }, [s.connected ? 'live' : s.status]), el('b', {}, [s.info.code]), el('span', { class: 'muted' }, [` ${Object.keys(s.claims).length} claimed`])]));
     sc.appendChild(el('div', { class: 'session-url' }, [url]));
     sc.appendChild(el('div', { class: 'chiprow' }, [copy, reseed, end]));
+    // how long the evening has run, the last thing rolled, and the room's idleness (rooms expire after 14 idle days)
+    const elapsed = el('span', { class: 'muted session-clock', title: 'Since this session started' });
+    const tick = () => {
+      const ms = Date.now() - (s.info.startedAt || Date.now());
+      const h = Math.floor(ms / 3600000);
+      const m = Math.floor((ms % 3600000) / 60000);
+      elapsed.textContent = `${h ? h + 'h ' : ''}${m}m at the table`;
+    };
+    tick();
+    const timer = setInterval(() => (document.body.contains(elapsed) ? tick() : clearInterval(timer)), 30000);
+    const ticker = el('div', { class: 'muted session-last' });
+    const syncLast = () => {
+      const x = (State.state.log || []).slice(-1)[0];
+      ticker.textContent = !x ? 'nothing rolled yet' : x.kind === 'roll' ? `last: ${x.who} · ${x.axis} → ${x.band}` : `last: ${x.text || ''}`;
+    };
+    syncLast();
+    window.VttBus.on('state:changed', syncLast);
+    window.VttBus.on('state:remote', syncLast);
+    const idle = el('div', { class: 'muted session-idle' });
+    const checkIdle = () => Session.roomInfo().then((r) => {
+      if (!r || !r.lastActive) return;
+      const days = (Date.now() - r.lastActive) / 86400000;
+      const limit = (r.idleMs || 14 * 86400000) / 86400000;
+      idle.textContent = days >= 1 ? `room idle ${Math.floor(days)} day${Math.floor(days) === 1 ? '' : 's'} · expires after ${limit}` : '';
+      idle.classList.toggle('warn', days >= limit - 2);
+    }).catch(() => {});
+    checkIdle();
+    sc.appendChild(el('div', { class: 'session-meta' }, [elapsed, ticker, idle]));
   }
   if (Session) {
     Session.onChange(buildSession);
@@ -160,7 +188,28 @@
   if (wc) {
     wc.appendChild(el('button', { class: 'btn', type: 'button', onclick: () => window.open(CFG.pages.table, CFG.channel + '-table') }, ['Open table']));
     wc.appendChild(el('button', { class: 'btn ghost', type: 'button', onclick: () => window.open(CFG.pages.table + '?view=player', CFG.channel + '-player') }, ['Open player view']));
+    // undo / redo of this page's own changes (Ctrl+Z / Ctrl+Shift+Z)
+    const undoBtn = el('button', { class: 'btn ghost tiny', type: 'button', title: 'Undo the last change made on this page (Ctrl+Z)', onclick: () => State.undo() }, ['Undo']);
+    const redoBtn = el('button', { class: 'btn ghost tiny', type: 'button', title: 'Redo (Ctrl+Shift+Z)', onclick: () => State.redo() }, ['Redo']);
+    const syncHistory = () => {
+      const h = State.history();
+      undoBtn.disabled = !h.undo;
+      redoBtn.disabled = !h.redo;
+      undoBtn.textContent = h.undo ? `Undo (${h.undo})` : 'Undo';
+    };
+    wc.appendChild(el('div', { class: 'chiprow history' }, [undoBtn, redoBtn]));
+    // panel presets: what the three slots show (one click each)
+    const PRESETS = { Prep: ['tracker', 'scene', 'inspector'], Running: ['scene', 'party', 'log'] };
+    wc.appendChild(el('div', { class: 'chiprow presets' }, Object.keys(PRESETS).map((name) => el('button', { class: 'btn ghost tiny', type: 'button', title: PRESETS[name].map((id) => Panels.PANELS[id] ? Panels.PANELS[id].label : id).join(' · '), onclick: () => { State.ui('slots', PRESETS[name].slice()); single = PRESETS[name][0]; render(); } }, [name]))));
+    window.VttBus.on('history', syncHistory);
+    syncHistory();
   }
+  document.addEventListener('keydown', (ev) => {
+    if (!(ev.ctrlKey || ev.metaKey) || ev.key.toLowerCase() !== 'z' || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    ev.preventDefault();
+    if (ev.shiftKey) State.redo();
+    else State.undo();
+  });
 
   window.VttApp = { open, render, mode: () => mode };
 
