@@ -21,9 +21,6 @@ body.gm { display: grid; grid-template-columns: 210px 1fr; min-height: 100vh; fo
 
 /* ── slots ── */
 .main { min-width: 0; background: var(--night-2); color: var(--bone); }
-.main.wide { display: grid; grid-template-columns: 26% 1fr 36%; height: 100vh; }
-.slot { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; border-right: 1px solid #2c2329; }
-.slot:last-child { border-right: 0; }
 .slot-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; font-family: var(--font-ui); letter-spacing: .14em; text-transform: uppercase; font-size: 11px; color: var(--blood-2); border-bottom: 1px solid #2c2329; background: var(--night); }
 .slot-pick { font-family: var(--font-ui); font-size: 12px; background: transparent; border: 1px solid #3a2f35; color: var(--bone-2); padding: 2px 4px; }
 .slot-body { padding: 14px 16px 36px; overflow: auto; flex: 1; min-height: 0; }
@@ -378,3 +375,24 @@ body.advancing .pane-nav { display: none !important; }
 .play-who { margin-bottom: .75rem; flex-wrap: wrap; }
 .road-block { margin: .5rem 0 .75rem; }
 .road-block .power-head { margin: .25rem 0; }
+
+/* ported from sortilege-vtt-teeth (2026-10-09, from the Daggerheart lineage): Settings ▸ Layout */
+/* wide mode: a row of columns (engine/app.js LAYOUTS); a column stacks one or more regions */
+.main.wide { display: flex; height: 100vh; }
+.slot-col { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; min-height: 0; border-right: 1px solid var(--rule); }
+.slot-col:last-child { border-right: 0; }
+.slot { display: flex; flex-direction: column; min-width: 0; min-height: 0; flex: 1 1 0; border-bottom: 1px solid var(--rule); }
+.slot:last-child { border-bottom: 0; }
+/* the classic three columns keep their 22 / flex / 32 proportions; the split-first variant matches */
+.main.ly-3col .slot-col:nth-child(1), .main.ly-3col-s1 .slot-col:nth-child(1) { flex: 0 0 26%; }
+.main.ly-3col .slot-col:nth-child(3), .main.ly-3col-s1 .slot-col:nth-child(3) { flex: 0 0 36%; }
+.slot--focus { box-shadow: inset 0 0 0 2px var(--blood-2); }
+.slot--focus > .slot-head > span:first-child { color: var(--blood); }
+.layout-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.layout-opt { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 86px; padding: 7px 6px; background: var(--paper); border: 1px solid var(--rule); color: var(--ink-2); cursor: pointer; font-family: var(--sc); font-size: 0.7rem; letter-spacing: 0.04em; }
+.layout-opt:hover { border-color: var(--blood-2); color: var(--ink); }
+.layout-opt.on { border-color: var(--blood); color: var(--ink); box-shadow: inset 0 0 0 1px var(--blood); }
+.layout-ico { width: 46px; height: 32px; display: block; }
+.layout-ico rect { fill: var(--ink-3); opacity: 0.6; }
+.layout-opt:hover .layout-ico rect, .layout-opt.on .layout-ico rect { fill: var(--blood); opacity: 0.9; }
+.layout-opt-label { text-align: center; line-height: 1.15; }
