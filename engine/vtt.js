@@ -337,6 +337,18 @@
         transform: `translate(${cx},${cy})`,
       });
       g.appendChild(s('circle', { class: 'hit', r: r + Math.max(6, c * 0.12), fill: 'transparent', stroke: 'none' }));   // a grab a little wider than the ring
+      // a spiky ring outside the ring: the system's mark for a condition that shows (hysteria, say)
+      if (status && status.spiky) {
+        const pts = [];
+        const n = 18;
+        for (let i = 0; i < n * 2; i++) {
+          const a = (i * Math.PI) / n;
+          const rr = i % 2 ? r + 5 : r + 5 + Math.max(5, c * 0.11);
+          pts.push(`${(Math.cos(a) * rr).toFixed(1)},${(Math.sin(a) * rr).toFixed(1)}`);
+        }
+        g.appendChild(s('polygon', { class: 'spikes', points: pts.join(' ') }));
+      }
+      if (status && status.title) g.appendChild(s('title', {}, [status.title]));   // the conditions, on hover
       g.appendChild(s('circle', { class: 'ring-outline', r: r + 3, fill: 'none', stroke: color, 'stroke-width': Math.max(2, c * 0.05) }));
       g.appendChild(s('circle', { class: 'body', r, stroke: color, 'stroke-width': 1.5 }));
       if (t.image) g.appendChild(s('image', { href: t.image, x: -r, y: -r, width: 2 * r, height: 2 * r, 'clip-path': 'circle(50%)' }));
@@ -345,7 +357,9 @@
       // (one per segment, red when filled); a string pip is a filled one with that title
       const pips = (status && status.pips ? status.pips : []).map((p) => (typeof p === 'string' ? { title: p, on: true } : p));
       if (t.clock && t.clock.segments > 0) {
-        for (let i = 0; i < t.clock.segments; i++) pips.push({ title: `Harm ${t.clock.filled || 0} / ${t.clock.segments}`, on: i < (t.clock.filled || 0), clock: true });
+        // the players see the harm marked, not how much there is to take: filled pips only, no count
+        const shown = PLAYER ? (t.clock.filled || 0) : t.clock.segments;
+        for (let i = 0; i < shown; i++) pips.push({ title: PLAYER ? 'Harm' : `Harm ${t.clock.filled || 0} / ${t.clock.segments}`, on: i < (t.clock.filled || 0), clock: true });
         if ((t.clock.filled || 0) >= t.clock.segments) g.classList.add('down');
       }
       const n = Math.min(pips.length, 12);

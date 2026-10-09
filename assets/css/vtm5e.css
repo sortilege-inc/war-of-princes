@@ -607,3 +607,5 @@ body.play.mode-split .play-main { padding: 0; overflow: hidden; display: flex; f
 .injury-marks .mark.on { background: var(--blood); }
 .injury-row .btn.tiny { margin-left: 0; min-width: 1.6rem; }
 .injury-applies input { vertical-align: middle; }
+/* ported from sortilege-vtt-teeth (2026-10-09b): a spiky ring for a condition the system marks */
+.token .spikes { fill: #e8c431; stroke: #1a1613; stroke-width: 1; opacity: 0.95; }
