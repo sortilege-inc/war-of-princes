@@ -177,6 +177,20 @@
     ]);
   }
 
+  // the sheet, read-only, over the claim page: look before choosing
+  function previewSheet(m, s) {
+    const claimed = s.claims[m.id];
+    const close = () => overlay.remove();
+    const claim = button(claimed ? `Claimed by ${claimed.name}` : 'Claim this character', () => { Session.claim(m.id); close(); }, '');
+    claim.disabled = !!claimed;
+    const overlay = el('div', { class: 'play-preview', role: 'dialog', 'aria-modal': 'true' }, [
+      el('div', { class: 'play-preview-head' }, [el('b', {}, [m.name]), el('span', { class: 'muted' }, [' · ' + Sys.memberSubtitle(m)]), el('span', { class: 'spacer' }), claim, button('Close', close, 'ghost')]),
+      el('div', { class: 'play-preview-body' }, [Sys.liveSheet(m, { player: true, preview: true })]),
+    ]);
+    overlay.addEventListener('click', (ev) => { if (ev.target === overlay) close(); });
+    document.body.appendChild(overlay);
+  }
+
   function claimScreen(s) {
     const party = State.state.party || [];
     const cards = party.map((m) => {
@@ -186,8 +200,11 @@
       // a member of someone's retinue is played by whoever claims its head
       const head = m.retinueOf && party.find((x) => x.id === m.retinueOf);
       const n = party.filter((x) => x.retinueOf === m.id).length;
+      const blurb = Sys.memberBlurb ? Sys.memberBlurb(m) : '';
       return el('div', { class: 'card static' }, [el('div', { class: 'card-name' }, [m.name]), el('div', { class: 'card-sub' }, [Sys.memberSubtitle(m)]),
-        head ? el('div', { class: 'muted small' }, ['plays with ' + head.name]) : n ? el('div', { class: 'muted small' }, ['with a retinue of ' + n]) : null, b]);
+        blurb ? el('div', { class: 'card-desc' }, [blurb]) : null,
+        head ? el('div', { class: 'muted small' }, ['plays with ' + head.name]) : n ? el('div', { class: 'muted small' }, ['with a retinue of ' + n]) : null,
+        el('div', { class: 'chiprow' }, [b, button('Preview sheet', () => previewSheet(m, s), 'ghost')])]);
     });
     return el('div', { class: 'play-card' }, [
       el('h1', {}, ['Who are you?']),
